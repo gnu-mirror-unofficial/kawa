@@ -197,6 +197,11 @@ Some things that are implemented do not generate as good code as
 I want.  For example <code>for</code> expressions are implemented
 using map function calls.
 <p>
+In this table "Ok" means that the feature works in both the
+released (source and jar) versions listed above, and also in CVS;
+"Ok, in CVS" means the feature/fix is so recent it is only
+available in the CVS version.
+<p>
 <table border>
 <thead><th><strong>Feature</strong></th>
   <th><strong>Implementation status</strong></th>
@@ -220,6 +225,9 @@ using map function calls.
 <tr><td><code>&lt;=</code></td><td>Ok</td></tr>
 <tr><td><code>&gt;=</code></td><td>Ok</td></tr>
 <tr><td>nodes<code>/</code>element-name</td><td>Ok</td></tr>
+<tr><td>nodes<code>/*</code></td><td>Ok, in CVS</td></tr>
+<tr><td>nodes<code>/@</code>attributes-name</td><td>Ok, in CVS</td></tr>
+<tr><td>nodes<code>/@*</code></td><td>Ok, in CVS</td></tr>
 <tr><td>other path-expressions</td><td>Missing</td></tr>
 <tr><td><code>instanceof</code></td><td>Ok, but DataType limited</td></tr>
 <tr><td><code>instanceof only</code></td><td>Missing</td></tr>
@@ -234,6 +242,7 @@ using map function calls.
 <tr><td><code>,</code>(sequence concatenate)</td><td>Ok</td></tr>
 <tr><td><code>document</code> function</td><td>Ok</td></tr>
 <tr><td><code>children</code> function</td><td>Ok</td></tr>
+<tr><td><code>attributes</code> function</td><td>Ok, in CVS</td></tr>
 <tr><td><code>empty</code> function</td><td>Ok</td></tr>
 <tr><td>element constructors</td><td>Ok</td></tr>
 <tr><td>function call</td><td>Ok</td></tr>
@@ -246,7 +255,7 @@ using map function calls.
       <a href="http://www.brainfood.com/">Brainfood</a></address>
 <!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
 <!-- hhmts start -->
-Last modified: Fri Oct 12 15:43:37 PDT 2001
+Last modified: Wed Oct 17 16:14:24 PDT 2001
 <!-- hhmts end -->
   </body>
 </html>
