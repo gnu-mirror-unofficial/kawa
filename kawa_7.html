@@ -1,17 +1,44 @@
 <HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on June, 9  2001 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
 <HEAD>
-<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+<TITLE>Kawa, the Java-based Scheme system: Compiling</TITLE>
 
-<TITLE>Kawa, the Java-based Scheme system - Compiling Scheme code to byte-codes</TITLE>
+<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: Compiling">
+<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: Compiling">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
 </HEAD>
-<BODY>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_6.html">previous</A>, <A HREF="kawa_8.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
-<P><HR><P>
 
+<BODY LANG="" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
 
-<H1><A NAME="SEC14" HREF="kawa_toc.html#TOC14">Compiling Scheme code to byte-codes</A></H1>
-
+<A NAME="SEC16"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC17"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H1> 6. Compiling Scheme code to byte-code or an executable </H1>
+<!--docid::SEC16::-->
 <P>
+
 All Scheme functions and source files are invisibly compiled
 into internal Java byte-codes.
 A traditional evaluator is only used for top-level directly entered
@@ -20,15 +47,13 @@ to also byte-compile top-level expressions by surrounding them
 by a dummy lambda.  However, this would create a new Class object
 in the Java VM for every top-level expression.  This is undesirable
 unless you have a VM that can garbage collect Class objects.)
+</P><P>
 
-
-<P>
 To save speed when loading large Scheme source files, you probably
 want to pre-compile them and save them on your local disk.
 There are two ways to do this.
+</P><P>
 
-
-<P>
 You can compile a Scheme source file to a single archive file.
 You do this using the <CODE>compile-file</CODE> function.
 The result is a single file that you can move around and <CODE>load</CODE>
@@ -40,9 +65,8 @@ The advantage of compiling to an archive is that it is simple
 and transparent.  A minor disadvantage is that it causes the
 Java "verifier" to be run when functions are loaded from it,
 which takes a little extra time.
+</P><P>
 
-
-<P>
 Alternatively, you can compile a Scheme source file to a
 collection of <SAMP>`.class'</SAMP> files.
 You then use the standard Java class loading mechanism to load the code.
@@ -50,141 +74,150 @@ The Java "verifier" does not need to get run, which makes
 loading a little faster.
 The compiled class files do have to be installed be installed somewhere
 in the <CODE>CLASSPATH</CODE>.
+</P><P>
 
+You can also compile your Scheme program to native code using GCJ.
+</P><P>
 
-
-<UL>
-<LI><A HREF="kawa_7.html#SEC15">Archive compilation</A>: Compiling Scheme to an archive file
-<LI><A HREF="kawa_7.html#SEC16">Files compilation</A>: Compiling Scheme to a set of .class files
-<LI><A HREF="kawa_7.html#SEC17">Application compilation</A>: Compiling Scheme to a standalone application
-<LI><A HREF="kawa_7.html#SEC18">Applet compilation</A>: Compiling Scheme to an applet
-</UL>
-
-
-
-<H2><A NAME="SEC15" HREF="kawa_toc.html#TOC15">Compiling Scheme to an archive file</A></H2>
-
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_7.html#SEC17">6.1 Compiling Scheme to an archive file</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_7.html#SEC18">6.2 Compiling Scheme to a set of .class files</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_7.html#SEC19">6.3 Compiling Scheme to a standalone application</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_7.html#SEC20">6.4 Compiling Scheme to an applet</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_7.html#SEC21">6.5 Compiling Scheme to a native executable</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
 <P>
+
+<A NAME="Archive compilation"></A>
+<HR SIZE="6">
+<A NAME="SEC17"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC18"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 6.1 Compiling Scheme to an archive file </H2>
+<!--docid::SEC17::-->
+<P>
+
 To byte-compile a file <SAMP>`foo.scm'</SAMP> do:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(compile-file "foo.scm" "foo")
+</pre></td></tr></table></P><P>
 
-<PRE>
-(compile-file "foo.scm" "foo")
-</PRE>
-
-<P>
 This will create <SAMP>`foo.zip'</SAMP>, which contains byte-compiled "j-code"
 that implements <SAMP>`foo.scm'</SAMP>.
+</P><P>
 
-
-<P>
 You can later do:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(load "foo")
+</pre></td></tr></table></P><P>
 
-<PRE>
-(load "foo")
-</PRE>
-
-<P>
 This will load <SAMP>`foo.zip'</SAMP>, which should have the same effect as
 loading <SAMP>`foo.scm'</SAMP>, except you will get the byte-compiled versions.
+</P><P>
 
-
-
-
-<H2><A NAME="SEC16" HREF="kawa_toc.html#TOC16">Compiling Scheme to a set of .class files</A></H2>
-
+<A NAME="Files compilation"></A>
+<HR SIZE="6">
+<A NAME="SEC18"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC17"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC19"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 6.2 Compiling Scheme to a set of .class files </H2>
+<!--docid::SEC18::-->
 <P>
+
 Invoking <SAMP>`kawa'</SAMP> (or <SAMP>`java kawa.repl'</SAMP>) with
 the <SAMP>`-C'</SAMP> flag will compile
-a <SAMP>`.scm'</SAMP> source file into one or more <SAMP>`.class'</SAMP> files.
+a <SAMP>`.scm'</SAMP> source file into one or more <SAMP>`.class'</SAMP> files:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa --main -C myprog.scm
+</pre></td></tr></table></P><P>
 
-
-<P>
 You run it as follows:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa [-d <VAR>outdirectory</VAR>] [-P <VAR>prefix</VAR>] [-T <VAR>topname</VAR>] [--main | --spplet] -C <VAR>infile</VAR> ...
+</pre></td></tr></table></P><P>
 
-<PRE>
-kawa [-d <VAR>outdirectory</VAR>] [-P <VAR>prefix</VAR>] [-T <VAR>topname</VAR>] [--main | --spplet] -C <VAR>infile</VAR> ...
-</PRE>
-
-<P>
 Note the <SAMP>`-C'</SAMP> must come last, because <SAMP>`Kawa'</SAMP> processes the
 arguments and options in order,
+</P><P>
 
-
-<P>
 Here:
 <DL COMPACT>
-
 <DT><SAMP>`-C <VAR>infile</VAR> ...'</SAMP>
-<DD>
-The Scheme source files we want to compile.
+<DD>The Scheme source files we want to compile.
 <DT><SAMP>`-d <VAR>outdirectory</VAR>'</SAMP>
-<DD>
-The directory under which the resulting <SAMP>`.class'</SAMP> files will be.
+<DD>The directory under which the resulting <SAMP>`.class'</SAMP> files will be.
 The default is the current directory.
 <DT><SAMP>`-P <VAR>prefix</VAR>'</SAMP>
-<DD>
-A string to prepend to the generated class names.
+<DD>A string to prepend to the generated class names.
 The default is the empty string.
 <DT><SAMP>`-T <VAR>topname</VAR>'</SAMP>
-<DD>
-The name of the "top" class - i.e. the one that contains the code
+<DD>The name of the "top" class - i.e. the one that contains the code
 for the top-level expressions and definitions.
 The default is generated from the <VAR>infile</VAR> and <VAR>prefix</VAR>.
 <DT><SAMP>`--main'</SAMP>
-<DD>
-Generate a <CODE>main</CODE> method so that the resulting "top" class can
-be used as a stand-alone application. See section <A HREF="kawa_7.html#SEC17">Compiling Scheme to a standalone application</A>.
+<DD>Generate a <CODE>main</CODE> method so that the resulting "top" class can
+be used as a stand-alone application. See section <A HREF="kawa_7.html#SEC19">6.3 Compiling Scheme to a standalone application</A>.
 <DT><SAMP>`--applet'</SAMP>
-<DD>
-The resulting class inherits from <CODE>java.applet.Applet</CODE>,
-and can be used as an applet.  See section <A HREF="kawa_7.html#SEC18">Compiling Scheme to an applet</A>.
+<DD>The resulting class inherits from <CODE>java.applet.Applet</CODE>,
+and can be used as an applet.  See section <A HREF="kawa_7.html#SEC20">6.4 Compiling Scheme to an applet</A>.
 <DT><SAMP>`--module-static'</SAMP>
-<DD>
-If no <CODE>module-static</CODE> is specified, generate a static module
-(as if <CODE>(module-static #t)</CODE> were specified. See section <A HREF="kawa_10.html#SEC57">Modules and how they are compiled to classes</A>.
+<DD>If no <CODE>module-static</CODE> is specified, generate a static module
+(as if <CODE>(module-static #t)</CODE> were specified. See section <A HREF="kawa_10.html#SEC60">9.7 Modules and how they are compiled to classes</A>.
 </DL>
-
 <P>
+
 When you actually want to load the classes, the <VAR>outdirectory</VAR>
 must be in your <SAMP>`CLASSPATH'</SAMP>.
 You can use the standard <CODE>load</CODE> function to load the code,
 by specifying the top-level class, either as a file name
 (relative to <VAR>outdirectory</VAR>) or a class name.
 E.g. if you did:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa -d /usr/local/share/java -P my.lib. -T foo -C foosrc.scm
+</pre></td></tr></table>you can use either:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(load "my.lib.foo")
+</pre></td></tr></table>or:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(load "my/lib/foo.class")
+</pre></td></tr></table></P><P>
 
-<PRE>
-kawa -d /usr/local/share/java -P my.lib. -T foo -C foosrc.scm
-</PRE>
-
-<P>
-you can use either:
-
-<PRE>
-(load "my.lib.foo")
-</PRE>
-
-<P>
-or:
-
-<PRE>
-(load "my/lib/foo.class")
-</PRE>
-
-<P>
 If you are compiling a Scheme source file (say <SAMP>`foosrc.scm'</SAMP>)
 that uses macros defined in some other file (say <SAMP>`macs.scm'</SAMP>),
 you need to make sure the definitions are visible to the compiler.
 One way to do that is with the <SAMP>`-f'</SAMP>:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa -f macs.scm -C foosrc.scm
+</pre></td></tr></table></P><P>
 
-<PRE>
-kawa -f macs.scm -C foosrc.scm
-</PRE>
-
-
-
-<H2><A NAME="SEC17" HREF="kawa_toc.html#TOC17">Compiling Scheme to a standalone application</A></H2>
-
+<A NAME="Application compilation"></A>
+<HR SIZE="6">
+<A NAME="SEC19"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC18"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC20"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 6.3 Compiling Scheme to a standalone application </H2>
+<!--docid::SEC19::-->
 <P>
+
 A Java application is a Java class with a special method
 (whose name is <CODE>main</CODE>).  The application can be invoked directly
 by naming it in the Java command.
@@ -194,42 +227,41 @@ the top-level actions that you want the application to execute.
 You can compile in the regular way decribed in the previous section, but add
 the <CODE>--main</CODE> option.  For example,
 assuming your Scheme file is <CODE>MyProgram.scm</CODE>:
-
-<PRE>
-kawa --main -C MyProgram.scm
-</PRE>
-
-<P>
-This will create a <CODE>MyProgram.class</CODE> which you can either <CODE>load</CODE>
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa --main -C MyProgram.scm
+</pre></td></tr></table>This will create a <CODE>MyProgram.class</CODE> which you can either <CODE>load</CODE>
 (as decribed in the previous section), or invoke as an application:
-
-<PRE>
-java MyProgram [<VAR>args</VAR>]
-</PRE>
-
-<P>
-Your Scheme program can access the command-line arguments <VAR>args</VAR>
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>java MyProgram [<VAR>args</VAR>]
+</pre></td></tr></table>Your Scheme program can access the command-line arguments <VAR>args</VAR>
 by using the global variable <SAMP>`command-line-arguments'</SAMP>.
+</P><P>
 
-
-
-
-<H2><A NAME="SEC18" HREF="kawa_toc.html#TOC18">Compiling Scheme to an applet</A></H2>
-<P>
+<A NAME="Applet compilation"></A>
+<HR SIZE="6">
+<A NAME="SEC20"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC19"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC21"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 6.4 Compiling Scheme to an applet </H2>
+<!--docid::SEC20::-->
 An applet is a Java class that inherits from <CODE>java.applet.Applet</CODE>.
 The applet can be downloaded and run in a Java-capable web-browser.
 To generate an applet from a Scheme program, write the Scheme
 program with appropriate definitions of the functions <SAMP>`init'</SAMP>,
 <SAMP>`start'</SAMP>, <SAMP>`stop'</SAMP> and <SAMP>`destroy'</SAMP>.  You must declare these
 as zero-argument functions with a <CODE>&#60;void&#62;</CODE> return-type.
-
-
 <P>
+
 Here is an example, based on the scribble applet in Flanagan's
 "Java Examples in a Nutshell" (O'Reilly, 1997):
-
-<PRE>
-(define-private last-x 0)
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(define-private last-x 0)
 (define-private last-y 0)
 
 (define (init) &#60;void&#62;
@@ -253,41 +285,95 @@ Here is an example, based on the scribble applet in Flanagan's
 (define (start) &#60;void&#62; (format #t "called start.~%~!"))
 (define (stop) &#60;void&#62; (format #t "called stop.~%~!"))
 (define (destroy) &#60;void&#62; (format #t "called destroy.~%~!"))
-</PRE>
+</pre></td></tr></table></P><P>
 
-<P>
 You compile the program with the <SAMP>`--applet'</SAMP> flag in addition to the
 normal <SAMP>`-C'</SAMP> flag:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>java kawa.repl --applet -C scribble.scm
+</pre></td></tr></table></P><P>
 
-<PRE>
-java kawa.repl --applet -C scribble.scm
-</PRE>
-
-<P>
 You can then create a <SAMP>`.jar'</SAMP> archive containing your applet.
 You also need to include the Kawa classes in the <SAMP>`.jar'</SAMP>,
 or you can include a <CODE>MANIFEST</CODE> file that specifies <CODE>Class-Path</CODE>
 to use a Java 2
 <A HREF="http://java.sun.com/docs/books/tutorial/ext/basics/download.html">download extension</A>.
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>jar cf scribble.jar scribble*.class <I>other-classes ...</I>
+</pre></td></tr></table></P><P>
 
-<PRE>
-jar cf scribble.jar scribble*.class <I>other-classes ...</I>
-</PRE>
-
-<P>
 Finally, you create an <SAMP>`.html'</SAMP> page referencing your applet:
-
-<PRE>
-&#60;html&#62;&#60;head&#62;&#60;title&#62;Scribble testapp&#60;/title&#62;&#60;/head&#62;
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>&#60;html&#62;&#60;head&#62;&#60;title&#62;Scribble testapp&#60;/title&#62;&#60;/head&#62;
 &#60;body&#62;&#60;h1&#62;Scribble testapp&#60;/h1&#62;
 You can scribble here:
 &#60;br&#62;
 &#60;applet code="scribble.class" archive="scribble.jar" width=200 height=200&#62;
 Sorry, Java is needed.&#60;/applet&#62;
 &#60;/body&#62;&#60;/html&#62;
-</PRE>
+</pre></td></tr></table></P><P>
 
-<P><HR><P>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_6.html">previous</A>, <A HREF="kawa_8.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<A NAME="Compiling to executable"></A>
+<HR SIZE="6">
+<A NAME="SEC21"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC20"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 6.5 Compiling Scheme to a native executable </H2>
+<!--docid::SEC21::-->
+<P>
+
+You can compile your Scheme program to native code using GCJ,
+as long as you have built Kawa using GCJ.
+</P><P>
+
+First, you need to compile the Scheme code to a set of <CODE>.class</CODE> files;
+see <A HREF="kawa_7.html#SEC18">6.2 Compiling Scheme to a set of .class files</A>.
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa --main -C myprog.scm
+</pre></td></tr></table></P><P>
+
+Now assuming that <CODE>$PREFIX</CODE> is where both GCJ and Kawa are installed
+(the name of the <CODE>--prefix</CODE> argument you used when configuring both),
+you may need to set these environment variables:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CLASSPATH=$PREFIX/share/java/kawa.jar:$CLASSPATH
+PATH=$PREFIX/bin:$PATH
+LD_LIBRARY_PATH=$PREFIX/lib
+export LD_LIBRARY_PATH CLASSPATH
+</pre></td></tr></table></P><P>
+
+Then to create an executable <CODE>myprog</CODE> do:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>gcj --main=myprog myprog*.class -o myprog -L$PREFIX/bin -lkawa
+</pre></td></tr></table></P><P>
+
+The <CODE>--main</CODE> option tell <CODE>gcj</CODE> which class contains
+the <CODE>main</CODE> method it should use.  The <CODE>-o</CODE> option names
+the resuling executable program.  The <CODE>-lkawa</CODE> option tells
+the linker it should link with the kawa shared library, and
+the <CODE>-L$PREFIX/bin</CODE> option tells the linker where it can
+find that library.
+</P><P>
+
+<A NAME="Extensions"></A>
+<HR SIZE="6">
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_8.html#SEC22"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<BR>  
+<FONT SIZE="-1">
+This document was generated
+by <I>Per Bothner</I> on <I>June, 9  2001</I>
+using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
+"><I>texi2html</I></A>
+
 </BODY>
 </HTML>

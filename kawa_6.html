@@ -1,37 +1,61 @@
 <HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on June, 9  2001 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
 <HEAD>
-<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+<TITLE>Kawa, the Java-based Scheme system: Restrictions</TITLE>
 
-<TITLE>Kawa, the Java-based Scheme system - Features of R5RS not implemented</TITLE>
+<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: Restrictions">
+<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: Restrictions">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
 </HEAD>
-<BODY>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_5.html">previous</A>, <A HREF="kawa_7.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
-<P><HR><P>
 
+<BODY LANG="" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
 
-<H1><A NAME="SEC13" HREF="kawa_toc.html#TOC13">Features of R5RS not implemented</A></H1>
-
+<A NAME="SEC15"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC14"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H1> 5. Features of R5RS not implemented </H1>
+<!--docid::SEC15::-->
 <P>
+
 Kawa implements all the required and optional features of R5RS,
 with the following exceptions.
+</P><P>
 
-
-<P>
 The entire "numeric tower" is implemented.
 However, some transcendental function only work on reals.
 Integral function do not necessarily work on
 inexact (floating-point) integers.
 (The whole idea of "inexact integer" in R5RS seems rather pointless ...)
+</P><P>
 
-
-<P>
 Also, <CODE>call-with-current-continuation</CODE> is only "upwards" (?).
 I.e. once a continuation has been exited, it cannot be invoked.
 These restricted continuations can be used to implement catch/throw
 (such as the examples in R4RS), but not co-routines or backtracking.
+</P><P>
 
-
-<P>
 Kawa now does general tail-call elimination, but only if
 you use the flag <CODE>--full-tail-calls</CODE>.  (Currently, the
 <CODE>eval</CODE> function itself is not fully tail-recursive, in violation
@@ -41,9 +65,8 @@ much), and partly I think it is more useful for Kawa to be compilatible
 with standard Java calling conventions and tools.
 Code compiled with <CODE>--full-tail-calls</CODE> can call code
  compiled without it and vice versa.
+</P><P>
 
-
-<P>
 Even without <CODE>--full-tail-calls</CODE>, if the
 compiler can prove that the procedure being called is the current
 function, then the tail call will be replaced by a jump.
@@ -51,9 +74,24 @@ This means the procedure must be defined using a letrec, not a
 define (because the compiler does not know if someone might
 re-define a global definition), and there must be no assignments
 (using <CODE>set!</CODE>) to the procedure binding.
+</P><P>
 
+<A NAME="Compiling"></A>
+<HR SIZE="6">
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_7.html#SEC16"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<BR>  
+<FONT SIZE="-1">
+This document was generated
+by <I>Per Bothner</I> on <I>June, 9  2001</I>
+using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
+"><I>texi2html</I></A>
 
-<P><HR><P>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_5.html">previous</A>, <A HREF="kawa_7.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
 </BODY>
 </HTML>

@@ -1,116 +1,56 @@
 <HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on June, 9  2001 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
 <HEAD>
-<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+<TITLE>Kawa, the Java-based Scheme system: The Kawa Scheme system, by Per Bothner</TITLE>
 
-<TITLE>Kawa, the Java-based Scheme system - The Kawa Scheme system, by Per Bothner</TITLE>
+<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: The Kawa Scheme system, by Per Bothner">
+<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: The Kawa Scheme system, by Per Bothner">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
 </HEAD>
-<BODY>
-Go to the first, previous, <A HREF="kawa_2.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
-<P><HR><P>
 
+<BODY LANG="" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
 
-<H1><A NAME="SEC1" HREF="kawa_toc.html#TOC1">The Kawa Scheme system, by Per Bothner</A></H1>
+<A NAME="SEC1"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_2.html#SEC2"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<A NAME="Features"></A>
+<HR SIZE="6">
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<BR>  
+<FONT SIZE="-1">
+This document was generated
+by <I>Per Bothner</I> on <I>June, 9  2001</I>
+using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
+"><I>texi2html</I></A>
 
-<P>
-Kawa is a Scheme environment, written in Java,
-and that compiles Scheme code into Java byte-codes.
-
-
-<P>
-This documents version 1.6.70, updated 26 June 2000.
-
-
-<P>
-See the summary
-of <A HREF="http://www.gnu.org/software/kawa/NEWS">recent changes</A>.
-
-
-<P>
-The author of Kawa is
-<a href="http://www.bothner.com/~per/">Per Bothner</a>
-<tt>&lt;<a href="mailto:per@bothner.com">per@bothner.com</a>&gt;</tt>.
-It is a re-write of Kawa 0.2, which was written by R. Alexander Milowski
-<tt>&lt;<a href="mailto:alex@copsol.com">alex@copsol.com</a>&gt;</tt>.
-
-
-<P>
-The Kawa home page (which is currently just an on-line
-version of this document) is <A HREF="http://www.gnu.org/software/kawa/">http://www.gnu.org/software/kawa/</A>.
-The <A HREF="http://www.cygnus.com/~bothner/kawa.html">old Kawa home page</A>
-should also work.
-
-
-<P>
-The
-<A HREF="http://www.cs.indiana.edu/scheme-repository/home.html">Scheme repository</A>
-has various useful information on Scheme.
-but it is not very actively updated.
-A new repository has been started at
-<A HREF="http://www.schemers.org/">www.schemers.org</A>.
-It includes pointer to an online copy of
-<A HREF="http://www.schemers.org/Documents/Standards/">R5RS</A>.
-
-
-<P>
-A nice quick introduction to Scheme can be found in
-<A HREF="http://www.cs.washington.edu/education/courses/341/99su/lectures/scheme/">Greg Badros's lecture notes</A>.  A more in-depth tutorial which also
-discusses Scheme implementation is
-<A HREF="http://www.cs.utexas.edu/users/wilson/schintro/schintro_toc.html">Paul Wilson's "An Introduction to Scheme and its Implementation"</A>.
-
-
-<P>
-Javadoc generated <A HREF="http://sourceware.cygnus.com/kawa/api/">documentation of the Kawa classes</A> is also available.
-
-
-<P>
-For copyright information on the software and documentation,
-see section <A HREF="kawa_14.html#SEC71">License</A>.
-
-
-<P>
-This package has nothing to do with the
-<A HREF="http://www.tek-tools.com/kawa/">Kawa commercial Java IDE</A>.
-
-
-<P>
-The packages
-<A HREF="http://sourceware.cygnus.com/kawa/api/gnu/bytecode/package-summary.html"><CODE>gnu.bytecode</CODE></A>,
-<A HREF="http://sourceware.cygnus.com/kawa/api/gnu/math/package-summary.html"><CODE>gnu.math</CODE></A>,
-<A HREF="http://sourceware.cygnus.com/kawa/api/gnu/expr/package-summary.html"><CODE>gnu.expr</CODE></A>,
-<A HREF="http://sourceware.cygnus.com/kawa/api/gnu/mapping/package-summary.html"><CODE>gnu.mapping</CODE></A>,
-and
-<A HREF="http://sourceware.cygnus.com/kawa/api/gnu/text/package-summary.html"><CODE>gnu.text</CODE></A>,
-are used by Kawa, and distributed with it, but may be independently useful.
-
-
-<P>
-For a technical overview of Kawa, see these
-<A HREF="http://sourceware.cygnus.com/kawa/papers/">papers</A>.
-
-
-<P>
-Kawa is partly sponsored by <A HREF="http://www.brainfood.com/">Brainfood</A>.
-
-
-
-<UL>
-<LI><A HREF="kawa_2.html#SEC2">Features</A>
-<LI><A HREF="kawa_3.html#SEC3">Getting Kawa</A>
-<LI><A HREF="kawa_4.html#SEC4">Installation</A>: Building and installing Kawa
-<LI><A HREF="kawa_5.html#SEC9">Running</A>: How to start up and run Kawa
-<LI><A HREF="kawa_6.html#SEC13">Restrictions</A>: Features of R5RS not implemented
-<LI><A HREF="kawa_7.html#SEC14">Compiling</A>: Compiling Scheme code to byte-codes
-<LI><A HREF="kawa_8.html#SEC19">Extensions</A>: Kawa features not in standard Scheme
-<LI><A HREF="kawa_9.html#SEC47">Types</A>
-<LI><A HREF="kawa_10.html#SEC50">Objects Classes and Modules</A>
-<LI><A HREF="kawa_11.html#SEC62">Low-level functions</A>: The Scheme-Java interface
-<LI><A HREF="kawa_12.html#SEC69">Mailing lists</A>: Where to report bugs, discuss changes, etc
-<LI><A HREF="kawa_13.html#SEC70">Projects</A>: Projects using Kawa
-<LI><A HREF="kawa_14.html#SEC71">License</A>
-<LI><A HREF="kawa_15.html#SEC74">Index</A>
-</UL>
-
-<P><HR><P>
-Go to the first, previous, <A HREF="kawa_2.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
 </BODY>
 </HTML>

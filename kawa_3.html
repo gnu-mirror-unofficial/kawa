@@ -1,54 +1,89 @@
 <HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on June, 9  2001 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
 <HEAD>
-<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+<TITLE>Kawa, the Java-based Scheme system: Getting Kawa</TITLE>
 
-<TITLE>Kawa, the Java-based Scheme system - Getting Kawa</TITLE>
+<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: Getting Kawa">
+<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: Getting Kawa">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
 </HEAD>
-<BODY>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_2.html">previous</A>, <A HREF="kawa_4.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
-<P><HR><P>
 
+<BODY LANG="" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
 
-<H1><A NAME="SEC3" HREF="kawa_toc.html#TOC3">Getting Kawa</A></H1>
-
+<A NAME="SEC3"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_2.html#SEC2"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_2.html#SEC2"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H1> 2. Getting Kawa </H1>
+<!--docid::SEC3::-->
 <P>
+
 To get the Kawa sources, you have choice between the
 <A HREF="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-stable.tar.gz">current stable version</A> (possibly quite old), or the newer
 <A HREF="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-newest.tar.gz">latest snapshot of the development tree</A> (builds and passes
 the testsuite but less extensively tested).
+</P><P>
 
-
-<P>
 A ready-to-run <CODE>.zip</CODE> archive of the pre-compiled classes is in
-<a href="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-stable-compiled.zip">here</a>.
+&#60;a href="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-stable-compiled.zip"&#62;here&#60;/a&#62;.
+</P><P>
 
-
-<P>
 These are all in the <A HREF="ftp://ftp.gnu.org/pub/gnu/kawa/">Kawa ftp site</A>,
 which includes other versions and files, including a <CODE>.deb</CODE>
 Debian package file of Kawa.
+</P><P>
 
-
-<P>
 You can also check out the very latest version via anonymous cvs.
-
-<PRE>
-cvs -d :pserver:anoncvs@anoncvs.cygnus.com:/cvs/kawa login
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/kawa login
      (password is ``anoncvs'')
-cvs -d :pserver:anoncvs@anoncvs.cygnus.com:/cvs/kawa co kawa
-</PRE>
+cvs -d :pserver:anoncvs@sources.redhat.com:/cvs/kawa co kawa
+</pre></td></tr></table></P><P>
 
-<P>
 Once you have it checked out, you can update it with <CODE>cvs update</CODE>.
+</P><P>
 
-
-<P>
 You can also
-<A HREF="http://anoncvs.cygnus.com/cgi-bin/cvsweb.cgi/kawa/?cvsroot=kawa">view
+<A HREF="http://sources.redhat.com/cgi-bin/cvsweb.cgi/kawa/?cvsroot=kawa">view
 the cvs archive</A> via cvsweb.
+</P><P>
 
+<A NAME="Installation"></A>
+<HR SIZE="6">
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_2.html#SEC2"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<BR>  
+<FONT SIZE="-1">
+This document was generated
+by <I>Per Bothner</I> on <I>June, 9  2001</I>
+using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
+"><I>texi2html</I></A>
 
-<P><HR><P>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_2.html">previous</A>, <A HREF="kawa_4.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
 </BODY>
 </HTML>

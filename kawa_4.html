@@ -1,310 +1,407 @@
 <HTML>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- Created on June, 9  2001 by texi2html 1.64 -->
+<!-- 
+Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
+            Karl Berry  <karl@freefriends.org>
+            Olaf Bachmann <obachman@mathematik.uni-kl.de>
+            and many others.
+Maintained by: Olaf Bachmann <obachman@mathematik.uni-kl.de>
+Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
+ 
+-->
 <HEAD>
-<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+<TITLE>Kawa, the Java-based Scheme system: Installation</TITLE>
 
-<TITLE>Kawa, the Java-based Scheme system - Building and installing Kawa</TITLE>
+<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: Installation">
+<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: Installation">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+<META NAME="Generator" CONTENT="texi2html 1.64">
+
 </HEAD>
-<BODY>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_3.html">previous</A>, <A HREF="kawa_5.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
-<P><HR><P>
 
+<BODY LANG="" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
 
-<H1><A NAME="SEC4" HREF="kawa_toc.html#TOC4">Building and installing Kawa</A></H1>
-
+<A NAME="SEC4"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_3.html#SEC3"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC5"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_3.html#SEC3"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H1> 3. Building and installing Kawa </H1>
+<!--docid::SEC4::-->
 <P>
+
 Before installing Kawa, you must have Java working on your
 system.
+</P><P>
 
-
-<P>
 You can compile Kawa from the source distribution.
 Alternatively, you can install the pre-compiled binary distribution.
+</P><P>
 
-
-
-<UL>
-<LI><A HREF="kawa_4.html#SEC5">Running Java</A>: Getting and running Java
-<LI><A HREF="kawa_4.html#SEC6">Binary distribution</A>: Installing and using the binary distribution
-<LI><A HREF="kawa_4.html#SEC7">Source distribution</A>: Installing and using the source distribution
-</UL>
-
-
-
-<H2><A NAME="SEC5" HREF="kawa_toc.html#TOC5">Getting and running Java</A></H2>
-
+<BLOCKQUOTE><TABLE BORDER=0 CELLSPACING=0> 
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_4.html#SEC5">3.1 Getting and running Java</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_4.html#SEC6">3.2 Installing and using the binary distribution</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_4.html#SEC7">3.3 Installing and using the source distribution</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+</TABLE></BLOCKQUOTE>
 <P>
-You will need a working Java system.
+
+<A NAME="Running Java"></A>
+<HR SIZE="6">
+<A NAME="SEC5"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC6"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 3.1 Getting and running Java </H2>
+<!--docid::SEC5::-->
+<P>
+
+You will need a working Java system.  Kawa has been reported to
+work with JDK 1.1, JDK 1.2, JDK 1.3, Kaffe, Symantec Cafe, J++, and GCJ.
+</P><P>
+
 The discussion below assumes you are using the Java Developer's Kit
-(JDK) version 1.1.x from JavaSoft (Sun).
-(Kawa has also been reported to work with Kaffe, Symantec Cafe, J++,
-and JDK 1.2beta.)
-You can download free copies of
-<a href="http://java.sun.com/products/jdk/1.1/index.html">
-JDK 1.1.x
-</a>
-for various platforms.
+(JDK) from JavaSoft (Sun).  You can download free copies of
+<A HREF="http://java.sun.com/j2se/1.3/">JDK 1.3</A> for various platforms.
+</P><P>
 
-
-<P>
 If you want to run Kawa on a Macintosh, see
-<A HREF="http://home.earthlink.net/~athene/2/scheme/mackawa.html">http://home.earthlink.net/~athene/2/scheme/mackawa.html</A>.
+<A HREF="http://home.earthlink.net/%7Eathene/scheme/mackawa.html">http://home.earthlink.net/%7Eathene/scheme/mackawa.html</A>.
+</P><P>
 
-
-<P>
 The program <CODE>java</CODE> is the Java interpreter.
 The program <CODE>javac</CODE> is the Java compiler,
 and is needed if you want to compile the source release yourself.
 Both programs must be in your <CODE>PATH</CODE>.
-
-
-<P>
-You also need to set <CODE>CLASSPATH</CODE> so it includes both the
-current directory, and the standard Java library.
-After you have installed Kawa, the <CODE>CLASSPATH</CODE> needs to
-include wherever you installed Kawa.
-
-
-<P>
 If you have the JDK in directory <CODE>$JDK</CODE>,
 and you are using a Bourne-shell compatible shell
-(/bin/sh, ksh, bash, and some others) you can set both variables thus:
+(/bin/sh, ksh, bash, and some others) you can set <CODE>PATH</CODE> thus:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>PATH=$JDK/bin:$PATH
+export PATH
+</pre></td></tr></table></P><P>
 
-<PRE>
-PATH=$JDK/bin:$PATH
-CLASSPATH=.:$JDK/lib/classes.zip
-export PATH CLASSPATH
-</PRE>
-
-
-
-<H2><A NAME="SEC6" HREF="kawa_toc.html#TOC6">Installing and using the binary distribution</A></H2>
-
+<A NAME="Binary distribution"></A>
+<HR SIZE="6">
+<A NAME="SEC6"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC5"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC7"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 3.2 Installing and using the binary distribution </H2>
+<!--docid::SEC6::-->
 <P>
+
 The binary release includes only the binary compiled <SAMP>`.class'</SAMP>
 versions of the same <SAMP>`.java'</SAMP> source files in the source release.
 It does not include any documentation, so you probably want the
 source release in addition to the binary release.  The purpose
 of the binary release is just to save you time and trouble of
 compiling the sources.
+</P><P>
 
-
-<P>
 The binary release comes as a <CODE>.jar</CODE> archive
-<SAMP>`kawa-1.6.70-compiled.jar'</SAMP>.
+<SAMP>`kawa-1.6.92-compiled.jar'</SAMP>.
+</P><P>
 
-
-<P>
 You can unzip the archive, or you can use it as is.
 Assuming the latter, copy the archive to some suitable location,
 such as <CODE>/usr/local/lib/kawa-compiled.jar</CODE>.
+</P><P>
 
-
-<P>
 Then, before you can actually run Kawa, you need to set <CODE>CLASSPATH</CODE>
 so it includes the Kawa archive.  On Unix, using a Bourne-style shell:
-
-<PRE>
-CLASSPATH=/usr/local/lib/kawa-compiled.jar
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CLASSPATH=/usr/local/lib/kawa-compiled.jar
 export CLASSPATH
-</PRE>
+</pre></td></tr></table></P><P>
 
-<P>
 On Windows95/WindowsNT, you need to set <CODE>classpath</CODE> in a DOS console.
 For example:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>set classpath=\kawa\kawa-1.6.92-compiled.jar
+</pre></td></tr></table></P><P>
 
-<PRE>
-set classpath=\kawa\kawa-1.6.70-compiled.jar
-</PRE>
-
-<P>
 Then to run Kawa do:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>java kawa.repl
+</pre></td></tr></table></P><P>
 
-<PRE>
-java kawa.repl
-</PRE>
-
-<P>
 To run Kawa in a fresh window, you can do:
-
-<PRE>
-java kawa.repl -w
-</PRE>
-
-<P>
-On Windows, you probably do want to use the <CODE>-w</CODE> flag,
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>java kawa.repl -w
+</pre></td></tr></table>On Windows, you probably do want to use the <CODE>-w</CODE> flag,
 because if you run Kawa under the MS-DOS prompt, you won't see
 commands echoed until you hit Enter.  (If anyone knows a way
 to fix this problem, please let me know.)
+</P><P>
 
-
-
-
-<H2><A NAME="SEC7" HREF="kawa_toc.html#TOC7">Installing and using the source distribution</A></H2>
-<P>
+<A NAME="Source distribution"></A>
+<HR SIZE="6">
+<A NAME="SEC7"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC6"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC8"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 3.3 Installing and using the source distribution </H2>
+<!--docid::SEC7::-->
 The Kawa release normally comes as a gzip-compressed tar file named
-<SAMP>`kawa-1.6.70.tar.gz'</SAMP> .
-
-
+<SAMP>`kawa-1.6.92.tar.gz'</SAMP> .
 <P>
+
 In your build directory do:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>tar xzf kawa-1.6.92.tar.gz
+cd kawa-1.6.92
+</pre></td></tr></table></P><P>
 
-<PRE>
-tar xzf kawa-1.6.70.tar.gz
-cd kawa-1.6.70
-</PRE>
-
-<P>
 Then you must configure the sources.  This you can do
 the same way you configure most other GNU software.  Normally
 you can just run the configure script with no arguments:
+</P><P>
 
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>./configure
+</pre></td></tr></table></P><P>
 
-
-<PRE>
-./configure
-</PRE>
-
-<P>
 This will specify that a later <CODE>make install</CODE> will install the
 compiled <SAMP>`.class'</SAMP> files into <CODE>/usr/local/share/java</CODE>.
 If you want them
 to be installed someplace else, such as <CODE>$PREFIX/share/java</CODE>, then
 specify that when you run configure:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>./configure --prefix $PREFIX
+</pre></td></tr></table></P><P>
 
-<PRE>
-./configure --prefix $PREFIX
-</PRE>
-
-<P>
 If you have the GNU <SAMP>`readline'</SAMP> library installed, you might try
 adding the <SAMP>`--enable-kawa-frontend'</SAMP> flag.  This will build the
 <SAMP>`kawa'</SAMP> front-end program, which provides input-line editing
 and an input history.  You can get <SAMP>`readline'</SAMP> from archives
 of GNU programs, including <A HREF="ftp://www.gnu.org/">ftp://www.gnu.org/</A>.
+</P><P>
 
+If you have Swing installed, and want to use JEmacs (Emacs in Java),
+also pass the <CODE>--with-swing</CODE> flag to <CODE>configure</CODE>.
+</P><P>
 
-<P>
 If you have installed Kawa before, make sure your <CODE>CLASSPATH</CODE>
 does not include old versions of Kawa, or other classes that may
 conflict with the new ones.
+</P><P>
 
-
-<P>
 Thus you need to compile all the .java source files.
 Just run make:
-
-<PRE>
-make
-</PRE>
-
-<P>
-This assumes that <SAMP>`java'</SAMP> and <SAMP>`javac'</SAMP> are the java interpreter
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make
+</pre></td></tr></table>This assumes that <SAMP>`java'</SAMP> and <SAMP>`javac'</SAMP> are the java interpreter
 and compiler, respectively.
 For example, if you are using the Kaffe Java interpreter,
 you need to instead say:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make JAVA=kaffe
+</pre></td></tr></table></P><P>
 
-<PRE>
-make JAVA=kaffe
-</PRE>
-
-<P>
 You can now test the system by running Kawa in place:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>java kawa.repl
+</pre></td></tr></table></P><P>
 
-<PRE>
-java kawa.repl
-</PRE>
-
-<P>
 or you can run the test suite:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(cd testsuite;  make check)
+</pre></td></tr></table></P><P>
 
-<PRE>
-(cd testsuite;  make check)
-</PRE>
-
-<P>
 or you can install the compiled files:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make install
+</pre></td></tr></table></P><P>
 
-<PRE>
-make install
-</PRE>
-
-<P>
 This will install your classes into <CODE>$PREFIX/share/java</CODE> (and its
 sub-directories).  Here <CODE>$PREFIX</CODE> is the directory you specified
 to configure with the <CODE>--prefix</CODE> option, or <CODE>/usr/local</CODE> if you
 did not specify a <CODE>--prefix</CODE> option.
+</P><P>
 
-
-<P>
 To use the installed files, you need to set <CODE>CLASSPATH</CODE> so
-that <CODE>$PREFIX/share/java</CODE> is on the path:
-
-<PRE>
-CLASSPATH=$PREFIX/share/java
+that <CODE>$PREFIX/share/java/kawa.jar</CODE> is in the path:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CLASSPATH=$PREFIX/share/java/kawa.jar
 export CLASSPATH
-</PRE>
+</pre></td></tr></table>This is done automatically if you use the <SAMP>`kawa'</SAMP> script.
+</P><P>
 
+<HR SIZE="6">
+<A NAME="SEC8"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC7"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC9"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H3> 3.3.1 Using the Jikes compiler </H3>
+<!--docid::SEC8::-->
 <P>
-This is done automatically if you use the <SAMP>`kawa'</SAMP> script.
 
+<A HREF="http://oss.software.ibm.com/developerworks/opensource/jikes/project/">Jikes</A>
+is a Java source-to-bytecode compiler that is much faster than Sun's
+<CODE>javac</CODE>.  (Note that this only speeds up building Kawa from source, not
+actually running Kawa.)
+The instructions for using jikes are as above, except that you
+need to specify Jikes at <CODE>configure</CODE> time, setting the <CODE>JAVAC</CODE>
+environment variable.  If <CODE>jikes</CODE> is in your execution path, do:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>JAVAC=jikes ./configure
+</pre></td></tr></table></P><P>
 
+You also need to inform Jikes where it should find the standard Java classes
+(since Jikes is a compiler only).  For example:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>CLASSPATH=.:/opt/jdk1.3/jre/lib/rt.jar
+export CLASSPATH
+</pre></td></tr></table></P><P>
 
-
-<H3><A NAME="SEC8" HREF="kawa_toc.html#TOC8">Building Kawa under Windows</A></H3>
-
+<HR SIZE="6">
+<A NAME="SEC9"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC8"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC10"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC10"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H3> 3.3.2 Compiling Kawa to native code with GCJ </H3>
+<!--docid::SEC9::-->
 <P>
+
+The GNU Compiler for the Java(tm) Programming Language
+(<A HREF="http://gcc.gnu.org/java/">GCJ</A>) is part of the
+GNU Compiler Collection (<A HREF="http://gcc.gnu.org/">GCC</A>).
+It can compile Java source or bytecode
+files into native code on supported systems.  As of this writing,
+you need to get a recent pre-release gcc-3.0 snapshot, and only
+Intel x86-based Linux/GNU system have been tested with Kawa.
+</P><P>
+
+First, get and install (a beta of) GCC 3.0.  Set <CODE>PREFIX</CODE> to where
+you want to install GCJ, and configure it with these options:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>./configure --enable-threads --enable-languages=c++,java --prefix $PREFIX
+make bootstrap
+make install
+</pre></td></tr></table>Make sure <CODE>gcj</CODE> is in your path and refers to the newly-installed
+version, and if needed, set <CODE>LD_LIBRARY_PATH</CODE> to point to the
+directory where <CODE>libgcj.so</CODE> was installed:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>PATH=$PREFIX/bin:$PATH
+LD_LIBRARY_PATH=$PREFIX/lib
+export LD_LIBRARY_PATH
+</pre></td></tr></table></P><P>
+
+To build Kawa, you need to specify <CODE>--with-gcj</CODE> to
+<CODE>configure</CODE> which tells it to use GCJ.  Currently you also
+need to specify <CODE>--without-awt --without-swing</CODE> because
+GCJ does not yet support AWT or Swing:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>./configure --with-gcj --without-awt --without-swing --prefix $PREFIX
+</pre></td></tr></table>Then as before:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>make
+make install
+</pre></td></tr></table></P><P>
+
+<HR SIZE="6">
+<A NAME="SEC10"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC9"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H3> 3.3.3 Building Kawa under Windows </H3>
+<!--docid::SEC10::-->
+<P>
+
 The Kawa <CODE>configure</CODE> and <CODE>make</CODE> process assumes a Unix-like
 environment.  If you want to build Kawa from source under Windows
 (95, 98, or NT), you could use a Unix empulation package, such
-as the free <A HREF="http://sourceware.cygnus.com/cygwin/">Cygwin</A>.
+as the free <A HREF="http://sources.redhat.com/cygwin/">Cygwin</A>.
 However, there are some problems with filenames that make this
 more complicated than it should be.
+</P><P>
 
-
-<P>
 The Kawa source distribution now includes a simple batch file for building
 Kawa under Windows.  You can do the following:
-
-
+</P><P>
 
 <OL>
 <LI>
-
-Download the Kawa source distribution <CODE>kawa-1.6.70.tar.gz</CODE>.
+Download the Kawa source distribution <CODE>kawa-1.6.92.tar.gz</CODE>.
 <LI>
-
 Extract the files using an appropriate tool.
-(I did <CODE>tar xzf kawa-1.6.70.tar.gz</CODE>, using the <CODE>tar</CODE>
-that is part of <A HREF="http://sourceware.cygnus.com/cygwin/">Cygwin</A>.
+(I did <CODE>tar xzf kawa-1.6.92.tar.gz</CODE>, using the <CODE>tar</CODE>
+that is part of <A HREF="http://sources.redhat.com/cygwin/">Cygwin</A>.
 If there are alternative commonly-available tools, please let me
 know about them.)
 <LI>
-
-In an MS-DOS window, <CODE>cd kawa-1.6.70</CODE>.
+In an MS-DOS window, <CODE>cd kawa-1.6.92</CODE>.
 <LI>
-
 Edit <CODE>makekawa.bat</CODE> if need be to specify the location of your Java tools.
 <LI>
-
 Execute <CODE>makekawa.bat</CODE>.
 <LI>
-
 If this succeeded, you should have a working kawa.
 For example you can do <CODE>java kawa.repl -w</CODE>, assuming
 <CODE>java</CODE> is in your <CODE>PATH</CODE>.
 </OL>
-
 <P>
+
 If you use an integrated Java development environment, you should be
 able to import all the Java source files, and have it compile all of them.
 You then need to compile the builtin Scheme procedures:
-
-<PRE>
-cd kawa\lib
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>cd kawa\lib
 %KAWA% -d ..\.. -P kawa.lib. -C *.scm
-</PRE>
+</pre></td></tr></table></P><P>
 
-<P><HR><P>
-Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_3.html">previous</A>, <A HREF="kawa_5.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<A NAME="Running"></A>
+<HR SIZE="6">
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_4.html#SEC4"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_5.html#SEC11"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<BR>  
+<FONT SIZE="-1">
+This document was generated
+by <I>Per Bothner</I> on <I>June, 9  2001</I>
+using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
+"><I>texi2html</I></A>
+
 </BODY>
 </HTML>
