@@ -1,6 +1,6 @@
 <HTML>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- Created on June, 19  2001 by texi2html 1.64 -->
+<!-- Created on October, 12  2001 by texi2html 1.64 -->
 <!-- 
 Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
@@ -11,10 +11,10 @@ Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
  
 -->
 <HEAD>
-<TITLE>Kawa, the Java-based Scheme system: Mailing lists</TITLE>
+<TITLE>Kawa, the Java-based Scheme system: XML tools</TITLE>
 
-<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: Mailing lists">
-<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: Mailing lists">
+<META NAME="description" CONTENT="Kawa, the Java-based Scheme system: XML tools">
+<META NAME="keywords" CONTENT="Kawa, the Java-based Scheme system: XML tools">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
 <META NAME="Generator" CONTENT="texi2html 1.64">
@@ -23,57 +23,142 @@ Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
 
 <BODY LANG="" BGCOLOR="#FFFFFF" TEXT="#000000" LINK="#0000FF" VLINK="#800080" ALINK="#FF0000">
 
-<A NAME="SEC72"></A>
+<A NAME="SEC73"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC71"> &lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_13.html#SEC73"> &gt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &lt;&lt; </A>]</TD>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC72"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC74"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_13.html#SEC73"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_13.html#SEC77"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H1> 11. Mailing lists </H1>
-<!--docid::SEC72::-->
+<H1> 11. Tools for working with XML and HTML </H1>
+<!--docid::SEC73::-->
 <P>
 
-If you have a problem installing or using Kawa,
-send mail to <CODE>kawa@sources.redhat.com</CODE>
+Kawa has a number of experimental features for working with XML.
+These are built on the concepts of the <CODE>gnu.lists</CODE> package.
 </P><P>
 
-This mailing list is used for reporting bugs, patches, discussing
-changes to Kawa, and announcing snapshots.  If you wish to subscribe,
-send a blank message request to <CODE>kawa-subscribe@sources.redhat.com</CODE>.
-To unsubscribe, send a blank message to
-<CODE>kawa-unsubscribe@sources.redhat.com</CODE>.  (If your mail is forwarded,
-send mail to the address following <CODE>mailto:</CODE> in the
-<CODE>List-Unsubscribe</CODE> line in the messages you get from the list.)
+<HR SIZE="6">
+<A NAME="SEC74"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC73"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC75"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC75"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H3> 11.0.1 Scheme functions </H3>
+<!--docid::SEC74::-->
+<P>
+
+<A NAME="IDX271"></A>
+<DL>
+<DT><U>Function:</U> <B>make-element</B> <I>tag [attribute ...] child ...</I>
+<DD>Create a representation of a XML element, corresponding to
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>&#60;<VAR>tag</VAR> <VAR>attribute</VAR>...&#62;<VAR>child</VAR>...&#60;/<VAR>tag</VAR>&#62;
+</pre></td></tr></table>The result is a <CODE>TreeList</CODE>, though if the result context is a consumer
+the result is instead "written" to the consumer.
+Thus nested calls to <CODE>make-element</CODE> only result in a
+single <CODE>TreeList</CODE>.
+More generally, whether an <VAR>attribute</VAR> or <VAR>child</VAR> is includded
+by copying or by reference is (for now) undefined.
+The <VAR>tag</VAR> should currently be a symbol, though in the future it should
+be a qualified name.
+An <VAR>attribute</VAR> is typically a call to <CODE>make-attribute</CODE>,
+but it can be any attribute-valued expression.
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(make-element 'p
+	      "The time is now: "
+	      (make-element 'code (make &#60;java.util.Date&#62;)))
+</pre></td></tr></table></DL>
 </P><P>
 
-Messages to the mailing list are now
-<A HREF="http://sources.redhat.com/ml/kawa/">archived</A>.
+<A NAME="IDX272"></A>
+<DL>
+<DT><U>Function:</U> <B>make-attribute</B> <I>name value...</I>
+<DD>Create an "attribute", which is a name-value pair.
+For now, <VAR>name</VAR> should be a symbol
+</DL>
 </P><P>
 
-There is a separate mailing list for <A HREF="http://www.JEmacs.net">JEmacs</A>.
-See the <A HREF="http://lists.sourceforge.net/mailman/listinfo/jemacs-info">information page</A>.
+<HR SIZE="6">
+<A NAME="SEC75"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC74"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC76"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC76"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC76"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H3> 11.0.2 Compiling to a Servlet </H3>
+<!--docid::SEC75::-->
+<P>
+
+You can compile a Scheme file to a <CODE>Servlet</CODE>, and run it
+in a servlet engine (a Servlet-aware web server).
+For example, the example under <CODE>make-element</CODE> can
+be saved in a file <CODE>CurDate.scm</CODE>, and compiled:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>kawa --servlet -C CurDate.scm
+</pre></td></tr></table>If you have Tomcat 4.x installed, and you want <CODE>CurDate</CODE> to be
+part of the <CODE>myutils</CODE> "web application", copy <CODE>CurDate*.class</CODE>
+into <CODE>$CATALINA_HOME/webapps/myutils/WEB-INF/classes/</CODE>.
+You also need to copy Kawa somewhere where Tomcat can find it,
+for example <CODE>$CATALINA_HOME/lib/kawa-1.6.96.jar</CODE>.
+You can then run the <CODE>CurDate</CODE> servlet using the URL
+<A HREF="http://localhost::8080/myutils/servlet/CurDate">http://localhost::8080/myutils/servlet/CurDate</A>.
 </P><P>
 
-<A NAME="Projects"></A>
+<HR SIZE="6">
+<A NAME="SEC76"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_12.html#SEC75"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_13.html#SEC77"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H3> 11.0.3 xquery language </H3>
+<!--docid::SEC76::-->
+<P>
+
+W3C is working an an <A HREF="http://www.w3c.org/XML/Query">XML Query language</A>,
+and a draft has been released.
+If you start Kawa with the <CODE>--xquery</CODE> it selects the "XQuery"
+source language; this also prints output using XML syntax.
+See the <A HREF="http://www.gnu.org/software/kawa/xquery/">Kawa-XQuery home page</A>
+for examples and more information.
+</P><P>
+
+<A NAME="Mailing lists"></A>
 <HR SIZE="6">
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &lt;&lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_13.html#SEC73"> &gt;&gt; </A>]</TD>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[ &lt;&lt; ]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[ &gt;&gt; ]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <BR>  
 <FONT SIZE="-1">
 This document was generated
-by <I>Per Bothner</I> on <I>June, 19  2001</I>
+by <I>Per Bothner</I> on <I>October, 12  2001</I>
 using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
 "><I>texi2html</I></A>
 

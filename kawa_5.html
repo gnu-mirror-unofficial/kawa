@@ -1,6 +1,6 @@
 <HTML>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- Created on June, 19  2001 by texi2html 1.64 -->
+<!-- Created on October, 12  2001 by texi2html 1.64 -->
 <!-- 
 Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
@@ -32,7 +32,7 @@ Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H1> 4. How to start up and run Kawa </H1>
@@ -88,7 +88,7 @@ result (if there is a non-"void" result).
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 4.1 Command-line arguments </H2>
@@ -136,6 +136,8 @@ use <SAMP>`-w'</SAMP> to get a new window.
 in the new window.  See <A HREF="kawa_5.html#SEC13">4.2 Running a Command Interpreter in a new Window</A>.
 Same as <CODE>-e (scheme-window #t)</CODE>.
 You can specify multiple <SAMP>`-w'</SAMP> options, and also use <SAMP>`-s'</SAMP>.
+<DT><SAMP>`--help'</SAMP>
+<DD>Prints out some help.
 <DT><SAMP>`--version'</SAMP>
 <DD>Prints out the Kawa version number, and then exits.
 <DT><SAMP>`--server <VAR>portnum</VAR>'</SAMP>
@@ -158,6 +160,10 @@ Telnet client program to a remote "Kawa server".
 <DD><DT><SAMP>`--common-lisp'</SAMP>
 <DD>Set the default language to CommonLisp.
 (The implementation is <EM>very</EM> incomplete.)
+<DT><SAMP>`--xquery'</SAMP>
+<DD>Set the default language to the draft XML Query language.
+See the <A HREF="http://www.gnu.org/software/kawa/xquery/">Kawa-XQuery page</A>
+for more information.
 </DL>
 <P>
 
@@ -185,7 +191,7 @@ with <CODE>--no-full-tailcalls</CODE> and vice versa.
 </P><P>
 
 The options <SAMP>`-C'</SAMP>, <SAMP>`-d'</SAMP>, <SAMP>`-T'</SAMP>, <SAMP>`-P'</SAMP>, <SAMP>`--main'</SAMP>
-and <SAMP>`--applet'</SAMP> are used to compile a Scheme file;
+<SAMP>`--applet'</SAMP>, and <CODE>--servlet</CODE> are used to compile a Scheme file;
 see <A HREF="kawa_7.html#SEC18">6.2 Compiling Scheme to a set of .class files</A>.
 The option <SAMP>`--connect <VAR>portnum</VAR>'</SAMP> is only used by
 the <SAMP>`kawa'</SAMP> front-end program.
@@ -229,7 +235,7 @@ but only if none of the <SAMP>`-c'</SAMP>, <SAMP>`-e'</SAMP>, <SAMP>`-f'</SAMP>,
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 4.2 Running a Command Interpreter in a new Window </H2>
@@ -255,7 +261,7 @@ environments or they can share environments.  To try it, do:
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 4.3 Exiting Kawa </H2>
@@ -286,13 +292,13 @@ To exit the entire Kawa session, call the
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_6.html#SEC15"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <BR>  
 <FONT SIZE="-1">
 This document was generated
-by <I>Per Bothner</I> on <I>June, 19  2001</I>
+by <I>Per Bothner</I> on <I>October, 12  2001</I>
 using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
 "><I>texi2html</I></A>
 

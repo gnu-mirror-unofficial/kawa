@@ -1,6 +1,6 @@
 <HTML>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- Created on June, 19  2001 by texi2html 1.64 -->
+<!-- Created on October, 12  2001 by texi2html 1.64 -->
 <!-- 
 Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
@@ -29,10 +29,10 @@ Send bugs and suggestions to <texi2html@mathematik.uni-kl.de>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC54"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_9.html#SEC50"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H1> 9. Object, Classes and Modules </H1>
@@ -52,8 +52,9 @@ The Kawa module system is based on the features of the Java class system.
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC56">9.3 Allocating objects</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC58">9.5 Accessing fields of Java objects</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
 <TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC57">9.4 Calling Java methods from Scheme</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
-<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC59">9.6 Anonymous classes</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
-<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC60">9.7 Modules and how they are compiled to classes</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC59">9.6 Defining new classes</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC60">9.7 Anonymous classes</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
+<TR><TD ALIGN="left" VALIGN="TOP"><A HREF="kawa_10.html#SEC61">9.8 Modules and how they are compiled to classes</A></TD><TD>&nbsp;&nbsp;</TD><TD ALIGN="left" VALIGN="TOP"></TD></TR>
 </TABLE></BLOCKQUOTE>
 <P>
 
@@ -77,10 +78,10 @@ allow an optional class specifier (needed for nested clases).
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC55"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 9.1 Records </H2>
@@ -205,10 +206,10 @@ created the type represented by <VAR>rtd</VAR>.</DL>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC56"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 9.2 Mapping Scheme names to Java names </H2>
@@ -289,10 +290,10 @@ and <SAMP>`openFile'</SAMP> to name two different objects.
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC57"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 9.3 Allocating objects </H2>
@@ -337,10 +338,10 @@ For example, the following are all equivalent:
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC58"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 9.4 Calling Java methods from Scheme </H2>
@@ -457,10 +458,10 @@ the Kawa sources.
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC59"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <H2> 9.5 Accessing fields of Java objects </H2>
@@ -524,7 +525,7 @@ Examples:
 </DL>
 </P><P>
 
-<A NAME="Anonymous classes"></A>
+<A NAME="Defining new classes"></A>
 <HR SIZE="6">
 <A NAME="SEC59"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
@@ -532,39 +533,96 @@ Examples:
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC60"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H2> 9.6 Anonymous classes </H2>
+<H2> 9.6 Defining new classes </H2>
 <!--docid::SEC59::-->
 <P>
 
+Kawa provides various mechanisms for defining new classes.
+The <CODE>define-class</CODE> and <CODE>define-simple-class</CODE> forms
+will usually be the preferred mechanisms.  They have basically
+the same syntax, but have a couple of differences.
+<CODE>define-class</CODE> allows multiple inheritance as well as true nested
+(first-class) class objects.  However, the implementation
+is more complex: code using it is slightly slower, and the mapping to
+Java classes is a little less obvious.   (Each Scheme class is implemented
+as a pair of an interface and an implementation class.)
+A class defined by <CODE>define-simple-class</CODE> is slightly more
+efficient, and it is easier to access it from Java code.
+</P><P>
+
+The syntax of <CODE>define-class</CODE> are mostly compatible with that
+in the Guile and Stk dialects of Scheme.
+</P><P>
+
 <A NAME="IDX241"></A>
 <DL>
-<DT><U>Syntax:</U> <B>object</B> <I>(supers ...) field-or-method-decl ...</I>
-<DD>Returns a new instance of an anonymous (inner) class.
-<TABLE><tr><td>&nbsp;</td><td class=display><pre style="font-family: serif"><VAR>field-or-method</VAR> = <VAR>field-decl</VAR> | <VAR>method-decl</VAR>
-<VAR>field-decl</VAR> = (<VAR>field-name</VAR> [[<VAR>field-type</VAR>] <VAR>field-init</VAR>])
-<VAR>method-decl</VAR> = ((<VAR>method-name</VAR> <VAR>formal-arguments</VAR>) [[::] <VAR>rtype</VAR>] <VAR>body</VAR>)
-</pre></td></tr></table></P><P>
-
-Returns a new instance of a unique (anonymous) class.
-The class inherits from the list of <VAR>supers</VAR>, where at most one of the
-elements should be the base class being extended from, and the rest
-are interfaces.
+<DT><U>Syntax:</U> <B>define-class</B> <I>name (supers ...) field-or-method-decl ...</I>
+<DD><A NAME="IDX242"></A>
+<DT><U>Syntax:</U> <B>define-simple-class</B> <I>name (supers ...) field-or-method-decl ...</I>
+<DD><TABLE><tr><td>&nbsp;</td><td class=display><pre style="font-family: serif"><VAR>field-or-method</VAR> = <VAR>field-decl</VAR> | <VAR>method-decl</VAR>
+<VAR>field-decl</VAR> = (<VAR>fname</VAR> [:: <VAR>ftype</VAR>] [<VAR>option-keyword</VAR> <VAR>option-value</VAR>]*)
+<VAR>method-decl</VAR> = ((<VAR>method-name</VAR> <VAR>formal-arguments</VAR>) [:: <VAR>rtype</VAR>] <VAR>body</VAR>)
+</pre></td></tr></table>Defines a new class named <VAR>name</VAR>.  If <CODE>define-simple-class</CODE> is
+used, creates a normal Java class named <VAR>name</VAR> in the current package.
+(If <VAR>name</VAR> has the form <CODE>&#60;xyx&#62;</CODE> the Java implementation
+type is named <CODE>xyz</CODE>.)  If <CODE>define-class</CODE> the implementation is
+unspecified.  In most cases, the compiler creates a class pair,
+consisting of a Java interface and a Java implementation class.
 </P><P>
 
-Each <VAR>field-decl</VAR> declares a public instance field.
-If <VAR>field-type</VAR> is given, it specifies the type of the field.
-If <VAR>field-init</VAR> is given, it is an expression whose value
-becomes the initial value of the field.
-The <VAR>field-init</VAR> is evaluated at the same time as the <CODE>object</CODE>
-expression is evaluated,
-in a scope where all the <VAR>field-name</VAR>s are visible.
+The class inherits from the classes and interfaces listed in <VAR>supers</VAR>.
+This is a list of names of classes that are in scope (perhaps imported
+using <CODE>require</CODE>), or names for existing classes or interfaces
+surrounded by <CODE>&#60;&#62;</CODE>, such as <CODE>&#60;gnu.lists.Sequence&#62;</CODE>.
+If <CODE>define-simple-class</CODE> is used, at most one of these may be
+the name of a normal Java class or classes defined using
+<CODE>define-simple-class</CODE>; the rest must be interfaces or classes
+defined using <CODE>define-class</CODE>.
+If <CODE>define-class</CODE> is used, <EM>all</EM> of the classes listed
+in <VAR>supers</VAR> should be interfaces or classes defined using
+<CODE>define-class</CODE>.
 </P><P>
+
+Each <VAR>field-decl</VAR> declares a public instance "slot" (field)
+with the given <VAR>fname</VAR>.  If <VAR>ftype</VAR> is specified it is the
+type of the slot.  The following <VAR>option-keyword</VAR>s are implemented:
+<DL COMPACT>
+<DT><CODE>type:</CODE> <VAR>ftype</VAR>
+<DD>Specifies that <VAR>ftype</VAR> is the type of (the values of) the field.
+Equivalent to <SAMP>`:: <VAR>ftype</VAR>'</SAMP>.
+<DT><CODE>allocation:</CODE> <CODE>class:</CODE>
+<DD>Specifies that there should be a single slot shared between all
+instances of the class (and its sub-classes).
+Not yet implemented for <CODE>define-class</CODE>,
+only for <CODE>define-simple-class</CODE>.
+In Java terms this is a <CODE>static</CODE> field.
+<DT><CODE>allocation:</CODE> <CODE>instance:</CODE>
+<DD>Specifies that each instance has a separate value "slot", and they
+are not shared. In Java terms, this is a non-<CODE>static</CODE> field.
+This is the default.
+<DT><CODE>init-form:</CODE> <VAR>expr</VAR>
+<DD>An expression used to initialize the slot.
+The lexical environment of the <VAR>expr</VAR> is that of the <CODE>define-class</CODE>
+or <CODE>define-simple-class</CODE>.  (This is not quite true in the current
+implementation, as the names of fields and methods of this class are visible.)
+<DT><CODE>init-value:</CODE> <VAR>value</VAR>
+<DD>A value expression used to initialize the slot.
+For now this is synonymous with <VAR>init-form:</VAR>, but that may change
+(depending on what other implementation do), so to be safe only use
+<CODE>init-value:</CODE> with a literal.
+<DT><CODE>init-keyword:</CODE> <CODE><VAR>name</VAR>:</CODE>
+<DD>A keyword that that can be used to initialize instance in <CODE>make</CODE> calls.
+For now, this is ignored, and <VAR>name</VAR> should be the same as the
+field's <VAR>fname</VAR>.
+<CODE>static</CODE> field.
+</DL>
+<P>
 
 Each <VAR>method-decl</VAR> declares a public non-static method,
 whose name is <VAR>method-name</VAR>.  (If <VAR>method-name</VAR> is not a valid
@@ -584,7 +642,33 @@ It sort-of also includes the declared methods, but this is not working yet.
 </DL>
 </P><P>
 
-<A NAME="Module classes"></A>
+A simple example:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(define-simple-class &#60;2d-vector&#62; ()
+  (x type: &#60;double&#62; init-value: 0.0 init-keyword: x:)
+  (y type: &#60;double&#62; init-value: 0.0 init-keyword: y:)
+  ((add (other :: &#60;2d-vector&#62;)) :: &#60;2d-vector&#62;
+   ;; Kawa compiles this using primitive Java types!
+   (make &#60;2d-vector&#62;
+     x: (+ x (slot-ref other 'x))
+     y: (+ y (slot-ref other 'y))))
+  ((scale (factor :: &#60;double&#62;)) :: &#60;2d-vector&#62;
+   ;; Unfortunately, multiply is not yet optimized as addition is.
+   (make &#60;2d-vector&#62; x: (* factor x) y: (* factor y))))
+
+(define-simple-class &#60;3d-vector&#62; (&#60;2d-vector&#62;)
+  (z type: &#60;double&#62; init-value: 0.0 init-keyword: z:)
+  ((scale (factor :: &#60;double&#62;)) :: &#60;2d-vector&#62;
+   ;; Note we cannot override the return type to &#60;3d-vector&#62;
+   ;; because Java does not allow that.  Should hide that. .
+   (make &#60;3d-vector&#62;
+     ;; Unfortunately, slot names of inherited classes are not visible.
+     ;; Until this is fixed, use slot-ref.
+     x: (* factor (slot-ref (this) 'x))
+     y: (* factor (slot-ref (this) 'y))
+     z: (* factor z))))
+</pre></td></tr></table></P><P>
+
+<A NAME="Anonymous classes"></A>
 <HR SIZE="6">
 <A NAME="SEC60"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
@@ -592,14 +676,70 @@ It sort-of also includes the declared methods, but this is not working yet.
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC61"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H2> 9.7 Modules and how they are compiled to classes </H2>
+<H2> 9.7 Anonymous classes </H2>
 <!--docid::SEC60::-->
+<P>
+
+<A NAME="IDX243"></A>
+<DL>
+<DT><U>Syntax:</U> <B>object</B> <I>(supers ...) field-or-method-decl ...</I>
+<DD>Returns a new instance of an anonymous (inner) class.
+The syntax is similar to <CODE>define-class</CODE>.
+<TABLE><tr><td>&nbsp;</td><td class=display><pre style="font-family: serif"><VAR>field-or-method</VAR> = <VAR>field-decl</VAR> | <VAR>method-decl</VAR>
+<VAR>field-decl</VAR> = (<VAR>fname</VAR> [[[::] <VAR>ftype</VAR>] <VAR>finit</VAR>])
+    | (<VAR>fname</VAR> [:: <VAR>ftype</VAR>] [<VAR>option-keyword</VAR> <VAR>option-value</VAR>]*)
+<VAR>method-decl</VAR> = ((<VAR>method-name</VAR> <VAR>formal-arguments</VAR>) [[::] <VAR>rtype</VAR>] <VAR>body</VAR>)
+</pre></td></tr></table></P><P>
+
+Returns a new instance of a unique (anonymous) class.
+The class inherits from the list of <VAR>supers</VAR>, where at most one of the
+elements should be the base class being extended from, and the rest
+are interfaces.
+</P><P>
+
+This is roughly equivalent to:
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>(begin
+  (define-name <VAR>hname</VAR> (<VAR>supers</VAR> ...) <VAR>field-or-method-decl</VAR> ...)
+  (make <VAR>hname</VAR>))
+</pre></td></tr></table></P><P>
+
+A <VAR>field-decl</VAR> is as for <CODE>define-class</CODE>, except
+that we also allow an abbreviated syntax.
+Each <VAR>field-decl</VAR> declares a public instance field.
+If <VAR>ftype</VAR> is given, it specifies the type of the field.
+If <VAR>finit</VAR> is given, it is an expression whose value
+becomes the initial value of the field.
+The <VAR>finit</VAR> is evaluated at the same time as the <CODE>object</CODE>
+expression is evaluated,
+in a scope where all the <VAR>fname</VAR>s are visible.
+</P><P>
+
+A <VAR>method-decl</VAR> is as for <CODE>define-class</CODE>.
+</DL>
+</P><P>
+
+<A NAME="Module classes"></A>
+<HR SIZE="6">
+<A NAME="SEC61"></A>
+<TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC60"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC62"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
+</TR></TABLE>
+<H2> 9.8 Modules and how they are compiled to classes </H2>
+<!--docid::SEC61::-->
 <P>
 
 A <EM>module</EM> is a set of definitions that the module <EM>exports</EM>,
@@ -634,20 +774,20 @@ using Scheme.
 </P><P>
 
 <HR SIZE="6">
-<A NAME="SEC61"></A>
+<A NAME="SEC62"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC60"> &lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC62"> &gt; </A>]</TD>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC61"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC63"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H3> 9.7.1 Name visibility </H3>
-<!--docid::SEC61::-->
+<H3> 9.8.1 Name visibility </H3>
+<!--docid::SEC62::-->
 <P>
 
 The definitions that a module exports are accessible to other modules.
@@ -669,7 +809,7 @@ anywhere in the Scheme file.  As a matter of good style, I recommend
 a single <CODE>module-export</CODE> near the beginning of the file.
 </P><P>
 
-<A NAME="IDX242"></A>
+<A NAME="IDX244"></A>
 <DL>
 <DT><U>Syntax:</U> <B>module-export</B> <I>name ...</I>
 <DD>Make the definition for each <VAR>name</VAR> be exported.
@@ -690,36 +830,36 @@ Alternatively, you can write:
 </pre></td></tr></table></P><P>
 
 <HR SIZE="6">
-<A NAME="SEC62"></A>
+<A NAME="SEC63"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC61"> &lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC63"> &gt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC63"> &lt;&lt; </A>]</TD>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC62"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC64"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC64"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H3> 9.7.2 Definitions </H3>
-<!--docid::SEC62::-->
+<H3> 9.8.2 Definitions </H3>
+<!--docid::SEC63::-->
 <P>
 
 In addition to <CODE>define</CODE> (which can take an optional type specifier),
 Kawa has some extra definition forms.
 </P><P>
 
-<A NAME="IDX243"></A>
+<A NAME="IDX245"></A>
 <DL>
 <DT><U>Syntax:</U> <B>define-private</B> <I>name [:: type] value</I>
-<DD><A NAME="IDX244"></A>
+<DD><A NAME="IDX246"></A>
 <DT><U>Syntax:</U> <B>define-private</B> <I>(name formals) body</I>
 <DD>Same as <CODE>define</CODE>, except that <CODE>name</CODE> is not exported.
 </DL>
 </P><P>
 
-<A NAME="IDX245"></A>
+<A NAME="IDX247"></A>
 <DL>
 <DT><U>Syntax:</U> <B>define-constant</B> <I>name [:: type] value</I>
 <DD>Definites <VAR>name</VAR> to have the given <VAR>value</VAR>.
@@ -727,26 +867,26 @@ The value is readonly, and you cannot assign to it.
 (This is not fully enforced.)
 If the definition is at module level, then the compiler
 will create a <CODE>final</CODE> field with the given name and type.
-If <VAR>value</VAR> is evaluated as normal; however, if it is a
+The <VAR>value</VAR> is evaluated as normal; however, if it is a
 compile-time constant, it defaults to being static.
 </DL>
 </P><P>
 
 <HR SIZE="6">
-<A NAME="SEC63"></A>
+<A NAME="SEC64"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC62"> &lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC64"> &gt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC64"> &lt;&lt; </A>]</TD>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC63"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC65"> &gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC65"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H3> 9.7.3 How a module becomes a class </H3>
-<!--docid::SEC63::-->
+<H3> 9.8.3 How a module becomes a class </H3>
+<!--docid::SEC64::-->
 <P>
 
 If you want to just use a Scheme module as a module (i.e. <CODE>load</CODE>
@@ -765,7 +905,7 @@ command-line flag.  The package-prefix specified by the <CODE>-P</CODE>
 flag is prepended to give the fully-qualified class name.
 </P><P>
 
-<A NAME="IDX246"></A>
+<A NAME="IDX248"></A>
 <DL>
 <DT><U>Syntax:</U> <B>module-name</B> <I>&#60;name&#62;</I>
 <DD>Sets the name of the generated class, overriding the default.
@@ -779,7 +919,7 @@ you cannot count on it being more specific than <CODE>Object</CODE>.
 However, you can override it with <CODE>module-extends</CODE>.
 </P><P>
 
-<A NAME="IDX247"></A>
+<A NAME="IDX249"></A>
 <DL>
 <DT><U>Syntax:</U> <B>module-extends</B> <I>&#60;class&#62;</I>
 <DD>Specifies that the class generated from the immediately surrounding
@@ -787,7 +927,7 @@ module should extend (be a sub-class of) the class <CODE>&#60;<VAR>class</VAR>&#
 </DL>
 </P><P>
 
-<A NAME="IDX248"></A>
+<A NAME="IDX250"></A>
 <DL>
 <DT><U>Syntax:</U> <B>module-implements</B> <I>&#60;interface&#62; ...</I>
 <DD>Specifies that the class generated from the immediately surrounding
@@ -847,12 +987,12 @@ or <CODE>defmacro</CODE>) create a field whose type is currently a sub-class of
 that the field is a macro and apply the macro at compile time.
 </P><P>
 
-<A NAME="IDX249"></A>
+<A NAME="IDX251"></A>
 <DL>
 <DT><U>Syntax:</U> <B>module-static</B> <I>name ...</I>
-<DD><A NAME="IDX250"></A>
+<DD><A NAME="IDX252"></A>
 <DT><U>Syntax:</U> <B>module-static</B> <I><CODE>#t</CODE></I>
-<DD><A NAME="IDX251"></A>
+<DD><A NAME="IDX253"></A>
 <DT><U>Syntax:</U> <B>module-static</B> <I><CODE>#f</CODE></I>
 <DD>Control whether the generated fields and methods are static.
 If <CODE>#t</CODE> is specified, then the module will be a static module,
@@ -909,26 +1049,26 @@ This will likely change.)
 </P><P>
 
 <HR SIZE="6">
-<A NAME="SEC64"></A>
+<A NAME="SEC65"></A>
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
-<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC63"> &lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt; </A>]</TD>
+<TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC64"> &lt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> Up </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
-<H3> 9.7.4 Requiring (importing) a module </H3>
-<!--docid::SEC64::-->
+<H3> 9.8.4 Requiring (importing) a module </H3>
+<!--docid::SEC65::-->
 <P>
 
 You can import a module into the current namespace with <CODE>require</CODE>.
 </P><P>
 
-<A NAME="IDX252"></A>
+<A NAME="IDX254"></A>
 <DL>
 <DT><U>Syntax:</U> <B>require</B> <I>modulespec</I>
 <DD>The <VAR>modulespec</VAR> can be either a <CODE>&#60;<VAR>classname</VAR>&#62;</CODE>
@@ -973,16 +1113,16 @@ directory.
 <HR SIZE="6">
 <TABLE CELLPADDING=1 CELLSPACING=1 BORDER=0>
 <TR><TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_10.html#SEC53"> &lt;&lt; </A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC65"> &gt;&gt; </A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_11.html#SEC66"> &gt;&gt; </A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT"> &nbsp; <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa.html#SEC_Top">Top</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_toc.html#SEC_Contents">Contents</A>]</TD>
-<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_15.html#SEC77">Index</A>]</TD>
+<TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_17.html#SEC83">Index</A>]</TD>
 <TD VALIGN="MIDDLE" ALIGN="LEFT">[<A HREF="kawa_abt.html#SEC_About"> ? </A>]</TD>
 </TR></TABLE>
 <BR>  
 <FONT SIZE="-1">
 This document was generated
-by <I>Per Bothner</I> on <I>June, 19  2001</I>
+by <I>Per Bothner</I> on <I>October, 12  2001</I>
 using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
 "><I>texi2html</I></A>
 
