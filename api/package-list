@@ -1,0 +1,17 @@
+gnu.bytecode
+gnu.ecmascript
+gnu.expr
+gnu.jemacs.buffer
+gnu.jemacs.lang
+gnu.kawa.functions
+gnu.kawa.lispexpr
+gnu.kawa.reflect
+gnu.kawa.util
+gnu.lists
+gnu.mapping
+gnu.math
+gnu.text
+gnu.xml
+kawa
+kawa.lang
+kawa.standard
