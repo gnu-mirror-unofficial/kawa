@@ -136,7 +136,7 @@ the overhead of having to invoke an external compiler.
 
 <h2>How to get and install Kawa-XQuery</h2>
 <p>Kawa-XQuery is part of Kawa.  The easiest way to try it out it to
-download a <a href="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-1.6.96.jar">runnable jar</a>
+download a <a href="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-1.6.97.jar">runnable jar</a>
 from the Kawa ftp site
 <a href="ftp://ftp.gnu.org/pub/gnu/kawa/">ftp://ftp.gnu.org/pub/gnu/kawa/"</a>
 or a <a href="http://www.gnu.org/order/ftp.html">mirror</a>
@@ -155,7 +155,7 @@ valid XQuery expression, then that expression will be treated as
 a complete expression.  (However, when parsing a file the entire
 file is parsed.)
 <pre>
-$ java -jar kawa-1.6.96.jar --xquery
+$ java -jar kawa-1.6.97.jar --xquery
 xquery[1]: for $x in (3,4,5) return &lt;a&gt;$x&lt;/a&gt;
 &lt;a&gt;$x&lt;/a&gt;&lt;a&gt;$x&lt;/a&gt;&lt;a&gt;$x&lt;/a&gt;
 xquery[2]: string-value(&lt;a&gt;3+5 is {3+5}&lt;/a&gt;)
@@ -165,31 +165,25 @@ xquery[3]:
 <p>
 You can also compile an XQuery program to a Java application:
 <pre>
-$ java -jar kawa-1.6.96.jar --xquery --main -C prog.xql
-$ java -cp .:kawa-1.6.96.jar prog
+$ java -jar kawa-1.6.97.jar --xquery --main -C prog.xql
+$ java -cp .:kawa-1.6.97.jar prog
 </pre>
 
 <h2>Generating and Running Servlets</h2>
 <p>
-You can compile an XQuery program <code>myquery.xql</code> to a Servlet:
-<pre>
-java -jar kawa-1.6.96.jar --servlet -C myquery.xql
-</pre>
-<p>
-If you have Tomcat 4.x installed, and you want <code>myquery</code> to be
-part of the <code>myutils</code> "web application",
-copy <code>myquery*.class</code>
-into <code>$CATALINA_HOME/webapps/myutils/WEB-INF/classes/</code>.
-You also need to copy Kawa somewhere where Tomcat can find it,
-for example <code>$CATALINA_HOME/lib/kawa-@value{VERSION}.jar}</code>
-You can then run the <code>myquery</code> servlet using the URL
-<code>http://localhost:8080/myutils/servlet/myquery</code>.
+You can compile an XQuery program to a Servlet, as described
+<a href="servlet.html">here</a>.
+
+<h2>License</h2>
+<p>Kawa-XQuery is available under the
+<a href="http://www.gnu.org/software/kawa/kawa_16.html">Kawa licence</a>,
+which is the GNU General Public License with some extra options.
 
 <h2>Status</h2>
 
 <p>Some things work; many things don't.
 Unimplemented features so far include type specification,
-namespaces, and many builtin functions.  Those that are
+type tests, and many builtin functions.  Those that are
 implemented may only work on simple values of the expected type.
 Implemented features include some simple expressions;
 element content (element "literals" like <code>&lt;a&gt;...&lt;/a&gt;</code>);
@@ -215,8 +209,8 @@ available in the CVS version.
 <tr><td><code>*</code></td><td>Ok</td></tr>
 <tr><td><code>div</code></td><td><code>6 div 4</code> yields <code>3/2</code></td></tr>
 <tr><td><code>mod</code></td><td>Ok</td></tr>
-<tr><td><code>=</code></td><td>Ok, in CVS</td></tr>
-<tr><td><code>!=</code></td><td>Ok, in CVS</td></tr>
+<tr><td><code>=</code></td><td>Ok</td></tr>
+<tr><td><code>!=</code></td><td>Ok</td></tr>
 <tr><td><code>&lt;</code></td><td>Ok</td></tr>
 <tr><td><code>&gt;</code></td><td>Ok</td></tr>
 <tr><td><code>&lt;=</code></td><td>Ok</td></tr>
@@ -224,15 +218,15 @@ available in the CVS version.
 <tr><td><code>==</code></td><td>Missing</td></tr>
 <tr><td><code>!==</code></td><td>Missing</td></tr>
 <tr><td>nodes<code>/</code>element-name</td><td>Ok</td></tr>
-<tr><td>nodes<code>/*</code></td><td>Ok, in CVS</td></tr>
-<tr><td>nodes<code>/@</code>attribute-name</td><td>Ok, in CVS</td></tr>
-<tr><td>nodes<code>/@*</code></td><td>Ok, in CVS</td></tr>
-<tr><td>nodes<code>/</code>expression</td><td>Ok, in CVS</td></tr>
-<tr><td>values<code>[</code>index<code>]</code></td><td>Ok, in CVS</td></tr>
-<tr><td>values<code>[</code>low-index <code>to</code> high-index<code>]</code></td><td>Ok, in CVS</td></tr>
-<tr><td>values<code>[</code>boolean<code>]</code></td><td>Ok, in CVS</td></tr>
-<tr><td>element-name <i>(not following a '/')</i></td><td>Ok, in CVS</td></tr>
-<tr><td><code>/@</code>attribute-name <i>(not following a '/')</i></td><td>Ok, in CVS</td></tr>
+<tr><td>nodes<code>/*</code></td><td>Ok</td></tr>
+<tr><td>nodes<code>/@</code>attribute-name</td><td>Ok</td></tr>
+<tr><td>nodes<code>/@*</code></td><td>Ok</td></tr>
+<tr><td>nodes<code>/</code>expression</td><td>Ok</td></tr>
+<tr><td>values<code>[</code>index<code>]</code></td><td>Ok</td></tr>
+<tr><td>values<code>[</code>low-index <code>to</code> high-index<code>]</code></td><td>Ok</td></tr>
+<tr><td>values<code>[</code>boolean<code>]</code></td><td>Ok</td></tr>
+<tr><td>element-name <i>(not following a '/')</i></td><td>Ok</td></tr>
+<tr><td><code>/@</code>attribute-name <i>(not following a '/')</i></td><td>Ok</td></tr>
 <tr><td><code>instanceof</code></td><td>Ok, but DataType limited</td></tr>
 <tr><td><code>instanceof only</code></td><td>Missing</td></tr>
 <tr><td><code>cast as</code></td><td>Missing</td></tr>
@@ -246,16 +240,17 @@ available in the CVS version.
 <tr><td><code>,</code>(sequence concatenate)</td><td>Ok</td></tr>
 <tr><td><code>document</code> function</td><td>Ok</td></tr>
 <tr><td><code>children</code> function</td><td>Ok</td></tr>
-<tr><td><code>attributes</code> function</td><td>Ok, in CVS</td></tr>
+<tr><td><code>attributes</code> function</td><td>Ok</td></tr>
 <tr><td><code>empty</code> function</td><td>Ok</td></tr>
-<tr><td><code>false</code> function</td><td>Ok, in CVS</td></tr>
-<tr><td><code>true</code> function</td><td>Ok, in CVS</td></tr>
-<tr><td><code>string</code> function</td><td>Ok, in CVS</td></tr>
-<tr><td><code>string-value</code> function</td><td>Ok, in CVS</td></tr>
+<tr><td><code>false</code> function</td><td>Ok</td></tr>
+<tr><td><code>true</code> function</td><td>Ok</td></tr>
+<tr><td><code>string</code> function</td><td>Ok</td></tr>
+<tr><td><code>string-value</code> function</td><td>Ok</td></tr>
 <tr><td>element constructors</td><td>Ok</td></tr>
 <tr><td>function call</td><td>Ok</td></tr>
 <tr><td>function definition</td><td>Ok, except parameter and return type specification</td></tr>
-<tr><td>namespace definition</td><td>Missing</td></tr>
+<tr><td><code>namespace</code> definition</td><td>Ok</td></tr>
+<tr><td><code>default namespace</code> definition</td><td>Ok</td></tr>
 </table>
 
     <hr>
@@ -263,7 +258,7 @@ available in the CVS version.
       <a href="http://www.brainfood.com/">Brainfood</a></address>
 <!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
 <!-- hhmts start -->
-Last modified: Tue Nov  6 14:35:00 PST 2001
+Last modified: Tue Nov 27 00:06:06 PST 2001
 <!-- hhmts end -->
   </body>
 </html>
