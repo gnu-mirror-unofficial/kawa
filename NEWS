@@ -1,3 +1,63 @@
+Changes from Kawa 1.6.95 to 1.6.96.
+==================================
+A new compilation flag --servlet generates a Servlet which can be
+deployed in a servlet engin like Tomcat.  This is experimental,
+but it seesm to work for both Scheme source and XQuery source.
+
+The interface gnu.lists.CharSequence was renamed to avoid conflitcs
+with the (similar) interface java.lang.CharSequence in JDK 1.4beta.
+
+New --help option (contributed by Andreas Schlapbach).
+
+Changed the code generation used when --full-tailcalls.  It now is
+closer to that used by default, in that we don't generate a class for
+each non-inlined procedure.  In both cases calling an unknown
+procedure involves executing a switch statement to select a method.
+In addition to generating fewer classes and simplifying one of the
+more fragile parts of Kawa, it is also a step towards how full
+continuations will be implemented.
+
+Changed the convention for name "mangling" - i.e. how Scheme names are
+mapped into Java names.  Now, if a Scheme name is a valid Java name it
+is used as is; otherwise a reversible mangling using "$" characters is
+used.  Thus the Scheme names '< and '$Leq are both mapped into the
+same Java name "$Leq".  However, other names not containing "$" should
+no longer clash, including pairs like "char-letter?" and "charLetter?"
+and "isCharLetter" which used to be all mapped to "isCharLetter".  Now
+only names containing "$" can be ambiguous.
+
+If the compiler can determine that all the operands of (+ ...)  or
+(- ...) are floating-point, then it will generate optimized code using
+Java primitive arithmetic.
+
+Guile-style keyword syntax '#:KEYWORD' is recognized.
+(Note this conflicts with Common Lisp syntax for uninterned symbols.)
+
+New syntax forms define-class and define-simple-class allow you to
+define classes more easily.  define-class supports true multiple
+inheritance and first class class values, where each Scheme class
+is compiled to a pair of an inteface and a class.  define-simple-class
+generates more efficient and Java-compatible classes.
+
+Changes from Kawa 1.6.94 to 1.6.95.
+==================================
+A new language "xquery" implements a (so far small subset of) XQuery,
+the draft XML Query languaage.
+
+Various internal (Java API) changes:  Changes to gnu.expr.Interpreter
+to make it easier to add non-Lisp-like languages;  gnu.lists.Consumer
+now has an endAttribute method that need to be called after each
+attribute, rather than endAttributes that was called after all of them.
+
+If configured with --with-gcj, Kawa builds and intalls a 'gckawa' script
+to simlify linking with needed libraries.
+
+The 'setter' function is now inlined, and '(set! (field X 'N) V)' and
+'(set! (static-field <T> "N) V)' are now inlined.
+
+If configured --with-gcj, then a gckawa helper script installed,
+to make it easier to link Kawa+gcj-compiled applications.
+
 Changes from Kawa 1.6.92 to 1.6.94.
 ==================================
 The JEmacs code now depends on CommonLisp, rather than vice versa, which
