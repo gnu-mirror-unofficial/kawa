@@ -187,15 +187,14 @@ You can then run the <code>myquery</code> servlet using the URL
 
 <h2>Status</h2>
 
-<p>Some things work; most things don't.
-Unimplemented features so far include function defintions and
-type specification, as well as many kinds of path expresisons.
+<p>Some things work; many things don't.
+Unimplemented features so far include type specification,
+namespaces, and many builtin functions.  Those that are
+implemented may only work on simple values of the expected type.
 Implemented features include some simple expressions;
 element content (element "literals" like <code>&lt;a&gt;...&lt;/a&gt;</code>);
 FLWR expressions (<code>let</code> and <code>for</code> forms).
-Some things that are implemented do not generate as good code as
-I want.  For example <code>for</code> expressions are implemented
-using map function calls.
+Many complex 'for'- and other expressions now generate inlined code.
 <p>
 In this table "Ok" means that the feature works in both the
 released (source and jar) versions listed above, and also in CVS;
@@ -226,9 +225,13 @@ available in the CVS version.
 <tr><td><code>&gt;=</code></td><td>Ok</td></tr>
 <tr><td>nodes<code>/</code>element-name</td><td>Ok</td></tr>
 <tr><td>nodes<code>/*</code></td><td>Ok, in CVS</td></tr>
-<tr><td>nodes<code>/@</code>attributes-name</td><td>Ok, in CVS</td></tr>
+<tr><td>nodes<code>/@</code>attribute-name</td><td>Ok, in CVS</td></tr>
 <tr><td>nodes<code>/@*</code></td><td>Ok, in CVS</td></tr>
-<tr><td>other path-expressions</td><td>Missing</td></tr>
+<tr><td>nodes<code>/</code>expression</td><td>Ok, in CVS</td></tr>
+<tr><td>values<code>[</code>index]</td><td>Ok, in CVS</td></tr>
+<tr><td>values<code>[</code>boolean]</td><td>Ok, in CVS</td></tr>
+<tr><td>element-name <i>(not following a '/')</i></td><td>Ok, in CVS</td></tr>
+<tr><td><code>/@</code>attribute-name <i>(not following a '/')</i></td><td>Ok, in CVS</td></tr>
 <tr><td><code>instanceof</code></td><td>Ok, but DataType limited</td></tr>
 <tr><td><code>instanceof only</code></td><td>Missing</td></tr>
 <tr><td><code>cast as</code></td><td>Missing</td></tr>
@@ -244,6 +247,8 @@ available in the CVS version.
 <tr><td><code>children</code> function</td><td>Ok</td></tr>
 <tr><td><code>attributes</code> function</td><td>Ok, in CVS</td></tr>
 <tr><td><code>empty</code> function</td><td>Ok</td></tr>
+<tr><td><code>false</code> function</td><td>Ok, in CVS</td></tr>
+<tr><td><code>true</code> function</td><td>Ok, in CVS</td></tr>
 <tr><td>element constructors</td><td>Ok</td></tr>
 <tr><td>function call</td><td>Ok</td></tr>
 <tr><td>function definition</td><td>Ok, except parameter and return type specification</td></tr>
@@ -255,7 +260,7 @@ available in the CVS version.
       <a href="http://www.brainfood.com/">Brainfood</a></address>
 <!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
 <!-- hhmts start -->
-Last modified: Wed Oct 17 16:14:24 PDT 2001
+Last modified: Thu Nov  1 14:48:54 PST 2001
 <!-- hhmts end -->
   </body>
 </html>
