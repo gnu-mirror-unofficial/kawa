@@ -215,21 +215,22 @@ available in the CVS version.
 <tr><td><code>*</code></td><td>Ok</td></tr>
 <tr><td><code>div</code></td><td><code>6 div 4</code> yields <code>3/2</code></td></tr>
 <tr><td><code>mod</code></td><td>Ok</td></tr>
-<tr><td><code>=</code></td><td>Missing</td></tr>
-<tr><td><code>==</code></td><td>Missing</td></tr>
-<tr><td><code>!=</code></td><td>Missing</td></tr>
-<tr><td><code>!==</code></td><td>Missing</td></tr>
+<tr><td><code>=</code></td><td>Ok, in CVS</td></tr>
+<tr><td><code>!=</code></td><td>Ok, in CVS</td></tr>
 <tr><td><code>&lt;</code></td><td>Ok</td></tr>
 <tr><td><code>&gt;</code></td><td>Ok</td></tr>
 <tr><td><code>&lt;=</code></td><td>Ok</td></tr>
 <tr><td><code>&gt;=</code></td><td>Ok</td></tr>
+<tr><td><code>==</code></td><td>Missing</td></tr>
+<tr><td><code>!==</code></td><td>Missing</td></tr>
 <tr><td>nodes<code>/</code>element-name</td><td>Ok</td></tr>
 <tr><td>nodes<code>/*</code></td><td>Ok, in CVS</td></tr>
 <tr><td>nodes<code>/@</code>attribute-name</td><td>Ok, in CVS</td></tr>
 <tr><td>nodes<code>/@*</code></td><td>Ok, in CVS</td></tr>
 <tr><td>nodes<code>/</code>expression</td><td>Ok, in CVS</td></tr>
-<tr><td>values<code>[</code>index]</td><td>Ok, in CVS</td></tr>
-<tr><td>values<code>[</code>boolean]</td><td>Ok, in CVS</td></tr>
+<tr><td>values<code>[</code>index<code>]</code></td><td>Ok, in CVS</td></tr>
+<tr><td>values<code>[</code>low-index <code>to</code> high-index<code>]</code></td><td>Ok, in CVS</td></tr>
+<tr><td>values<code>[</code>boolean<code>]</code></td><td>Ok, in CVS</td></tr>
 <tr><td>element-name <i>(not following a '/')</i></td><td>Ok, in CVS</td></tr>
 <tr><td><code>/@</code>attribute-name <i>(not following a '/')</i></td><td>Ok, in CVS</td></tr>
 <tr><td><code>instanceof</code></td><td>Ok, but DataType limited</td></tr>
@@ -249,6 +250,8 @@ available in the CVS version.
 <tr><td><code>empty</code> function</td><td>Ok</td></tr>
 <tr><td><code>false</code> function</td><td>Ok, in CVS</td></tr>
 <tr><td><code>true</code> function</td><td>Ok, in CVS</td></tr>
+<tr><td><code>string</code> function</td><td>Ok, in CVS</td></tr>
+<tr><td><code>string-value</code> function</td><td>Ok, in CVS</td></tr>
 <tr><td>element constructors</td><td>Ok</td></tr>
 <tr><td>function call</td><td>Ok</td></tr>
 <tr><td>function definition</td><td>Ok, except parameter and return type specification</td></tr>
@@ -260,7 +263,7 @@ available in the CVS version.
       <a href="http://www.brainfood.com/">Brainfood</a></address>
 <!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
 <!-- hhmts start -->
-Last modified: Thu Nov  1 14:48:54 PST 2001
+Last modified: Tue Nov  6 14:35:00 PST 2001
 <!-- hhmts end -->
   </body>
 </html>
