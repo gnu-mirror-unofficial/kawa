@@ -15,6 +15,9 @@ down to Java bytecodes using the
 <a href="http://www.gnu.org/software/kawa/">Kawa</a> framework.
 
 <h2>Examples</h2>
+
+<h3>Data conversion</h3>
+
 <p>Here is a program for converting a table:
 <pre>
 let $newline := "
@@ -51,6 +54,8 @@ yielding an output table like this:
 &lt;/table&gt;
 </pre>
 
+<h3>Formatted table generation</h3>
+
 <p>The following program generates a 10x10 multiplication table:
 
 <pre>
@@ -86,6 +91,19 @@ This is the result:
 <tr><td align="right" bgcolor="yellow"><b>10</b></td><td align="right" bgcolor="lightgreen">20</td><td align="right" bgcolor="yellow">30</td><td align="right" bgcolor="lightgreen">40</td><td align="right" bgcolor="yellow">50</td><td align="right" bgcolor="lightgreen">60</td><td align="right" bgcolor="yellow">70</td><td align="right" bgcolor="lightgreen">80</td><td align="right" bgcolor="yellow">90</td><td align="right" bgcolor="lightgreen">100</td></tr>
 </table>
 
+<h3>Defining a function</h3>
+
+<p>Here is an example of defining and using a recursive function:
+
+<pre>
+define function descendent-or-self ($x) {
+  $x, for $z in children($x) return descendent-or-self($z) }
+descendent-or-self (&lt;a&gt;text1&lt;b&gt;text2&lt;/b&gt;&lt;/a&gt;)
+</pre>
+
+The result is: <code>&lt;a&gt;text1&lt;b&gt;text2&lt;/b&gt;&lt;/a&gt;text1&lt;b&gt;text2&lt;/b&gt;text2</code>
+
+
 <h2>Benefits</h2>
 <ul>
 <li>XQuery allows convenient mixing of output xml or html fragments
@@ -120,6 +138,7 @@ the overhead of having to invoke an external compiler.
 <p>Kawa-XQuery is part of Kawa.  Since XQuery is so new,
 you should get Kawa from the CVS repository, as described
 in the <a href="http://www.gnu.org/software/kawa/">Kawa manual</a>.
+Pre-compiled <code>.jar</code> binaries will be available soon.
 </p>
 
 <h2>Usage</h2>
@@ -157,7 +176,7 @@ Implemented features include some simple expressions;
 element content (element "literals" like <code>&lt;a&gt;...&lt;/a&gt;</code>);
 FLWR expressions (<code>let</code> and <code>for</code> forms).
 Some things that are implemented do not generate as good code as
-I want.  For example <code>for</code> expressiosn are implemented
+I want.  For example <code>for</code> expressions are implemented
 using map function calls.
 <p>
 <table border>
@@ -197,9 +216,10 @@ using map function calls.
 <tr><td><code>,</code>(sequence concatenate)</td><td>Ok</td></tr>
 <tr><td><code>document</code> function</td><td>Ok</td></tr>
 <tr><td><code>children</code> function</td><td>Ok</td></tr>
+<tr><td><code>empty</code> function</td><td>Ok</td></tr>
 <tr><td>element constructors</td><td>Ok</td></tr>
 <tr><td>function call</td><td>Ok</td></tr>
-<tr><td>function definition</td><td>Missing</td></tr>
+<tr><td>function definition</td><td>Ok, except parameter and return type specification</td></tr>
 <tr><td>namespace definition</td><td>Missing</td></tr>
 </table>
 
@@ -208,7 +228,7 @@ using map function calls.
       <a href="http://www.brainfood.com/">Brainfood</a></address>
 <!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
 <!-- hhmts start -->
-Last modified: Tue Sep 25 16:00:10 PDT 2001
+Last modified: Wed Oct  3 11:16:25 PDT 2001
 <!-- hhmts end -->
   </body>
 </html>
