@@ -135,10 +135,14 @@ the overhead of having to invoke an external compiler.
 </ul>
 
 <h2>How to get and install Kawa-XQuery</h2>
-<p>Kawa-XQuery is part of Kawa.  Since XQuery is so new,
-you should get Kawa from the CVS repository, as described
+<p>Kawa-XQuery is part of Kawa.  The easiest way to try it out it to
+download a <a href="ftp://ftp.gnu.org/pub/gnu/kawa/kawa-1.6.96.jar">runnable jar</a>
+from the Kawa ftp site
+<a href="ftp://ftp.gnu.org/pub/gnu/kawa/">ftp://ftp.gnu.org/pub/gnu/kawa/"</a>
+or a <a href="http://www.gnu.org/order/ftp.html">mirror</a>
+However, XQuery is new and constantly changing, so you might
+prefer to get Kawa from the CVS repository, as described
 in the <a href="http://www.gnu.org/software/kawa/">Kawa manual</a>.
-Pre-compiled <code>.jar</code> binaries will be available soon.
 </p>
 
 <h2>Usage</h2>
@@ -151,7 +155,7 @@ valid XQuery expression, then that expression will be treated as
 a complete expression.  (However, when parsing a file the entire
 file is parsed.)
 <pre>
-$ java kawa.repl --xquery
+$ java -jar kawa-1.6.96.jar --xquery
 xquery[1]: for $x in (3,4,5) return &lt;a&gt;$x&lt;/a&gt;
 &lt;a&gt;$x&lt;/a&gt;&lt;a&gt;$x&lt;/a&gt;&lt;a&gt;$x&lt;/a&gt;
 xquery[2]: string-value(&lt;a&gt;3+5 is {3+5}&lt;/a&gt;)
@@ -161,11 +165,25 @@ xquery[3]:
 <p>
 You can also compile an XQuery program to a Java application:
 <pre>
-$ java kawa.repl --xquery --main -C prog.xql
-$ java prog
+$ java -jar kawa-1.6.96.jar --xquery --main -C prog.xql
+$ java -cp .:kawa-1.6.96.jar prog
+</pre>
+
+<h2>Generating and Running Servlets</h2>
+<p>
+You can compile an XQuery program <code>myquery.xql</code> to a Servlet:
+<pre>
+java -jar kawa-1.6.96.jar --servlet -C myquery.xql
 </pre>
 <p>
-There will soon be an option to compile an XQuery program to a servlet.
+If you have Tomcat 4.x installed, and you want <code>myquery</code> to be
+part of the <code>myutils</code> "web application",
+copy <code>myquery*.class</code>
+into <code>$CATALINA_HOME/webapps/myutils/WEB-INF/classes/</code>.
+You also need to copy Kawa somewhere where Tomcat can find it,
+for example <code>$CATALINA_HOME/lib/kawa-@value{VERSION}.jar}</code>
+You can then run the <code>myquery</code> servlet using the URL
+<code>http://localhost:8080/myutils/servlet/myquery</code>.
 
 <h2>Status</h2>
 
@@ -228,7 +246,7 @@ using map function calls.
       <a href="http://www.brainfood.com/">Brainfood</a></address>
 <!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
 <!-- hhmts start -->
-Last modified: Wed Oct  3 11:16:25 PDT 2001
+Last modified: Fri Oct 12 15:43:37 PDT 2001
 <!-- hhmts end -->
   </body>
 </html>
