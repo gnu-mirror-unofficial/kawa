@@ -1,0 +1,2727 @@
+<html>
+    <head>
+        <title>Kawa internals: Compiling Scheme to Java</title>
+        <meta content="DocBook XSL Stylesheets V1.13" name="generator">
+    </head>
+    <body>
+        <div class="article" id="N2">
+            <div class="titlepage">
+                <h1 class="title">
+                    <a name="N4">Kawa internals: Compiling Scheme to Java</a>
+                </h1>
+                <h3 class="author">Per  Bothner</h3>
+                <div class="affiliation">
+                    <pre class="address">
+<tt>&lt;<a href="mailto:per@bothner.com">per@bothner.com</a>&gt;</tt>
+</pre>
+                </div>
+                <hr>
+            </div>
+            <div class="toc">
+                <p>
+                    <b>Table of Contents</b>
+                </p>
+                <dl>
+                    <dt> <a href="#N51">Introduction</a>
+                    </dt>
+                    <dt> <a href="#N103">History</a>
+                    </dt>
+                    <dt> <a href="#N137">Basic implementation strategy</a>
+                    </dt>
+                    <dt> <a href="#N191">Objects and Values</a>
+                    </dt>
+                    <dd>
+                        <dl>
+                            <dt> <a href="#N264">Collections</a>
+                            </dt>
+                            <dt> <a href="#N360">Top-level environments</a>
+                            </dt>
+                            <dt> <a href="#N392">Symbols</a>
+                            </dt>
+                        </dl>
+                    </dd>
+                    <dt> <a href="#N428">Numbers</a>
+                    </dt>
+                    <dd>
+                        <dl>
+                            <dt> <a href="#N634">Mixed-type arithmetic</a>
+                            </dt>
+                            <dt> <a href="#N787">Quantities</a>
+                            </dt>
+                        </dl>
+                    </dd>
+                    <dt> <a href="#N996">Procedures</a>
+                    </dt>
+                    <dd>
+                        <dl>
+                            <dt> <a href="#N1060">Program bodies</a>
+                            </dt>
+                            <dt> <a href="#N1101">Inlining</a>
+                            </dt>
+                            <dt> <a href="#N1147">Closures</a>
+                            </dt>
+                        </dl>
+                    </dd>
+                    <dt> <a href="#N1257">Overview of compilation</a>
+                    </dt>
+                    <dt> <a href="#N1343">Expressions</a>
+                    </dt>
+                    <dt> <a href="#N1492">Semantic analysis</a>
+                    </dt>
+                    <dd>
+                        <dl>
+                            <dt> <a href="#N1526">Syntax and Macros</a>
+                            </dt>
+                        </dl>
+                    </dd>
+                    <dt> <a href="#N1633">Interpretation: Eval</a>
+                    </dt>
+                    <dt> <a href="#N1740">Code generation</a>
+                    </dt>
+                    <dd>
+                        <dl>
+                            <dt> <a href="#N1856">Targets</a>
+                            </dt>
+                            <dt> <a href="#N1971">The <tt>bytecode</tt> package</a>
+                            </dt>
+                            <dt> <a href="#N2180">Literals</a>
+                            </dt>
+                        </dl>
+                    </dd>
+                    <dt> <a href="#N2404">Class, types, and declarations</a>
+                    </dt>
+                    <dt> <a href="#N2553">Low-level Java access</a>
+                    </dt>
+                    <dt> <a href="#N2697">Scheme complications</a>
+                    </dt>
+                    <dd>
+                        <dl>
+                            <dt> <a href="#N2704">Multiple values</a>
+                            </dt>
+                            <dt> <a href="#N2766">Continuations</a>
+                            </dt>
+                            <dt> <a href="#N2858">Tail-calls</a>
+                            </dt>
+                            <dt> <a href="#N2878">General tail-call elimination</a>
+                            </dt>
+                        </dl>
+                    </dd>
+                    <dt> <a href="#N3064">Benchmark Results</a>
+                    </dt>
+                    <dt> <a href="#N3163">Current and Future Work</a>
+                    </dt>
+                    <dt> <a href="#N3205">Conclusion</a>
+                    </dt>
+                </dl>
+            </div>
+            <div class="abstract">
+                <p>
+                    <a name="N30"></a><b>Abstract</b>
+                </p>
+                <p>
+Kawa is a set of Java classes useful for implementing dynamic languages,
+such as those in the Lisp family.  Kawa is also an implementation
+of near-R5RS Scheme using these classes, and which compiles Scheme
+to the bytecode instructions of the Java Virtual Machine.
+This paper discusses the various issues involved in implementing
+Scheme using an abstract machine designed for a very different language.
+and how Kawa solves these problems.
+</p>
+                <p>
+For information on getting and using Kawa, see the
+<a xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" href="http://www.gnu.org/software/kawa/">Kawa home page</a>.
+</p>
+                <p>
+This document is based on a paper presented November 1998.
+Kawa has seen many changes since then, but alas, this document
+has not kept pace.
+</p>
+            </div>
+            <div class="sect1" id="N51">
+                <h2 class="title" style="clear: all">
+                    <a name="N51"><b>Introduction</b></a>
+                </h2>
+                <p>
+While Java is a decent programming language, 
+the reason for the "Java explosion" is largely
+due to the Java Virtual Machine.  The JVM allows
+programs to be distributed easily and efficiently in the form of
+portable bytecodes, which can run on a wide variety of architectures
+and in web browsers.  These advantages are largely
+independent of the Java language, which is why there have been a
+number of efforts to run other languages on the JVM, even though the
+JVM is very clearly designed and optimized for Java.
+Kawa is both a toolkit for compiling other languages into Java
+bytecodes, and an implementation of the Scheme language
+implemented in Java.
+
+</p>
+                <p>
+The benefits of this hybrid Scheme/Java environment include:
+<div class="itemizedlist">
+                        <ul>
+                            <li>
+                                <a name="N67"></a>
+                                <p>
+Provides a higher-level, more dynamic
+programming interface than Java, with support for "scripting"
+and interactive read-eval-print loops.</p>
+                            </li>
+                            <li>
+                                <a name="N74"></a>
+                                <p>
+Extends the Java benefits of "write once run anywhere" to Scheme programs,
+including portable bytecode distribution and web applets,
+though the use of standard Java bytecodes.</p>
+                            </li>
+                            <li>
+                                <a name="N78"></a>
+                                <p>
+Full integration between Java and Scheme:  Scheme programs can call
+Java methods, and Java methods can all Scheme procedures.</p>
+                            </li>
+                            <li>
+                                <a name="N82"></a>
+                                <p>
+Scheme programs benefit from the extensive efforts in improved
+Java implementations, optimizations, environments, and tools.</p>
+                            </li>
+                            <li>
+                                <a name="N86"></a>
+                                <p>
+Scheme programs get access to the large library of standard Java classes.
+</p>
+                            </li>
+                        </ul>
+                    </div>
+</p>
+                <p>
+Kawa is intended to be a multi-langauge implementation toolkit.
+While only Scheme is currently supported, an implementation of
+ECMAScript (JavaScript) is coming along.
+Emacs Lisp is also planned.</p>
+                <p>
+
+(Note that Kawa is also the name of an unrelated commercial Java
+development environment.)</p>
+            </div>
+            <div class="sect1" id="N103">
+                <h2 class="title" style="clear: all">
+                    <a name="N103"><b>History</b></a>
+                </h2>
+                <p>
+Starting in 1995 Cygnus (on behalf of the Free Software Foundation)
+developed Guile, an implementation of Scheme suitable as a general
+embedding and extension language.  Guile was based on
+Aubrey Jaffar's SCM interpreter;  the various Guile enhancements
+were initially done by Tom Lord.  In 1995 we got a major contract
+to enhance Guile, and with our client we added
+more features, including threads (primarily done by Anthony Green),
+and internationalization.</p>
+                <p>
+The contract called for a byte-code
+compiler for Guile, and it looked like doing a good job
+on this would be a major project.  One option we considered was compiling
+Scheme into Java bytecodes and executing them by a Java engine.
+The disadvantage would be that such a Scheme system would not
+co-exist with Guile (on the other hand, we had run into various
+technical and  non-technical problems with Guile that led us to
+conclude that Guile would after all not be strategic to Cygnus).
+The advantage of a Java solution was leveraging off the
+tools and development being done in the Java "space",
+plus that Java was more likely to be strategic long-term.</p>
+                <p>
+The customer agreed to using Java, and I started active development June 1996.
+As a base, I used the Kawa Scheme interpreter written
+by R. Alexander Milowski.  He needed an object-oriented
+Scheme interpreter to implement DSSSL [DSSSL],
+a Scheme-like environment for expressing style, formatting,
+and other processing of SGML [SGML] documents.
+DSSSL is an subset of "pure" Scheme with some extensions.
+
+Kawa 0.2 was a simple interpreter which was far from
+complete.  It provided a useful starting point, but almost all
+of the original code has by now been re-written.</p>
+                <p>
+Kawa 1.0 was released to our customer and "the Net"
+September 1996. Development has continued since then, at a less intense pace!
+The long-term goal is an object-oriented environment that harmoniously
+integrates Scheme, Java, EcmaScript, and other languages. </p>
+            </div>
+            <div class="sect1" id="N137">
+                <h2 class="title" style="clear: all">
+                    <a name="N137"><b>Basic implementation strategy</b></a>
+                </h2>
+                <p>
+There are three basic ways one might implement some programming language
+X using Java:
+<div class="itemizedlist">
+                        <ul>
+                            <li>
+                                <a name="N145"></a>
+                                <p>
+One could write an interpreter for X in Java.
+First parse the source into an internal
+"abstract syntax tree",
+and then evaluate it using a recursive <tt>eval</tt> function.
+The advantage of using Java rather than C or C++ is having garbage collection,
+classes, and the standard Java class library makes it easier.</p>
+                                <p>
+The obvious down-side of the interpreter solution is speed.
+If your interpreter for language X is written in
+Java, which is in turn interpreted by a Java VM, then you
+get double interpretation overhead.
+</p>
+                            </li>
+                            <li>
+                                <a name="N158"></a>
+                                <p>
+You could write a compiler to translate language X into Java source code.
+You need to define a mapping for language X constructs
+into equivalent Java constructs, and then write a program that writes
+out a parsed X program using corresponding Java constructs.
+A number of implementations take this approach,
+including NetRexx, and various "extended Java" dialects.</p>
+                                <p>
+This only gives you the single a single (Java VM) layer of interpretation.
+On the other hand, most of the efforts that people are making
+into improving Java performance will benefit your implementation, since
+you use standard Java bytecodes.</p>
+                                <p>
+The biggest problem with that approach is that it is an inherently batch
+process, and has poor responsiveness.  Consider a read-eval-print-loop,
+that is the ability for a user to type in an expression,
+and have it be immediately read, evaluated, and the result printed.
+If evaluating an expression requires
+converting it to a Java program, writing it to a disk file, invoking a
+separate java compiler, and then loading the resulting class file into the
+running environment, then response time will be inherently poor.
+This hurts "exploratory programing", that is the ability to
+define and update functions on the fly.
+</p>
+                                <p>
+A lesser disadvantage is that Java source code is not quite as expressive
+as Java bytecodes.  While bytecodes are very close to Java source,
+there are some useful features not available in the Java language, such
+as goto.  Debugging information is also an issue.
+</p>
+                            </li>
+                            <li>
+                                <a name="N176"></a>
+                                <p>
+Alternatively, you could directly generate Java bytecode.
+You can write out a .class file, which can be saved for later.
+You also have the option of writing to an internal byte array,
+which can be immediately loaded as a class using the
+<tt>java.lang.ClassLoader.defineClass</tt> method.
+In that case you can by-pass the file system entirely,
+yield a fast load-and-go solution, which enables a very responsive
+read-eval-print loop.
+</p>
+                                <p>
+This solution is the best of both worlds.  The main problem
+is that more code needs to be written.  Fortunately, by using Kawa,
+much of that work has already been done.
+</p>
+                            </li>
+                        </ul>
+                    </div>
+</p>
+                <p>
+I will discuss the compiler later, but first we will give an
+overview of the run-time environment of Kawa, and the
+classes used to implement Scheme values.</p>
+            </div>
+            <div class="sect1" id="N191">
+                <h2 class="title" style="clear: all">
+                    <a name="N191"><b>Objects and Values</b></a>
+                </h2>
+                <p>
+Java [JavaSpec] has primitive types (such as
+32-bit <tt>int</tt>) as well reference types.
+If a variable has a reference
+type, it means that it can contain references (essentially pointers)
+to objects of a class, or it can contain references to objects of
+classes that "extend" (inherit from) the named class.
+The inheritance
+graph is "rooted" (like Smalltalk and unlike C++);
+this means that all classes inherit from a distinguished class
+<tt>java.lang.Object</tt> (or just
+<tt>Object</tt> for short).</p>
+                <p>
+Standard Scheme [R5RS]
+has a fixed set of types, with no way of creating new types.  It has
+run-time typing, which means that types are not declared, and a
+variable can contain values of different types at different times.  The
+most natural type of a Java variable that can contain any Scheme value
+is therefore <tt>Object</tt>, and all Scheme values must be
+implemented using some class that inherits from <tt>Object</tt>.
+</p>
+                <p>
+The task then is to map each Scheme type into a Java class.  Whether
+to use a standard Java class, or to write our own is a tradeoff.  Using
+standard Java classes simplifies the passing of values between Scheme
+functions and existing Java methods.  On the other hand, even when Java
+has suitable built-in classes, they usually lack functionality needed
+for Scheme, or are not organized in any kind of class hierarchy as in
+Smalltalk or Dylan.  Since Java lacks standard classes corresponding to
+pairs, symbols, or procedures, we <i>have</i> to write
+some new classes, so we might as well write new classes whenever the
+existing classes lack functionality.
+
+</p>
+                <p>
+The Scheme boolean type is one where we use a standard Java type, in
+this case <tt>Boolean</tt> (strictly speaking
+<tt>java.lang.Boolean</tt>).  The
+Scheme constants <tt>#f</tt> and <tt>#t</tt> are
+mapped into static fields (<i>i.e.</i>
+constants) <tt>Boolean.FALSE</tt> and
+<tt>Boolean.TRUE</tt>.</p>
+                <p>
+On the other hand, numbers and collections are reasonably organized
+into class hierarchies, which Java does not do well.  So Kawa has its
+own classes for those.
+The next sections will give skeletal definitions of the classes used to
+to represent Scheme values.
+</p>
+                <div class="sect2" id="N264">
+                    <h3 class="title">
+                        <a name="N264"><b>Collections</b></a>
+                    </h3>
+                    <p>
+Kawa has a rudimentary hierarchy of collection classes.
+<pre class="programlisting">
+class <tt>Sequence</tt>
+{ ...;
+  abstract public int length();
+  abstract public Object elementAt(int i);
+}
+</pre>
+</p>
+                    <p>
+A <tt>Sequence</tt> is the abstract class that includes
+lists, vectors, and strings.
+<pre class="programlisting">
+class <tt>FString</tt> extends Sequence
+{ ...;
+  char[] value;
+}
+</pre>
+</p>
+                    <p>    
+   Used to implement fixed-length mutable strings (array of Unicode
+character).  This is used to represent Scheme strings.
+<pre class="programlisting">
+class <tt>FVector</tt> extends Sequence
+{ ...;
+  Object[] value;
+}
+</pre>
+</p>
+                    <p>
+Used to implement fixed-length mutable general one-dimensional array
+of <tt>Object</tt>.
+This is used to represent Scheme vectors.</p>
+                    <pre class="programlisting">
+public class <tt>List</tt> extends Sequencw
+{ ...;
+  protected List () { }
+  static public List Empty = new List ();
+} 
+</pre>
+                    <p>
+Used to represent Scheme (linked) lists.
+The empty list <tt>'()</tt> is the special static
+value <tt>List.Empty</tt>.
+Non-empty-lists are implemented using <tt>Pair</tt> objects.
+</p>
+                    <pre class="programlisting">
+public class <tt>Pair</tt> extends List
+{ ...;
+  public Object car;
+  public Object cdr;
+}
+</pre>
+                    <p>
+Used for Scheme pairs, <i>i.e.</i>
+all non-empty lists.</p>
+                    <pre class="programlisting">
+public class <tt>PairWithPosition</tt> extends Pair
+{ ...;
+}
+</pre>
+                    <p>
+Like <tt>Pair</tt>, but includes the filename and linenumber
+in the file from which the pair was read.</p>
+                    <p>
+Future plans include more interesting collection classes,
+such a sequences implemented as a seekable disk file;
+lazily evaluated sequences; hash tables;  APL-style
+multi-dimensional arrays; stretchy buffers.
+(Many of these ideas were implemented in my earlier experimental
+language <tt>Q</tt> -- see [Bothner88] and
+<tt>ftp://ftp.cygnus.com/pub/bothner/Q/</tt>.
+I will also integrate the Kawa collections into the new JDK 1.2
+collections framework.</p>
+                </div>
+                <div class="sect2" id="N360">
+                    <h3 class="title">
+                        <a name="N360"><b>Top-level environments</b></a>
+                    </h3>
+                    <pre class="programlisting">
+class <tt>Environment</tt>
+{ ...;
+}
+</pre>
+                    <p>
+An <tt>Environment</tt> is a mapping from symbols to bindings.
+It is used for the bindings of the user top-level.
+There can be multiple top-level <tt>Environments</tt>, and
+an <tt>Environment</tt> can be defined as an extension 
+of an existing <tt>Environment</tt>.
+The latter feature is used to implement the various standard
+environment arguments that can be passed to <tt>eval</tt>,
+as adopted for the latest Scheme standard revision, R5RS.
+Nested environments were also implemented to support threads,
+and fluid bindings (even in the presence of threads).</p>
+                    <p>
+Environments will be integrated into a more general name-table interface,
+which will also include records and ECMAScript objects.</p>
+                </div>
+                <div class="sect2" id="N392">
+                    <h3 class="title">
+                        <a name="N392"><b>Symbols</b></a>
+                    </h3>
+                    <p>
+Symbols represent identifiers, and do not need much functionality.  Scheme
+needs to be able to convert them to and from Scheme strings, and they need to
+be "interned" (which means that there is a global
+table to ensure that there is a unique symbol for a given identifier).
+Symbols are immutable and have no accessible internal structure.</p>
+                    <p>Scheme symbols are reprented using interned Java
+<tt>String</tt>s.
+Note that the Java <tt>String</tt> class implements
+immutable strings, and therefore cannot be used to implement
+Scheme strings.  However, it makes sense to use it to implement symbols,
+since the way Scheme symbols are used is very similar to how
+Java <tt>String</tt>s are used.
+The method <tt>intern</tt> in <tt>String</tt>
+provides an interned version of a <tt>String</tt>,
+which provides the characters-to-<tt>String</tt>
+mapping needed for Scheme strings.</p>
+                </div>
+            </div>
+            <div class="sect1" id="N428">
+                <h2 class="title" style="clear: all">
+                    <a name="N428"><b>Numbers</b></a>
+                </h2>
+                <p>
+Scheme defines a "numerical tower" of numerical types:
+number, complex, real, rational, and integer.
+Java has primitive "unboxed" number types (such as
+<tt>int</tt>), just like C, and also has some
+"wrapper" classes that are basically boxed versions
+of the unboxed number types.  Specifically, the standard Java
+number classes are not organized in any particularly useful hierarchy,
+except that they all inherit from <tt>Number</tt>.
+Kawa implements the full "tower" of Scheme number types,
+using its own set of sub-classes of the abstract
+class <tt>Quantity</tt>, a sub-class of
+<tt>Number</tt> we will discuss later.
+</p>
+                <pre class="programlisting">
+public class <tt>Complex</tt> extends Quantity
+{ ...;
+  public abstract RealNum re();
+  public abstract RealNum im();
+}
+</pre>
+                <p>
+<tt>Complex</tt> is the class of abstract complex numbers.
+It has three subclasses:  the abstract class <tt>RealNum</tt>
+of real numbers;  the general class <tt>CComplex</tt> where the
+components are arbitrary <tt>RealNum</tt> fields; and the
+optimized <tt>DComplex</tt> where the components
+are represented by <tt>double</tt> fields.
+</p>
+                <pre class="programlisting">
+public class <tt>RealNum</tt> extends Complex
+{ ...;
+  public final RealNum re()
+  { return this; }
+  public final RealNum im()
+  { return IntNum.zero(); }
+  public abstract boolean isNegative();
+}
+</pre>
+                <pre class="programlisting">
+public class <tt>DFloNum</tt> extends RealNum
+{ ...;
+  double value;
+}
+</pre>
+                <p>
+Concrete class for double-precision (64-bit) floating-point real numbers.
+</p>
+                <pre class="programlisting">
+public class <tt>RatNum</tt> extends RealNum
+{ ...;
+  public abstract IntNum numerator();
+  public abstract IntNum denominator();
+}
+</pre>
+                <p>
+<tt>RatNum</tt>, the abstract class for exact rational numbers,
+has two sub-classes:  <tt>IntFraction</tt>
+and <tt>IntNum</tt>.</p>
+                <pre class="programlisting">
+public class <tt>IntFraction</tt> extends RatNum
+{ ...;
+  IntNum num;
+  IntNum den;
+}
+</pre>
+                <p>
+The <tt>IntFraction</tt> class implements fractions in the
+obvious way.  Exact real infinities are identified with the
+fractions <tt>1/0</tt> and <tt>-1/0</tt>.</p>
+                <pre class="programlisting">
+public class <tt>IntNum</tt> extends RatNum
+{ ...;
+  int ival;
+  int[] words;
+}
+</pre>
+                <p>
+The <tt>IntNum</tt> concrete class implements infinite-precision integers.
+The value is stored in the first <tt>ival</tt> elements of <tt>words</tt>,
+in 2's complement form (with the low-order bits in <tt>word[0]</tt>).</p>
+                <p>
+There are already many bignum packages, including one that Sun
+added for JDK 1.1.  What are the advantages of this one?
+<div class="itemizedlist">
+                        <ul>
+                            <li>
+                                <a name="N562"></a>
+                                <p>
+A complete set of operations, including gcd and lcm;  logical, bit,
+and shift operations; power by repeated squaring; all of the
+division modes from Common Lisp (floor, ceiling, truncate, and round);
+and exact conversion to <tt>double</tt>.</p>
+                            </li>
+                            <li>
+                                <a name="N569"></a>
+                                <p>Consistency and integration with a complete
+"numerical tower."  Specifically, consistency and integration
+with "fixnum" (see below).</p>
+                            </li>
+                            <li>
+                                <a name="N579"></a>
+                                <p>
+Most bignum packages use a signed-magnitude representation,
+while Kawa uses 2's complement.  This makes for easier integration
+with fixnums, and also makes it cheap to implement
+logical and bit-fiddling operations.</p>
+                            </li>
+                            <li>
+                                <a name="N583"></a>
+                                <p>
+Use of all 32 bits of each "big-digit" word, which
+is the "expected" space-efficient representation.
+More importantly, it is compatible with the <tt>mpn</tt> routines
+from the Gnu Multi-Precision library (<tt>gmp</tt>) [gmp].
+The <tt>mpn</tt> routines are low-level algorithms that work
+on unsigned pre-allocated bignums;  they have been transcribed
+into Java in the <tt>MPN</tt> class.  If better efficiency is
+desired, it is straight-forward to replace the <tt>MPN</tt>
+methods with native ones that call the highly-optimized <tt>mpn</tt> functions.</p>
+                            </li>
+                        </ul>
+                    </div>
+</p>
+                <p>
+If the integer value fits within a signed 32-bit <tt>int</tt>,
+then it is stored in <tt>ival</tt> and <tt>words</tt> is null.
+This avoids the need for extra memory allocation for the <tt>words</tt>
+array, and also allows us to special-case the common case.</p>
+                <p>
+As a further optimization, the integers in the range -100 to 1024
+are pre-allocated.</p>
+                <div class="sect2" id="N634">
+                    <h3 class="title">
+                        <a name="N634"><b>Mixed-type arithmetic</b></a>
+                    </h3>
+                    <p>
+Many operations are overloaded to have different
+definitions depending on the argument types.
+The classic examples are the functions of arithmetic
+such as "<tt>+</tt>", which needs to use different
+algorithms depending on the argument types.
+If there is a fixed and reasonably small set of number types
+(as is the case with standard Scheme), then we can just
+enumerate each possibility.  However, the Kawa system is
+meant to be more extensible and support adding new
+number types.</p>
+                    <p>
+The solution is straight-forward in the case of a one-operand
+function such as "negate", since we can use method
+overriding and virtual method calls to dynamically
+select the correct method.  However, it is more difficult
+in the case of a binary method like "<tt>+</tt>," since
+classic object-oriented languages (including Java) only
+support dynamic method selection using the type of the
+first argument ("<tt>this</tt>").  
+Common Lisp and some Scheme dialects support dynamic method
+selection using all the arguments, and in fact the
+problem of binary arithmetic operations is probably the
+most obvious example where "multi-dispatch" is useful.</p>
+                    <p>
+Since Java does not have multi-dispatch, we have to solve
+the problem in other ways.  Smalltalk has the same problems,
+and solved it using "coercive generality":  Each number class
+has a generality number, and operands of lower generality are
+converted to the class with the higher generality.
+This is inefficient because of all the conversions and
+temporary objects (see [Budd91Arith]), and it is limited
+to what extent you can add new kinds of number types.</p>
+                    <p>
+In "double dispatch" [Ingalls86]
+the expression <tt>x-y</tt>
+is implemented as <tt>x.sub(y)</tt>.  Assuming the (run-time)
+class of <tt>x</tt> is <tt>Tx</tt> and that of <tt>y</tt> is <tt>Ty</tt>,
+this causes the <tt>sub</tt> method defined in <tt>Tx</tt> to be
+invoked, which just does <tt>y.subTx(x)</tt>.  That invokes
+the <tt>subTx</tt> method defined in <tt>Ty</tt> which can without
+further testing do the subtraction for types <tt>Tx</tt> and <tt>Ty</tt>.</p>
+                    <p>
+The problem with this approach is that it is difficult to add
+a new <tt>Tz</tt> class, since you have to also add <tt>subTz</tt>
+methods in all the existing number classes, not to mention
+<tt>addTz</tt> and all the other operations.</p>
+                    <p>
+In Kawa, <tt>x-y</tt> is also implemented by <tt>x.sub(y)</tt>.
+The <tt>sub</tt> method of <tt>Tx</tt> checks if <tt>Ty</tt> is one
+of the types it knows how to handle.  If so, it does the
+subtraction and returns the result itself.  Otherwise,
+<tt>Tx.sub</tt> does <tt>y.subReversed(x)</tt>.
+This invokes <tt>Ty.subReversed</tt> (or
+<tt>subReversed</tt> as defined in
+a super-class of <tt>Ty</tt>).
+Now <tt>Ty</tt> (or one of its
+super-classes) gets a chance to see if it knows how to
+subtract itself from a <tt>Tx</tt> object.</p>
+                    <p>
+The advantage of this scheme is flexibility.  The knowledge of
+how to handle a binary operation for types <tt>Tx</tt> and
+<tt>Ty</tt> can be in either of <tt>Tx</tt> or
+<tt>Ty</tt> or either of their
+super-classes.  This makes is easier to add new classes without
+having to modify existing ones.</p>
+                </div>
+                <div class="sect2" id="N787">
+                    <h3 class="title">
+                        <a name="N787"><b>Quantities</b></a>
+                    </h3>
+                    <p>
+The DSSSL language [DSSSL] is a dialect of Scheme used
+to process SGML documents.  DSSSL has "quantities" in addition
+to real and integer numbers.  Since DSSSL is used to format documents,
+it provides length values that are a multiple of a meter
+(<i>e.g.</i> <tt>0.2m</tt>),
+as well as derived units like <tt>cm</tt> and
+<tt>pt</tt> (point).
+A DSSSL quantity is a product of a dimension-less number with an integral
+power of a length unit (the meter).  A (pure) number is a quantity where
+the length power is zero.</p>
+                    <p>
+For Kawa, I wanted to merge the Scheme number types with the DSSSL
+number types, and also generalize the DSSSL quantities to support
+other dimensions (such as mass and time) and units (such as <tt>kg</tt>
+and seconds).  Quantities are implemented by the abstract class
+<tt>Quantity</tt>.  A <i>quantity</i> is a
+product of a <tt>Unit</tt> and a pure number.
+The number can be an arbitrary complex number.</p>
+                    <pre class="programlisting">
+public class <tt>Quantity</tt> extends Number
+{ ...;
+  public Unit unit()
+  { return Unit.Empty; }
+  public abstract Complex number();
+}
+</pre>
+                    <pre class="programlisting">
+public class <tt>CQuantity</tt> extends Quantity
+{ ...;
+  Complex num;
+  Unit unt;
+  public Complex number()
+  { return num; }
+  public Unit unit()
+  { return unt; }
+}
+</pre>
+                    <p>
+A <tt>CQuantity</tt> is a concrete class that implements general
+<tt>Quantities</tt>.  But usually we don't need that much generality,
+and instead use <tt>DQuanity</tt>.</p>
+                    <pre class="programlisting">
+public class <tt>DQuantity</tt> extends Quantity
+{ ...;
+  double factor;
+  Unit unt;
+  public final Unit unit()
+  { return unt; }
+  public final Complex number()
+  { return new DFloNum(factor); }
+}
+</pre>
+                    <pre class="programlisting">
+public class <tt>Unit</tt>
+{ ...;
+  String name; // Optional.
+  Dimensions dims;
+  double factor;
+}
+</pre>
+                    <p>
+A <tt>Unit</tt> is a product of a floating-point <tt>factor</tt>
+and one or more primitive units, combined into a <tt>Dimensions</tt> object.
+The <tt>Unit</tt> may have a name (such as "<tt>kg</tt>"), which is
+used for printing, and when parsing literals.</p>
+                    <pre class="programlisting">
+public class <tt>BaseUnit</tt> extends Unit
+{ ...;
+  int index;
+}
+</pre>
+                    <p>
+A <tt>BaseUnit</tt> is a primitive unit that is not
+defined in terms of any other <tt>Unit</tt>, for example the meter.
+Each <tt>BaseUnit</tt> has a different <tt>index</tt>, which is used
+for identification and comparison purposes.  Two <tt>BaseUnit</tt>s
+have the same <tt>index</tt> if and only if they are the same <tt>BaseUnit</tt>.</p>
+                    <pre class="programlisting">
+public class <tt>Dimensions</tt>
+{
+  BaseUnit[] bases;
+  short[] powers;
+}
+</pre>
+                    <p>
+A <tt>Dimensions</tt> object is a product and/or ratio of <tt>BaseUnit</tt>s.
+You can think of it as a data structure that maps every <tt>BaseUnit</tt>
+to an integer power.  The <tt>bases</tt> array is a list of the <tt>BaseUnit</tt>s
+that have a non-zero power, in order of the <tt>index</tt> of the <tt>BaseUnit</tt>.
+The <tt>powers</tt> array gives the power (exponent) of the <tt>BaseUnit</tt>
+that has the same index in the <tt>bases</tt> array.</p>
+                    <p>
+Two <tt>Dimensions</tt> objects are equal if they have the same list of
+<tt>bases</tt> and <tt>powers</tt>.  <tt>Dimensions</tt> objects are "interned"
+(using a global hash table) so that they are equal only if they are
+the same object.  This makes it easy to implement addition and
+subtraction:</p>
+                    <pre class="programlisting">
+public static DQuantity add
+  (DQuantity x, DQuantity y)
+{
+  if (x.unit().dims != y.unit().dims)
+     throw new ArithmeticException
+       ("units mis-match");
+  double r = y.unit().factor
+     / x.unit().factor;
+  double s = x.factor + r * y.factor;
+  return new DQuantity (s, x.unit());
+}
+</pre>
+                    <p>
+The <tt>Unit</tt> of the result of an addition or subtraction
+is the <tt>Unit</tt> of the first operand.
+This makes it easy to convert units:</p>
+                    <pre class="programlisting">
+(+ 0cm 2.5m)    ==&gt;    250cm
+</pre>
+                    <p>
+Because Kawa represents quantities relative to user-specified units,
+instead of representing them relative to primitive base units,
+it can display quantities using the user's preferred units,
+rather than having to use prmitive units.
+However, this does make multiplication and division a problem
+The actual calculation (finding the right <tt>Dimensions</tt> and
+multiplying the constant factors) is straight-forward.
+The difficulty is that we have to generate a new compound
+<tt>Unit</tt>, and print it out in a reasonable fashion.
+Exactly how this should best be done is not obvious.</p>
+                </div>
+            </div>
+            <div class="sect1" id="N996">
+                <h2 class="title" style="clear: all">
+                    <a name="N996"><b>Procedures</b></a>
+                </h2>
+                <p>
+Scheme has procedures as first-class values.
+Java does not.  However, we can simulate procedure values,
+by overriding of virtual methods.</p>
+                <pre class="programlisting">
+class <tt>Procedure</tt>
+{ ...;
+  public abstract Object applyN
+    (Object[] args);
+  public abstract Object apply0();
+  ...;
+  public abstract Object apply4
+    (Object arg1, ..., Object arg4);
+}
+</pre>
+                <p>
+We represent Scheme procedures using sub-classes of
+the abstract class <tt>Procedure</tt>.
+To call (apply) a procedure with no arguments,
+you invoke its <tt>apply0</tt> method;  to invoke a
+procedure, passing it a single argument, you use its
+<tt>apply1</tt> method; and so on using <tt>apply4</tt> if
+you have 4 arguments.  Alternatively, you can bundle
+up all the arguments into an array, and use the <tt>applyN</tt>
+method.  If you have more than 4 arguments, you
+have to use <tt>applyN</tt>.</p>
+                <p>
+Notice that all <tt>Procedure</tt> sub-classes have to
+implement all 6 methods, at least to the extent of
+throwing an exception if it is passed the wrong number of
+arguments.  However, there are utility classes
+<tt>Procedure0</tt> to <tt>Procedure4</tt> and <tt>ProcedureN</tt>:</p>
+                <pre class="programlisting">
+class <tt>Procedure1</tt> extends Procedure
+{
+  public Object applyN(Object[] args)
+  {
+    if (args.length != 1)
+        throw new WrongArguments();
+    return apply1(args[0]);
+  }
+  public Object apply0()
+  { throw new WrongArguments();}
+  public abstract Object apply1
+    (Object arg1);
+  public Object apply2
+    (Object arg1, Object arg2)
+  { throw new WrongArguments();}
+  ...;
+}
+</pre>
+                <p>
+Primitive procedures are generally written in Java as
+sub-classes of these helper classes. For example:</p>
+                <pre class="programlisting">
+class <tt>car</tt> extends Procedure1
+{ // Return first element of list.
+  public Object apply1(Object arg1)
+    { return ((Pair) arg1).car; }
+}
+</pre>
+                <div class="sect2" id="N1060">
+                    <h3 class="title">
+                        <a name="N1060"><b>Program bodies</b></a>
+                    </h3>
+                    <p>
+A user-defined Scheme procedure is compiled to a
+class that is descended from <tt>Procedure</tt>.
+For example, a variable-argument procedure is implemented as a
+sub-class of <tt>ProcedureN</tt>, with an <tt>applyN</tt>
+method comprising the bytecode compiled from the Scheme procedure
+body.  Thus primitive and user-defined procedure have the
+same calling convention.</p>
+                    <p>
+Top-level forms (including top-level definitions) are
+treated as if they were nested inside a dummy procedure.
+They are compiled as sub-classes of <tt>ModuleBody</tt>:
+</p>
+                    <pre class="programlisting">
+class <tt>ModuleBody</tt> extends Procedure0
+{ ...;
+  public Object apply0()
+  { return run(Environment.current());}
+  public abstract Object run
+    (Environment env);
+}
+</pre>
+                    <p>
+When a file is <tt>load</tt>ed, the result is a
+<tt>ModuleBody</tt>; invoking <tt>run</tt> causes
+the top-level actions to be executed.</p>
+                </div>
+                <div class="sect2" id="N1101">
+                    <h3 class="title">
+                        <a name="N1101"><b>Inlining</b></a>
+                    </h3>
+                    <p>
+Kawa has various hooks for inlining procedures.
+This can allow substantial speedups, at the cost of some generality
+and strict standards-compliance, since it prevents re-assigning
+the inlined procedures.  Most of these hooks work by having the
+compiler notice that a name in function call position is not lexically
+bound, yet it is declared in the (compile-time) global scope.</p>
+                    <p>
+The most powerful and low-level mechanism works by having the
+compiler note that the procedure implements the
+<tt>Inlineable</tt> interface.
+That means it implements the specical <tt>compile</tt> method,
+which the compiler calls at code generation time; it can generate
+whatever bytecode it wants.  This is a way for special procedues
+to generate exotic bytecode instructions.  This hook is only
+available for builtin procedures written in Java.</p>
+                    <p>
+Another mechanism uses the Java reflective facilities.
+If the compiler notices that the class of the procedure
+provides a static method with the right name (<tt>apply</tt>),
+and the right number of parameters, then it generates a direct call
+to that static method.  This is not inlining
+<i>per se</i>, but it does by-pass the
+(currently significant) overhead of looking up the name in the global
+symbol-table, casting the value to a procedure, and then making a
+virtual function call.  Also, because the procedure is replaced
+by a call to a statically known method, that call could actually be
+inlined by a Java bytecode optimizer.  Another advantage of calling
+a known static method is that the parameter and return types can
+be more specific than plain <tt>Object</tt>, or even
+be unboxed primitive types.  This can avoid many type conversions.</p>
+                    <p>
+The Kawa compiler generates a suitable <tt>apply</tt>
+method for all fixed-arity procedures that do not require a closure,
+so this optimization is applicable to a great many procedures.</p>
+                    <p>
+Finally, Kawa has preliminary support for true inlining,
+where a procedure that is only called in one place except for tail-calls,
+is inlined at the call-site.  I plan to add an analysis pass to
+detect when this optimization is applicable.  For now, there is a
+special case to handle the <tt>do</tt> special looping form,
+and these are now always implemented in the natural way (as inlined
+loops).  The "named <tt>let</tt>" cannot always
+be implemented as an inlined loop, so implementing that equally
+efficiently will need the planned analysis phase.</p>
+                </div>
+                <div class="sect2" id="N1147">
+                    <h3 class="title">
+                        <a name="N1147"><b>Closures</b></a>
+                    </h3>
+                    <p>
+Languages that provide first-class nested functions with lexical scoping
+have to deal with variables that an inner function "captures"
+from surrounding lexical scopes.  The standard solution uses a
+"closure" to represent a function together with the
+environment of captured variables.
+The original Java language definition did not
+support nested functions.  However, it did have objects and classes,
+and it turns out the objects and first-class functions are similar in power,
+since a closure can be represented using an object and vice versa.
+The "inner classes" added to Java in JDK 1.1 are
+an object-oriented form of first-class functions.  The Java compiler
+translates the nested classes into plain objects and non-nested classes,
+very much like Kawa represents nested Scheme functions.</p>
+                    <p>
+Kawa implements a closure as a <tt>Procedure</tt> object
+with a "static link" field that points to the inherited
+environment.  Older versions of Kawa represented the environment
+as an array.  The most recent version uses the <tt>Procedure</tt>
+instance itself as the environment.
+Let us look at how this works, starting with a
+very simple example:</p>
+                    <pre class="programlisting">
+(define (f1 a)
+  (define (f2 b)
+    (list a b))
+  (cons a f2))
+</pre>
+                    <p>
+This gets compiled to the bytecode equivalent of:</p>
+                    <pre class="programlisting">
+class F1 extends Procedure1
+{
+  public Object apply1(Object a)
+  { // body of f1
+    F2 heapFrame = new F2();
+    heapFrame.a = a;
+    return Cons.apply2(heapFrame.a,
+                      heapFrame);
+  }
+}
+
+class F2 extends Procedure1
+{
+  // F2 closureEnv = this;
+  Object a;
+  public Object apply1(Object b)
+  { // body of f2
+    return List.apply2(this.a, b);
+  }
+}
+</pre>
+                    <p>
+Note that the instance of <tt>F2</tt> that
+represents the <tt>f2</tt> procedure contains both
+the code (the <tt>apply1</tt> methods), and
+the captured instance variable <tt>a</tt> as a Java field.
+Note also that the parent function <tt>f1</tt> must
+in general use the same field instance when accessing <tt>a</tt>,
+in case one or the other function assigned to <tt>a</tt>
+using a <tt>set!</tt>.</p>
+                    <p>
+Next, a slightly more complex problem:</p>
+                    <pre class="programlisting">
+(define (f3 a)
+  (define (f4 b)
+    (cons a b))
+  (define (f5 c)
+    (cons a c))
+  (cons a f5))
+</pre>
+                    <p>
+In this case all three functions refers to <tt>a</tt>.
+However, they must all agree on a single location, in case one of
+the functions does a <tt>set!</tt> on the variable.
+We pick <tt>f4</tt> as the home of <tt>a</tt> (for the
+simple but arbitrary reason that the compiler sees it first).</p>
+                    <pre class="programlisting">
+class F3 extends Procedure1
+{
+  public Object apply1(Object a)
+  { // body of f3
+    F4 heapFrame = new F4();
+    heapFrame.a = a;
+    return Cons.apply2(heapFrame.a,
+                      new F5(heapFrame));
+  }
+}
+
+class F4 extends Procedure1
+{
+  // F4 closureEnv = this;
+  Object a;
+  public Object apply1(Object b)
+  { // body of f4
+    return Cons.apply2(this.a, b);
+  }
+}
+
+class F5 extends Procedure1
+{
+  F4 closureEnv;
+  public F5 (F4 closureEnv)
+  {
+    this.closureEnv = closureEnv;
+  }
+  public Object apply1(Object c)
+  { // body of f5
+    return Cons.apply2(closureEnv.a, c);
+  }
+}
+</pre>
+                    <p>
+If a variables is captured through multiple levels of nested functions,
+the generated code need to follow a chain of static links, as shown
+by the following function.</p>
+                    <pre class="programlisting">
+(define (f6 a)
+  (define (f7 b)
+    (define (f8 c)
+      (define (f9 d)
+        (list a b c d))
+      (list a b c f9))
+    (list a b f8))
+  (list a f7))
+</pre>
+                    <p>
+That gets compiled into bytecodes equivalent to the following.</p>
+                    <pre class="programlisting">
+class F6 extends Procedure1
+{
+  public Object apply1(Object a)
+  { // body of f6
+    F7 heapFrame = new F7();
+    heapFrame.a = a;
+    return List.apply2(heapFrame.a,
+                       heapFrame);
+  }
+}
+
+class F7 extends Procedure1
+{
+  Object a;
+  public Object apply1(Object b)
+  { // body of f7
+    F8 heapFrame = new F8(this);
+    heapFrame.b = b;
+    return List.apply3(this.a,
+        heapFrame.b, heapFrame);
+  }
+}
+
+class F8 extends Procedure1
+{
+  Object b;
+  F7 staticLink;
+  public F8(F7 staticLink)
+  {
+    this.staticLink = staticLink;
+  }
+  public Object apply1(Object c)
+  { // body of f8
+    F9 heapFrame = new F9(this);
+    heapFrame.c = c;
+    return List.apply4(staticLink.a,
+        this.b, heapFrame.c, heapFrame);
+  }
+}
+
+class F9 extends Procedure1
+{
+  Object c;
+  F8 staticLink;
+  public F9(F8 staticLink)
+  {
+    this.staticLink = staticLink;
+  }
+  public Object apply1(Object d)
+  { // body of f9
+    return List.apply4
+      (staticLink.staticLink.a,
+        staticLink.b, this.c, d);
+  }
+}
+</pre>
+                    <p>
+Handling tail-recursion is another complication.
+The basic idea is to divide the procedure prologue
+into the actions before the loop head label, and those after.
+(Note that allocating a <tt>heapFrame</tt> has to be
+done after the head label.)
+Handling inlining also requires care.
+</p>
+                </div>
+            </div>
+            <div class="sect1" id="N1257">
+                <h2 class="title" style="clear: all">
+                    <a name="N1257"><b>Overview of compilation</b></a>
+                </h2>
+                <p>
+These are the stages of compilation:
+<div class="variablelist">
+                        <dl>
+                            <dt>
+                                <a name="N1265"></a><span class="term">Reading</span>
+                            </dt>
+                            <dd>
+                                <p>
+The first compilation stage reads the input
+from a file, from a string,
+or from the interactive command interpreter.
+The result is one or more Scheme forms (S-expressions), usually lists.
+If reading commands interactively, only a single form is read;
+if reading from a file or string, all the forms are read until
+end-of-file or end-of-string;  in either case, the result is treated as the
+body of a dummy function (<i>i.e.</i>
+a <tt>ModuleBody</tt>).</p>
+                            </dd>
+                            <dt>
+                                <a name="N1281"></a><span class="term">Semantic analysis</span>
+                            </dt>
+                            <dd>
+                                <p>
+The source form is rewritten into an
+<tt>Expression</tt> object, specifically a <tt>ModuleExp</tt>.
+This stage handles macro expansion and lexical name binding.
+It figures out which local variables are "captured"
+by an inner function, and hence need to be heap-allocated.
+(Other variables are stack-allocated in the Java local variable frame.)
+Various optimizations are done, including selection of
+closure representations.</p>
+                            </dd>
+                            <dt>
+                                <a name="N1299"></a><span class="term">Code generation</span>
+                            </dt>
+                            <dd>
+                                <p>
+The resulting <tt>ModuleExp</tt> is compiled into
+one or more byte-coded classes.
+This is done by invoking the virtual <tt>compile</tt>
+method recursively on the <tt>Expression</tt>s, which generates
+instructions (using the <tt>bytecode</tt> package) to evaluate the
+expression and leave the result on the Java operand stack.
+At the end we ask the <tt>bytecode</tt> package to write out the resulting
+classes and methods.  They can be written to a file (for
+future use), or into byte arrays in memory.</p>
+                            </dd>
+                            <dt>
+                                <a name="N1323"></a><span class="term">Loading</span>
+                            </dt>
+                            <dd>
+                                <p>
+The compiled bytecodes are loaded into the Kawa
+run-time.  In the case of code that is compiled and then
+immediately executed, the compiled code can be immediately
+turned into Java classes using the Java <tt>ClassLoader</tt> feature.
+(That is how the read-eval-print loop works.)
+An instance of the compiled sub-class of <tt>ModuleBody</tt>
+is created and <tt>run</tt>, which normally produces
+various side-effects.</p>
+                            </dd>
+                        </dl>
+                    </div>
+                </p>
+            </div>
+            <div class="sect1" id="N1343">
+                <h2 class="title" style="clear: all">
+                    <a name="N1343"><b>Expressions</b></a>
+                </h2>
+                <p>
+The abstract <tt>Expression</tt> class represents partially processed expressions.
+These are in principle independent of the source language,
+though there are still some Scheme assumptions wired in.</p>
+                <pre class="programlisting">
+class <tt>Expression</tt>
+{ ...;
+  public abstract Object eval
+    (Environment e);
+  public abstract void compile
+    (Compilation comp, Target targ);
+}
+</pre>
+                <p>
+The <tt>eval</tt> method evaluates the
+<tt>Expression</tt> in the given
+<tt>Environment</tt>.
+The <tt>compile</tt> method is called when we are compiling
+the body of a procedure.  It is responsible for generating bytecodes
+that evaluate the expression, and leave the result in a result
+specified by the <tt>Target</tt> parameter.
+This is usually the Java evaluation stack,
+but we will go into more detail later.</p>
+                <pre class="programlisting">
+class <tt>QuoteExp</tt> extends Expression
+{ ...;
+  Object value;
+  public QuoteExp(Object val)
+  { value = val; }
+  public Object eval(Environment env)
+  { return value; }
+  public void compile
+    (Compilation comp, Target target)
+  { comp.compileConstant (value, target); }
+}
+</pre>
+                <p>
+A <tt>QuoteExp</tt> represents a literal (self-evaluating form),
+or a quoted form.</p>
+                <pre class="programlisting">
+class <tt>ReferenceExp</tt> extends Expression
+{ ...;
+  Symbol symbol;
+  Declaration binding;
+}
+</pre>
+                <p>
+A <tt>ReferenceExp</tt> is a reference to a named variable.
+The <tt>symbol</tt> is the source form identifier.
+If <tt>binding</tt> is non-null, it is the lexical
+binding of the identifier.</p>
+                <pre class="programlisting">
+class <tt>ApplyExp</tt> extends Expression
+{ ...;
+  Expression func;
+  Expression[] args;
+}
+</pre>
+                <p>
+An <tt>ApplyExp</tt> is an application of a procedure <tt>func</tt>
+to an argument list <tt>args</tt>.</p>
+                <pre class="programlisting">
+class <tt>ScopeExp</tt> extends Expression
+{ ...;
+  ScopeExp outer;  // Surrounding scope.
+  public Declaration add_decl(Symbol name)
+  { ...Create new local variable... }
+}
+</pre>
+                <p>
+A <tt>ScopeExp</tt> is a abstract class that represents a lexical
+scoping construct.  Concrete sub-classes are <tt>LetExp</tt>
+(used for a <tt>let</tt> binding form) and <tt>LambdaExp</tt>.</p>
+                <pre class="programlisting">
+class <tt>LambdaExp</tt> extends ScopeExp
+{ ...;
+  Symbol name; // Optional.
+  Expression body;
+  int min_args;
+  int max_args;
+}
+</pre>
+                <p>
+The Scheme primitive syntax <tt>lambda</tt> is translated
+into a <tt>LambdaExp</tt>, which represents anonymous procedures.
+Each <tt>LambdaExp</tt> is compiled into a different bytecoded class.
+Invoking <tt>eval</tt> causes the <tt>LambdaExp</tt> to be compiled
+into a class, the class to be loaded, an instance of the
+class to be created, and the result coerced to a <tt>Procedure</tt>.</p>
+                <p>
+Other sub-classes of <tt>Expression</tt> are
+<tt>IfExp</tt> (used for conditional expressions);
+<tt>BeginExp</tt> (used for compound expressions);
+<tt>SetExp</tt> (used for assignments);  and
+<tt>ErrorExp</tt> (used where a syntax error was found);</p>
+            </div>
+            <div class="sect1" id="N1492">
+                <h2 class="title" style="clear: all">
+                    <a name="N1492"><b>Semantic analysis</b></a>
+                </h2>
+                <p>
+The translation phase takes a top-level form (or body),
+and generates a <tt>ModuleExp</tt>, which is a top-level expression.
+This is done using a <tt>Translator</tt>, which keeps track of
+lexical bindings and other translation state.</p>
+                <pre class="programlisting">
+class <tt>Translator</tt>
+{ ...;
+  public Expression rewrite(Object exp)
+  { ... }
+  public Expression syntaxError
+   (String message) { ... }
+}
+</pre>
+                <p>
+The <tt>rewrite</tt> method converts a Scheme source form to
+an <tt>Expression</tt>.  The <tt>syntaxError</tt>
+method is called when a syntax error is seen.
+It prints out the current source filename and line number with
+the given <tt>message</tt>.</p>
+                <div class="sect2" id="N1526">
+                    <h3 class="title">
+                        <a name="N1526"><b>Syntax and Macros</b></a>
+                    </h3>
+                    <pre class="programlisting">
+class <tt>Syntax</tt>
+{ ...;
+  public abstract Expression rewrite
+    (Object obj, Translator tr);
+}
+</pre>
+                    <p>
+The <tt>rewrite</tt> method in <tt>Translator</tt> checks for
+syntactic keywords and macros.  If the <tt>car</tt> of
+a "call" is a <tt>Syntax</tt> or if it is a <tt>Symbol</tt>
+that is bound to a <tt>Syntax</tt>, then its <tt>rewrite</tt>
+method is called.</p>
+                    <p>
+As an example, this trivial class implements <tt>quote</tt>:</p>
+                    <pre class="programlisting">
+class <tt>quote</tt> extends Syntax
+{ ...;
+  public Expression rewrite
+    (Object obj, Translator tr)
+  { // Error-checking is left out.
+    return new QuoteExp(((Pair)obj).car);
+  }
+}
+</pre>
+                    <p>
+Much more complicated is the <tt>Syntax</tt> that implements
+<tt>define-syntax</tt>.</p>
+                    <pre class="programlisting">
+class <tt>define_syntax</tt> extends Syntax
+{ ...;
+  public Expression rewrite
+    (Object obj, Translator tr)
+  {  enter (new SyntaxRules (...)); }
+}
+</pre>
+                    <p>
+The result is a <tt>SyntaxRules</tt> object, which contains an encoded
+representation of the patterns and templates in the <tt>syntax-rules</tt>.
+This is in its own right a <tt>Syntax</tt> object.</p>
+                    <pre class="programlisting">
+class <tt>SyntaxRules</tt> extends Syntax
+{ ...;
+  SyntaxRule[] rules;
+  public Expression rewrite
+    (Object obj, Translator tr)
+  {
+    Object[] v = new Object[maxVars];
+    for (int i = 0;  i &lt; rules.length;)
+    {
+      SyntaxRule r = rules[i++];
+      if (r.match (obj, v))
+        return r.execute_template(v, tr);
+    }
+    return tr.syntaxError
+      ("no matching syntax-rule");
+  }
+}
+</pre>
+                    <p>
+Contrast evaluating a procedure definition (<tt>lambda</tt>), which
+causes a new <i>sub-class</i> of <tt>Procedure</tt>
+to be created and compiled, while evaluating
+a <tt>define-syntax</tt> only causes a new
+<i>instance</i> of <tt>SyntaxRules</tt> to be created.
+</p>
+                </div>
+            </div>
+            <div class="sect1" id="N1633">
+                <h2 class="title" style="clear: all">
+                    <a name="N1633"><b>Interpretation: Eval</b></a>
+                </h2>
+                <p>
+Many people think of Scheme, Lisp, and ECMAScript as "interpreted"
+languages, though many of these languages have compilers.
+What these languages do have is <tt>eval</tt> - that is a command
+that at run-time takes a source program, and evaluates it.
+They may also have an interactive read-eval-print interface.
+For such uses a traditional interpreter is easiest and most responsive.
+Therefore, high-end Lisp systems traditionally provide both a compiler
+and an interpreter.  Such duplication is expensive, in terms of size,
+development effort, and testing.  If one has load-and-go capabilities,
+that is the abilility to efficiently load a compiled program into
+a running application, then one can simply implement <tt>eval</tt>
+as a compile followed by a load.</p>
+                <p>
+When we compile to Java bytecodes, we create one or more files in
+the <tt>.class</tt> format.  The standard Java class
+<tt>java.lang.ClassLoader</tt> has a method
+<tt>defineClass</tt>
+that takes a byte array laid out in the format of a <tt>.class</tt>,
+and from it dynamically creates a new class in the existing Java run-time.
+(This facility is used for "applets" downloaded accross
+the Network.)  Kawa uses this scheme to implement <tt>eval</tt>,
+and it works well.  Because <tt>ClassLoader.defineClass</tt>
+takes an array, rather than a file, we can compile and load entirely
+inside the Kawa run-time, without having to go via the filesystem
+for temporary files, as a traditional compiler batch does.  The result
+is near-instant response.</p>
+                <p>
+There is a tradeoff, though.  Doing a compile+load is a very heavy-duty
+operation, compared to a simply interpreting an expression.  It
+creates a lot of temporary objects.  Worse, it also creates some
+temporary classes, and some Java implementations do not garbage collect
+unused classes.</p>
+                <p>
+Kawa uses a compromise strategy.  If the <tt>Expression</tt>
+is "simple", it is interpreted directly, using
+the <tt>Expression.eval</tt>.  Otherwise, it is compiled.
+Simple expressions include literals, (global) variable access,
+assignment, and function application.
+Implementing <tt>eval</tt> in those cases is trivial.
+Expressions that define new
+local bindings (such as lambda expressions and <tt>let</tt> forms)
+do not implement <tt>eval</tt>.  If the user types in such an
+expression, it is wrapped inside a dummy function,
+compiled to bytecodes, and immediately executed.  This is to avoid dealing
+with lexical binding in the evaluator.</p>
+                <p>
+A <tt>ModuleExp</tt> represents a top-level form:</p>
+                <pre class="programlisting">
+class <tt>ModuleExp</tt> extends LambdaExp
+{ ...;
+  public Object eval_module
+      (Environment env) {
+    if (body_is_simple) // Optimization
+      return body.eval (env);
+    Object v = eval (env);
+    return ((ModuleBody) v).run (env);
+  }
+}
+</pre>
+                <p>
+<tt>ModuleExp</tt> is a sub-class of <tt>LambdaExp</tt>,
+since it is actually a dummy function created by
+wrapping the top-level forms in an implicit <tt>lambda</tt>.
+The <tt>eval_module</tt> method evaluates the top-level forms.
+If the body is not simple, it invokes the <tt>eval</tt>
+in <tt>LambdaExp</tt> (which invokes the compiler).
+The result of <tt>eval</tt> is a <tt>ModuleBody</tt>,
+which we can <tt>run</tt>.</p>
+            </div>
+            <div class="sect1" id="N1740">
+                <h2 class="title" style="clear: all">
+                    <a name="N1740"><b>Code generation</b></a>
+                </h2>
+                <p>
+A <tt>Compilation</tt> object manages the classes, methods, and
+temporary state generated as a result of compiling a
+single top-level <tt>ModuleExp</tt>.</p>
+                <pre class="programlisting">
+class <tt>Compilation</tt>
+{ ...;
+  ClassType[] classes;
+  boolean immediate;
+  public ClassType addClass
+    (LambdaExp lexp, String name)
+  { ... }
+  public ClassType(ModuleExp exp, ...)
+  { ...; addClass (exp, ...); }
+}
+</pre>
+                <p>
+Each <tt>Compilation</tt> may create one or more <tt>ClassType</tt>
+objects, each of which generates
+the bytecodes for one class.  Each <tt>ClassType</tt> is generated
+from a <tt>LambdaExp</tt>, including the top <tt>ModuleExp</tt>.
+The boolean <tt>immediate</tt> is true if we are compiling for immediate loading,
+and is false if the target is one or more <tt>.class</tt> files.</p>
+                <p>
+The <tt>addClass</tt> method does all the work to
+compile a given <tt>LambdaExp</tt>.  It creates a <tt>ClassType</tt>,
+adds it to <tt>Compilation</tt>'s <tt>classes</tt> array,
+and generates <tt>Method</tt> objects for the constructor and the
+main <tt>apply<i><tt>X</tt></i></tt> method.
+Once the <tt>apply<i><tt>X</tt></i></tt>
+<tt>Method</tt> has been created, <tt>addClass</tt>
+emits some bytecodes to set up the
+incoming parameters, and then invokes the virtual <tt>compile</tt>
+method on the body of the <tt>LambdaExp</tt>, which generates
+the code that does the actual work of the procedure.</p>
+                <p>
+The <tt>Compilation</tt> constructor gets a <tt>ModuleExp</tt>,
+which it passes to <tt>addClass</tt>.  The <tt>compile</tt>
+method of <tt>LambdaExp</tt> (which gets called for all <tt>lambda</tt>s
+except the dummy top-level) also calls <tt>addClass</tt> to generate
+the class corresponding to the <tt>lambda</tt>, and then it emits
+instructions to create a new instance of the generated <tt>Procedure</tt> class,
+and pushes it on the Java stack.</p>
+                <div class="sect2" id="N1856">
+                    <h3 class="title">
+                        <a name="N1856"><b>Targets</b></a>
+                    </h3>
+                    <p>
+Most operations in the Java VM leave their result on the VM stack,
+where they are available for succeeding operations.
+The obvious and general way to compile an expression is therefore to generate
+bytecode instructions that leave the result (in the form
+of a <tt>Object</tt> reference) on the stack.
+This handles most cases quite well, but we can do better.
+We specify a <tt>Target</tt> parameter when invoking
+the <tt>compile</tt> method;  the <tt>Target</tt>
+specifies where to leave the result.
+</p>
+                    <pre class="programlisting">
+public abstract class <tt>Target</tt>
+{ ...;
+  public abstract void compileFromStack
+    (Compilation comp, Type stackType);
+  public static final Target Ignore
+  = new IgnoreTarget();
+}
+</pre>
+                    <p>
+An <tt>Expression</tt>'s <tt>compile</tt> method
+does not have to handle all the kinds of <tt>Target</tt>s,
+as long as it can generate code to leave the result on the VM stack,
+and then invoke <tt>compileFromStack</tt>,
+which is responsible for moving the result to the actual target.</p>
+                    <p>
+The simplest <tt>Target</tt> is an
+<tt>IgnoreTarget</tt>.  It is used when the
+result of an expression will be ignored, but we still need to evaluate
+it for possible side-effects.  The implementation of
+<tt>IgnoreTarget.compileFromStack</tt> just emits
+an instruction to pop a value from the VM stack.
+Expressions that have no side-effects can check if the target
+is an <tt>IgnoreTarget</tt>, and then immediately
+return.  This saves a useless push-pop pair.</p>
+                    <p>
+The usual <tt>Target</tt> is an
+<tt>StackTarget</tt>.  This specifies that an expression
+should leave the result on the VM stack.
+Normally, the type of the result is <tt>Object</tt>,
+but a <tt>StackTarget</tt> can specify some other
+expected type, when that can be determined.
+The implementation of <tt>StackTarget.compileFromStack</tt>
+is also trivial:  If the type of the result on the stack is a sub-type
+of the expected target type, nothing needs to be done;
+otherwise, it generates code to do the type conversion.</p>
+                    <p>
+Things get more interesting when we come to
+<tt>ConditionalTarget</tt>.</p>
+                    <pre class="programlisting">
+public class <tt>ConditionalTarget</tt>
+    extends Target
+{ ...;
+  public Label ifTrue, ifFalse;
+}
+</pre>
+                    <p>
+A <tt>ConditionalTarget</tt> is used when compiling
+the test expression in a conditional.  The expression is
+evaluated as a boolean value;  if the result is true,
+control transfers to <tt>ifTrue</tt>;  otherwise
+control transfers to <tt>ifFalse</tt>.
+Using <tt>ConditionalTarget</tt> makes it straight-forward
+to generate optimal code for nested conditionals, including
+<tt>and</tt> and <tt>or</tt> macros, and
+(when inlining) functions such as <tt>not</tt>
+and <tt>eq?</tt>.</p>
+                </div>
+                <div class="sect2" id="N1971">
+                    <h3 class="title">
+                        <a name="N1971"><b>The <tt>bytecode</tt> package</b></a>
+                    </h3>
+                    <p>
+The <tt>ClassType</tt> and <tt>Method</tt> classes are in a separate
+<tt>gnu.bytecode</tt> package, which is an intermediate-level
+interface to code generation and Java <tt>.class</tt> files.
+It is essentially independent of Scheme or the rest of Kawa.</p>
+                    <pre class="programlisting">
+class <tt>ClassType</tt> extends Type
+{ ...;
+  CpoolEntry[] constant_pool;
+  Method methods; // List of methods.
+  Field fields; // List of fields.
+  public Field addField
+    (String name, Type type, int flags)
+  { ...Create new field... }
+  public method addMethod(String name,...)
+  { ...Create new method... }
+  public void writeToStream
+    (OutputStream stream) { ... }
+  public void writeToFile(String filename)
+  { ... }
+  public byte[] writeToArray()
+  { ... }
+}
+</pre>
+                    <p>
+The <tt>ClassType</tt> class is the main class of the <tt>bytecode</tt> package.
+It  manages a list <tt>Field</tt>s, a list of <tt>Method</tt>s,
+and the constant pool.
+There are utility methods for adding new fields, methods, and constant
+pool entries.</p>
+                    <p>
+When the <tt>ClassType</tt> has been fully built, the
+<tt>writeToFile</tt> method
+can be used to write out the contents into a file.
+The result has the format of a <tt>.class</tt> file [JavaVmSpec].
+Alternatively, the class can be written
+to an internal byte array (that has the same layout as a <tt>.class</tt>
+file) using the <tt>writeToArray</tt> method.
+The resulting byte array may be used by a <tt>ClassLoader</tt>
+to define a new class for immediate execution.
+Both of the these methods are implemented on top of the more
+general <tt>writeToStream</tt>.</p>
+                    <p>
+Each method is represented by a <tt>Method</tt> object.</p>
+                    <pre class="programlisting">
+class <tt>Method</tt> implements AttrContainer
+{ ...;
+  Type[] arg_types;
+  Type return_type;
+  Attribute attributes;
+}
+</pre>
+                    <p>
+An <tt>AttrContainer</tt> is an object that
+contains zero or more <tt>Attribute</tt>s.
+The Java <tt>.class</tt> file format is quite extensible.
+Much of the information is stored in named <i>attributes</i>.
+There are standard attributes, but an application can also define
+new ones (that are supposed to be ignored by applications that
+do not understand them).  Each class file may have a set of top-level
+attributes.  In addition, each field and method may have attributes.
+Some standard attributes may have nested sub-attributes.</p>
+                    <pre class="programlisting">
+public abstract class <tt>Attribute</tt>
+{ ...;
+  AttrContainer container;
+  String name;
+}
+</pre>
+                    <p>
+An <tt>Attribute</tt>'s <tt>container</tt>
+specifies who owns the attribute.
+The attribute also has a <tt>name</tt>, plus methods
+to gets its size, write it out, etc.</p>
+                    <p>
+The most interesting (and large) standard <tt>Attribute</tt>
+occurs in a method and has the name <tt>"Code"</tt>.  It
+contains the actual bytecode instructions of a non-native non-abstract method,
+and we represent it using <tt>CodeAttr</tt>.</p>
+                    <pre class="programlisting">
+class <tt>CodeAttr</tt> extends Attribute
+{ ...;
+  Variable addLocal(Type t, String name)
+  { ... }
+  public void emitLoad(Variable var)
+  { ... }
+  public void emitPushInt(int i)
+  { ... }
+  public void putLineNumber(int lineno)
+  { ... }
+}
+</pre>
+                    <p>
+As an example of the level of functionality,
+<tt>emitPushInt</tt> compiles code to push an integer
+<i><tt>i</tt></i> on stack.
+It selects the right instruction, and if <i><tt>i</tt></i> is too
+big for one of the instructions that take an inline value,
+it will create a constant pool entry for <tt>i</tt>,
+and push that.</p>
+                    <p>
+The method <tt>addLocal</tt> creates a new local variable
+(and makes sure debugging information is emitted for it),
+while <tt>emitLoad</tt> pushes the value of
+the variable on the stack.</p>
+                    <p>
+Kawa calls <tt>putLineNumber</tt> to indicate that the current location
+corresponds to a given line number.  These are emitted in the
+<tt>.class file</tt>, and most Java interpreters will use them
+when printing a stack trace.</p>
+                    <p>
+We use <tt>gnu.bytecode</tt> mainly for generating
+<tt>.class</tt> files, but it also has classes to
+read <tt>.class</tt> files, and also classes to print
+a <tt>ClassType</tt> in readable format.
+The combination makes for a decent Java dis-assembler.</p>
+                    <p>
+There are other toolkits for creating or analyzing
+<tt>.class</tt> files, but <tt>gnu.bytecode</tt>
+was written to provide a lot of support for code generation
+while having little overhead.  For example, some assemblers
+represent each instruction using an <tt>Instruction</tt>
+instance, whereas <tt>CodeAttr</tt> just stores all
+the instruction in a byte array.  Using a linked list of
+<tt>Instruction</tt>s may be more "object-oriented",
+and it does make it easier to do peep-hole optimizations,
+but the time and space overhead compared to using an array of bytes is huge.
+(If you do need to do peephole optimizations, then it makes
+sense to use a doubly-linked list of <tt>Instruction</tt>s,
+but to use that in conjunction with <tt>CodeAttr</tt>.
+You will in any case want a byte-array representation for input and output.)
+</p>
+                </div>
+                <div class="sect2" id="N2180">
+                    <h3 class="title">
+                        <a name="N2180"><b>Literals</b></a>
+                    </h3>
+                    <p>
+A Scheme quoted form or self-evaluating form expands to a <tt>QuoteExp</tt>.
+Compiling a <tt>QuoteExp</tt> would seem a trivial exercise, but it is not.
+There is no way to embed (say) a list literal in Java code.
+Instead we create a static field in the top-level class
+for a each (different) <tt>QuoteExp</tt> in the body we are compiling.
+The code compiled for a <tt>QuoteExp</tt> then just needs
+to load the value from the corresponding static field.
+The tricky part is making sure that the static field gets
+initialized when the top-level class is loaded to the
+value of the literal.  This is easy when compiling for immediate
+execution: after the compiled class has been loaded and initialized, we use
+reflection to set the field to the literal value.  When compiling
+to a class file, things are harder.</p>
+                    <p>
+The basic idea is that for:</p>
+                    <pre class="programlisting">
+(define (foo) '(3 . 4))
+</pre>
+                    <p>
+we compile the equivalent of:</p>
+                    <pre class="programlisting">
+class <tt>foo</tt> extends Procedure0
+{
+  Object static lit1
+    = Pair.make(IntNum.make(3),
+                IntNum.make(4));
+  public Object apply0()
+  { return lit1; }
+}
+</pre>
+                    <p>
+When the compiled class <tt>foo</tt> is loaded, we do:</p>
+                    <pre class="programlisting">
+Class fooCl = Class.forName("foo");
+Procedure fooPr
+  = (Procedure) fooCl.newInstance ();
+// Using foo:
+Object result = fooPr.apply0 ();
+</pre>
+                    <p>
+How does the Kawa compiler generate the appropriate <tt>Pair.make</tt>
+expression as shown above?  In earlier versions of Kawa, a class whose
+instances could be literals implemented
+the <tt>Compilable</tt> interface.  Then the compiler just called
+the methods in <tt>Compilable</tt>, and these would generate the
+code needed to re-create the literal.
+This had the advantage that the compiler was not limited to a few
+classes of literals it knew about.  One problem is that it caused
+cross-package dependencies, since any class that could be a literal
+has to implement <tt>gnu.expr.Compilable</tt>.
+Another problem was that writing the <tt>Compilable</tt>
+methods required knowing how <tt>gnu.bytecode</tt> works.</p>
+                    <p>
+The key insight is that saving compile-time literals and then restoring
+them at run-time is a kind of "object persistence", similar
+to that offered by Java serialization.  One option considered was to
+use standard serialization, but that required some way to store the
+serialized data in a class file.
+The article <a xmlns:doc="http://nwalsh.com/xsl/documentation/1.0" href="http://java.sun.com/products/jfc/tsc/articles/persistence/">Long-Term
+Persistence for JavaBeans</a> suggested an alternative.
+I realized that using <tt>Externalizable</tt> classes provided
+the more abstract serialization we needed.</p>
+                    <p>
+Let us start with a summary:  An object that can be a literal must implement
+the <tt>java.io.Externalizable</tt> interface.  When the
+compiler need to generate a reference to a literal value, it calls the
+object's <tt>writeExternal</tt> method.  The
+<tt>writeExternal</tt> method expects an argument that
+implements the <tt>java.io.ObjectOutput</tt> interface.
+The actual argument is a <tt>LitTable</tt> object owned
+by the compiler.  A <tt>writeExternal</tt> method
+can call the standard <tt>ObjectOutput</tt> methods, such
+as <tt>writeObject</tt>, <tt>writeInt</tt>,
+and so on.  The <tt>LitTable</tt> remembers the
+values that were passed to it in these <tt>writeObject</tt>,
+<tt>writeInt</tt>, etc calls, and creates an
+"argument list" from those values.  When the
+<tt>writeExternal</tt> returns, the <tt>LitTable</tt>
+will take the argument list, and look for a matching constructor in
+the literal's class, using reflection.  It will also look for methods named
+<tt>make</tt> or <tt>set</tt>.
+If found, the compiler will generate a call to the matching method.
+Simple values in the argument list will be pushed on the JVM stack directly;
+object references will use values generated using previous
+calls to <tt>writeExternal</tt>.</p>
+                    <p>
+Here are more details on how the compiler selects which method
+to invoke to re-create an object.
+If the compiler detects a recursive <tt>writeObject</tt> call
+with the object as an argument while <tt>writeExternal</tt>
+is called on the object, then the object cyclically references itself.
+In that case, the compiler must take care to construct the object so
+that the cycle gets reproduced at run-time.
+This is done by first generating a call to the default constructor,
+and saving the result in a static field.  The argument list is evaluated,
+with recursive references using the saved static field.  Then we
+call a method to properly initialize the object using the evaluated
+argument list.  The compiler looks for a method named <tt>set</tt>
+with a parameter list matching the argument list.  If there is no such
+method, the compiler gives up.  (In the future, we could use JavaBeans
+introspection, or look for a Java2 <tt>ObjectStreamField</tt> to
+determine how to set the properties.)</p>
+                    <p>
+If an object does not have a cycle, the compiler first looks for a
+matching static method named <tt>make</tt>.  If it
+does not find one, it looks a matching constructor.  In the latter
+case, the compiler must also check to see if there is
+a zero-argument <tt>readResolve</tt> method, which Java 2
+serialization uses to replace an object by a canonical object.
+(Kawa does not require Java 2, but <tt>LitTable</tt>
+does respect this Java 2 extension to serialization.)
+As a last resort, the compiler looks for a default constructor
+followed by <tt>set</tt>, as in the cycle case.</p>
+                    <p>The <tt>writeExternal</tt> method of some classes
+may generate a variable number of values.
+Therefore, if a constructor or method takes an array parameter, then
+<tt>LitTable</tt> will consider it as matching the
+argument list if the latter contains an <tt>int</tt>
+(written using <tt>writeInt</tt>) followed by that
+number of arguments of the component type of the array.
+(One could argue that this feature is an unneeded kludge, since
+there is the alternative that <tt>writeExternal</tt>
+could just call <tt>writeObject</tt>
+with a single array argument, instead of calling
+<tt>writeObject</tt> a variable number of times.
+However, that would expose the internal array into the externalization
+protocol, which is wrong.)</p>
+                    <p>
+Advantages of this implementation include:
+<div class="itemizedlist">
+                            <ul>
+                                <li>
+                                    <a name="N2373"></a>
+No explicit dependency on any class in the the <tt>gnu.expr</tt>
+package.  All a class needs to be used in literals is to implement
+<tt>Externalizable</tt>, and provide a matching method
+for creating object instances.
+</li>
+                                <li>
+                                    <a name="N2382"></a>
+No need to write special code to handle literals.
+</li>
+                                <li>
+                                    <a name="N2385"></a>
+Literals are re-created using efficient code at class initialization time.
+</li>
+                                <li>
+                                    <a name="N2388"></a>
+Automatically handles cycles and duplicate references.
+(Standard Scheme does not
+support self-referential constants, but for example Common Lisp does.
+See section 25.1.4 "Similarity of Constants" in
+[CommonLisp2].)
+</li>
+                                <li>
+                                    <a name="N2397"></a>
+Only requires standard JDK 1.1 features.
+</li>
+                            </ul>
+                        </div>
+</p>
+                </div>
+            </div>
+            <div class="sect1" id="N2404">
+                <h2 class="title" style="clear: all">
+                    <a name="N2404"><b>Class, types, and declarations</b></a>
+                </h2>
+                <p>
+Java supports "reflection", that is the ability to determine
+and examine the class of an object, and use the class at run-time
+to extract fields and call methods using names specified at run-time.
+Kawa, like some other Scheme implementations, also supports reflection.</p>
+                <p>
+It seems plausible to represent a type using a
+<tt>java.lang.Class</tt> object, since that is what
+the Java reflective facility does.
+
+Unfortunately, there are at least
+three reasons why Kawa needs a different representation:
+<div class="itemizedlist">
+                        <ul>
+                            <li>
+                                <a name="N2423"></a>
+                                <p>
+We may need to refer to classes that do not exist yet, because
+we are in the process of compiling them.</p>
+                            </li>
+                            <li>
+                                <a name="N2427"></a>
+                                <p>
+We want to be able to specify different high-level types that are
+represented using the same Java type.  For example, we might want
+to have integer sub-ranges and enumerations (represented using
+<tt>int</tt>), or different kinds of function types.
+</p>
+                            </li>
+                            <li>
+                                <a name="N2434"></a>
+                                <p>
+We want to associate different conversion (coercion) rules for different
+types that are represented using the same class.</p>
+                            </li>
+                        </ul>
+                    </div>
+</p>
+                <p>
+Kawa represents types using instances of <tt>Type</tt>:</p>
+                <pre class="programlisting">
+public abstract class <tt>Type</tt>
+{ ...;
+  String signature;  // encoded type name
+  int size;
+  public final String getName() { ... }
+  public boolean isInstance(Object obj)
+  { ... }
+  public void emitIsInstance(CodeAttr c)
+  { ... }
+}
+</pre>
+                <p>
+The method <tt>isInstance</tt> tests if an object
+is a member of this type, while <tt>emitIsInstance</tt>
+is called by the compiler to emit a run-time test.
+Note that the earlier mentioned <tt>ClassType</tt>
+extends <tt>Type</tt>.</p>
+                <p>
+Kawa follows the convention (used in RScheme [RScheme]
+and other Scheme dialects) that identifiers of the form
+<tt>&lt;</tt>(<i><tt>typename</tt></i>&gt;)
+are used to name types.  For example Scheme vectors are
+members of the type <tt>&lt;vector&gt;</tt>.
+This is only a convention and these names are regular identifiers,
+expect for one little feature:  If such an identifier is used,
+and it is not bound, and <i><tt>typename</tt></i> has the form
+of a Java type, then a corresponding <tt>Type</tt> is returned.
+For example <tt>&lt;java.lang.String[]&gt;</tt>
+evaluates to a <tt>Type</tt> whose values are references to
+Java arrays whose elements are references to Java strings.</p>
+                <p>
+As a simple example of using type values, here is the
+definition of the standard Scheme predicate <tt>vector?</tt>,
+which returns true iff the argument is a Scheme vector:</p>
+                <pre class="programlisting">
+(define (vector? x)
+  (instance? x &lt;vector&gt;)
+</pre>
+                <p>
+The primitive Kawa function <tt>instance?</tt> implements
+the Java <tt>instanceof</tt> operation, using
+<tt>Type</tt>'s <tt>isInstance</tt> method.
+(In compiled code, if the second operand is known at compile-time,
+then the compiler uses <tt>Type</tt>'s
+<tt>emitIsInstance</tt> method to generate better code.)</p>
+                <p>
+The traditional benefits of adding types to a dynamic language
+include better code generation, better error checking, and
+machine-checkable interface documentation.  These benefits require either
+type inference or (optional) type declarations.  Kawa does allow
+the types of parameters to be declared, and does some very simple
+local type inference.  In some cases this lets "unboxed"
+values (such as raw Java <tt>int</tt>) be passed
+from one function to another without having to allocate an object.
+While Kawa has a framework for working with types,
+it does need a more systematic approach.</p>
+                <p>
+Kawa includes the record extension which
+allows a new record type to be specified and created at run-time.
+It is implemented by creating a new <tt>ClassType</tt>
+with the specified fields, and loading the class
+using <tt>ClassLoader.defineClass</tt>.
+The record facility consists of a number of functions executed at run-time.
+Many people prefer an approach based on declarations
+that can be more easily analysed at compile-time.  (This is why
+the record facility was rejected for R5RS.)  A more declarative and
+general class definition facility is planned but not yet implemented.</p>
+            </div>
+            <div class="sect1" id="N2553">
+                <h2 class="title" style="clear: all">
+                    <a name="N2553"><b>Low-level Java access</b></a>
+                </h2>
+                <p>
+Many implementations of a high-level language provide an interface
+to functions written in a lower-level language, usually C.
+Kawa has such a "Foreign Function Interface",
+but the lower-level language it targets is Java.
+A <tt>PrimProcedure</tt> is a <tt>Procedure</tt>
+that invokes a specified Java method.</p>
+                <pre class="programlisting">
+public class PrimProcedure
+    extends ProcedureN
+{ ...;
+  Method method;
+  Type retType;
+  Type[] argTypes;
+}
+</pre>
+                <p>
+The following syntax evaluates to a <tt>PrimProcedure</tt>
+such that when you call it, it will invoke
+the static method named <i><tt>method-name</tt></i>
+in class <i><tt>class</tt></i>
+with the given <i><tt>arg-type</tt></i>s
+and <i><tt>result-type</tt></i>:</p>
+                <pre class="programlisting">
+(primitive-static-method <i><tt>class</tt></i> <i><tt>method-name</tt></i>
+  <i><tt>return-type</tt></i> (<i><tt>arg-type</tt></i> ...))
+</pre>
+                <p>
+When such a function is called, Kawa makes sure to convert the
+arguments and result between the Scheme types and Java types.
+For example:</p>
+                <pre class="programlisting">
+(primitive-static-method
+   &lt;java.lang.Character&gt; "toUpperCase" 
+   &lt;char&gt; (&lt;char&gt;))
+</pre>
+                <p>
+This is a function that converts a Scheme character
+(represented using a <tt>&lt;kawa.lang.Char&gt;</tt> object),
+to a Java <tt>char</tt>, applies the
+standard <tt>java.lang.Character.toUpperCase</tt> method,
+and converts the result back to a Scheme character.
+Normally, the Java reflection features are used to call the
+specified method.  However, if the <tt>primitive-static-method</tt>
+is used directly in the function position of an application,
+then the compiler is able to inline the <tt>PrimProcedure</tt>,
+and emit efficient <tt>invokestatic</tt> bytecode operations.
+That is the usual style, which is used to define
+many of the standard Scheme procedures,
+such as here <tt>char-upcase</tt>:</p>
+                <pre class="programlisting">
+(define (char-upcase ch) 
+  ((primitive-static-method
+    &lt;java.lang.Character&gt; "toUpperCase" 
+    &lt;char&gt; (&lt;char&gt;)) 
+   ch)) 
+</pre>
+                <p>
+Similar forms <tt>primitive-virtual-method</tt> and
+<tt>primitive-interface-method</tt>
+are used to generate virtual method calls and interface calls,
+while <tt>primitive-constructor</tt> is used to
+create and initialize a new object.</p>
+                <p>
+You can access instance and static fields of an object using
+similar macros.  For example, to get the time-stamp from an
+<tt>Event</tt>, do:</p>
+                <pre class="programlisting">
+((primitive-get-field &lt;java.lang.Event&gt;
+  "when" &lt;long&gt;)
+ evt)
+</pre>
+                <p>
+Kawa also has low-level operations for working with Java arrays.
+All these primitive operations are inlined to efficient byte code operations
+when the compiler knows that the procedure being called is a primitive;
+otherwise, the Java reflection features are used.</p>
+            </div>
+            <div class="sect1" id="N2697">
+                <h2 class="title" style="clear: all">
+                    <a name="N2697"><b>Scheme complications</b></a>
+                </h2>
+                <p>Scheme has a few features that do not map easily into Java.
+We discussed closures earlier;  next we will discuss
+tail-call-elimination, continuations,
+and multiple return values.
+</p>
+                <div class="sect2" id="N2704">
+                    <h3 class="title">
+                        <a name="N2704"><b>Multiple values</b></a>
+                    </h3>
+                    <p>
+R5RS defines a procedure <tt>values</tt>, which allows
+an expression or a function to yield multiple (or zero) values, rather
+then being restricted to a single result.
+However, the multiple values can only be passed to the
+<tt>call-with-values</tt> procedure.  There is no automatic
+coercion from a multiple values to a single value, as in Common Lisp.
+This makes it easy to implement multiple values in a way that does
+not slow down code that does not use the feature, which is most
+Scheme code.  Kawa uses a helper class <tt>Values</tt>:
+</p>
+                    <pre class="programlisting">
+class <tt>Values</tt>
+{ ...
+  private Object[] vals;
+  public static final Values empty
+    = new Values(new Object[0]);
+}
+</pre>
+                    <p>
+The <tt>values</tt> procedure just creates a new
+<tt>Values</tt> object using its arguments.
+However, if there is only a single value, it returns the value
+unchanged.  If there are zero values, <tt>Values.empty</tt>
+is returned.  (This value is the same as <tt>#!void</tt>,
+which in Kawa is used for the result of a definition or assignment,
+and whose print-out is suppressed.)  The <tt>Values</tt>
+instance is returned, with no special handling.
+The only part of Kawa that needs to know about <tt>Values</tt>
+is the <tt>call-with-values</tt> procedure;  it needs to check
+if it was passed a <tt>Values</tt> object, or just
+a regular Scheme value.
+</p>
+                    <p>
+This implementation satisfies the goal of no extra overhead for
+programs that do not use multiple values, and the cost is reasonable
+for programs that do.  It is not as good a returning the multiple results
+on the stack, as some Scheme and Lisp implementations do, but that is not
+do-able in a Java context.
+</p>
+                    <p>
+Another implementation would be needed if we want the Common Lisp
+behavior where multiple values are automatically coerced to the first
+value in single-value contexts.  One way to implement that would be
+move the <tt>apply</tt> methods to always take an extra
+"continuation" parameter.  Then <tt>values</tt> can
+check the kind of continuation it is returning to.  Having the return
+context explicitly passed has other uses too, though it adds some
+extra overhead to the common case.
+</p>
+                </div>
+                <div class="sect2" id="N2766">
+                    <h3 class="title">
+                        <a name="N2766"><b>Continuations</b></a>
+                    </h3>
+                    <p>
+Scheme continuations "capture" the current execution
+state.  They can be implemented by copying the stack, but
+this requires non-portable native code.  Kawa continuations
+are implemented using Java exceptions, and can be used to
+prematurely exit (throw), but not to implement co-routines
+(which should use threads anyway).</p>
+                    <pre class="programlisting">
+class <tt>callcc</tt> extends Procedure1
+{ ...;
+  public Object apply1(Object arg1)
+  {
+    Procedure proc = (Procedure) arg1;
+    Continuation cont
+       = new Continuation ();
+    try { return proc.apply1(cont); }
+    catch (CalledContinuation ex)
+      {
+        if (ex.continuation != cont)
+             throw ex;  // Re-throw.
+        return ex.value;
+      }
+    finally
+      {
+        cont.mark_invalid();
+      }
+  }
+}
+</pre>
+                    <p>
+This is the <tt>Procedure</tt> that implements
+<tt>call-with-current-continuation</tt>.
+It creates <tt>cont</tt>, which is the "current continuation",
+and passes it to the incoming <tt>proc</tt>.
+If <tt>callcc</tt> catches a <tt>CalledContinuation</tt> exception it means
+that <tt>proc</tt> invoked some <tt>Continuation</tt>.  If it is "our"
+continuation, return the value passed to the continuation;  otherwise
+re-throw it up the stack until we get a matching handler.</p>
+                    <p>
+The method <tt>mark_invalid</tt> marks a continuation
+as invalid, to detect unsupported invocation of <tt>cont</tt>
+after <tt>callcc</tt> returns.
+(A complete implementation of continuations would instead
+make sure the stacks are moved to the heap, so they can be
+returned to an an arbitarry future time.)</p>
+                    <pre class="programlisting">
+class <tt>Continuation</tt> extends Procedure1
+{ ...;
+  public Object apply1(Object arg1)
+  {
+    throw new CalledContinuation
+	      (arg1, this);
+  }
+}
+</pre>
+                    <p>
+A <tt>Continuation</tt> is the actual continuation object
+that is passed to <tt>callcc</tt>'s argument;
+when it is invoked, it throws a <tt>CalledContinuation</tt>
+that contains the continuation and the value returned.</p>
+                    <pre class="programlisting">
+class <tt>CalledContinuation</tt>
+    extends RuntimeException
+{ ...;
+  Object value;
+  Continuation continuation;
+  public CalledContinuation
+    (Object value, Continuation cont)
+  {
+    this.value = value;
+    this.continuation = cont;
+  }
+}
+</pre>
+                    <p>
+<tt>CalledContinuation</tt> is the exception that is thrown
+when the continuation is invoked.</p>
+                </div>
+                <div class="sect2" id="N2858">
+                    <h3 class="title">
+                        <a name="N2858"><b>Tail-calls</b></a>
+                    </h3>
+                    <p>
+Scheme requires that tail-calls be implemented without
+causing stack growth.
+This means that if the last action of a procedure is another
+function call, then the called function's activation frame needs to
+be discarded before the new function's frame is allocated.
+In that case, unbounded tail-recursion does not grow the stack
+beyond a bounded size, and iteration (looping) is the same as tail-recursion.
+Making this work is easy using a suitable procedure calling convention,
+but this is difficult to do
+portably in Java (or for that matter in C), since implementing
+it efficiently requires low-level procedure stack manipulation.</p>
+                    <p>
+Compiler optimizations can re-write many tail-calls into
+<tt>goto</tt>s.  The most important case is self-tail-calls
+or tail recursion.  Kawa rewrites these to be a simple goto to the
+start of the procedure, when it can prove that is safe.  Specifically,
+it does optimize Scheme's standard looping forms <tt>do</tt>
+and named-<tt>let</tt>.</p>
+                </div>
+                <div class="sect2" id="N2878">
+                    <h3 class="title">
+                        <a name="N2878"><b>General tail-call elimination</b></a>
+                    </h3>
+                    <p>
+Implementing general tail-calls and continuations require being
+able to manipulate the procedure call stack.  Many environments, including
+the Java VM, do not allow direct manipulation of stack frames.
+You have the same problem if you want to translate to portable C, without
+assembly language kludges.
+Hence, you cannot use the C or Java stack for the call stack, but
+instead have to explicitly manage the call graph and return
+addresses.  Such re-writing has been done before for
+ML [MLtoC] and Scheme [RScheme].
+</p>
+                    <p>
+In Java we have the extra complication that we do not have function addresess,
+and no efficient way to work with labels.  Instead, we can simulate code labels
+by using switch labels.  This is more overhead than regular method
+calls, so the regular <tt>Procedure</tt> interface
+discussed earlier will probably remain the default.
+Thus some procedures use the regular calling convention, and
+others the "CPS" (Continuation Passing Style) calling convention.
+The rest of this section explains the
+<i>planned</i> CPS calling convention.</p>
+                    <pre class="programlisting">
+public abstract class <tt>CpsFrame</tt>
+{
+  CpsFrame caller;
+  int saved_pc;
+}
+</pre>
+                    <p>
+Each <tt>CpsFrame</tt> represents a procedure activation.
+The <tt>caller</tt> field points to the caller's frame,
+while <tt>saver_pc</tt> is a switch label representing
+the location in the caller.</p>
+                    <p>
+There is a single "global" <tt>CpsContext</tt>
+which owns the generalized call "stack".
+There may be many <tt>CpsContext</tt> if there are
+multiple threads, and in fact one <tt>CpsContext</tt>
+is allocated each time a regular (non-CPS) method calls a procedure that uses
+the CPS calling convention.</p>
+                    <pre class="programlisting">
+public class <tt>CpsContext</tt>
+{
+  CpsFrame frame;
+  int pc;
+  Object value;
+
+  Object run()
+  {
+    while (frame != null)
+      frame.do_step(this);
+    return value;
+  }
+}
+</pre>
+                    <p>
+Each <tt>CpsContext</tt> has a <tt>frame</tt>
+which points to the currently executing procedure frame,
+and <tt>pc</tt> which is a case label for the code to
+be executed next in the current procedure.
+The result of a function is left in the <tt>value</tt> field.
+All of these these fields may be imagined as global (or per-thread)
+registers, which is how you would ideally like to implement a CPS
+calling convention if you had access to machine registers.
+The <tt>frame</tt>, <tt>pc</tt>, and
+<tt>value</tt> fields simulate the frame pointer register,
+the program counter, and the function result register in a typical
+computer. After creating a <tt>CpsContext</tt> with an
+initial <tt>frame</tt> and <tt>pc</tt>,
+you would call <tt>run</tt>, which uses the
+<tt>do_step</tt> method to execute each step of a function
+until we return from the initial <tt>frame</tt>
+with a final <tt>value</tt>.</p>
+                    <p>
+Consider a simple Scheme source file,
+which defines two functions:</p>
+                    <pre class="programlisting">
+(define (f)
+  (g)
+  (h))
+(define (g)
+  ...)
+</pre>
+                    <p>
+This would get compiled into:</p>
+                    <pre class="programlisting">
+public foo extends CpsFrame
+{
+  void do_step(CpsContext context)
+  {
+    CpsFrame fr;
+    switch (context.pc)
+    {
+      case 0: // top-level code
+        define("f", new CpsProc(this, 1);
+        define("g", new CpsProc(this, 3);
+        return;
+      case 1: // beginning of f
+        // do a (non-tail) call of g:
+        fr = g.allocFrame(context);
+        fr.caller = this;
+        fr.saved_pc = 2;
+        context.frame = fr;
+        return;
+      case 2:
+        // then do a tail call of h:
+        fr = h.allocFrame(context);
+        fr.caller = this.caller;
+        fr.saved_pc = this.saved_pc;
+        context.frame = fr;
+        return;
+      case 3:  /* beginning of g */
+        ...;
+    }
+  }
+}
+</pre>
+                    <p>
+The entire code of the Scheme compilation unit is compiled
+into one large switch statement.  Case 0 represents
+the top-level actions of the program, which defines the
+functions <tt>f</tt> and <tt>g</tt>.
+Next comes the code for <tt>f</tt>, followed by the
+(omitted) code for <tt>g</tt>.  When <tt>f</tt>
+is called, a new <tt>foo</tt> frame is allocated,
+and the context's <tt>pc</tt> is set to 1,
+the start of <tt>f</tt>.</p>
+                    <p>
+The body of <tt>f</tt> makes two function calls,
+one a non-tail function, and finally a tail-call.
+Either call allocates a <tt>CpsFrame</tt>
+and makes it the current one, before returning to the the main loop
+of <tt>CpsContext</tt>'s <tt>run</tt> method.
+The regular (non-tail) call saves the old current frame in the
+new frame's return link.  In contrast, the tail call makes the
+return link of the new frame be the old frame's return link.
+When we return then from do_step, the old frame is not part
+of the call chain (unless it has been captured by <tt>callcc</tt>),
+and so it has become garbage that can be collected.</p>
+                    <p>
+At the time of writing, the CPS calling convention has not been
+implemented, but I am filling in the details.  It has some extra
+overhead, but also a few side benefits.  One is that we compile
+an entire source file to a single Java class, and it is more convenient
+when there is a one-to-one correspondence between source files and
+binary files (for example in <tt>Makefile</tt>s).</p>
+                    <p>
+Another exciting possibility is that we can write a debugger
+in pure Java, because we can run <tt>do_step</tt> until
+some condition (break-point), examine the <tt>CpsFrame</tt>
+stack, and optionally continue.</p>
+                </div>
+            </div>
+            <div class="sect1" id="N3064">
+                <h2 class="title" style="clear: all">
+                    <a name="N3064"><b>Benchmark Results</b></a>
+                </h2>
+                <p>
+In one sense benchmarking Kawa is meaningless, because performance
+will vary so much depending on the underlying Java implementation.
+One can even take the compiled bytecode files and translate them
+to native code, factoring out the Java interpreter altogether.
+For example, my company Cygnus Solutions is implementing a
+Java implementation based on Gcc [GccJava];
+it will be able to speed up compiled Kawa code substantially.</p>
+                <p>
+While the goal of Kawa is not maximum performance, it would be
+reassuring if its speed is at least comparable to other Scheme
+implementations.  So I took three of the old Gabriel benchmarks
+(as I found them in the Stalin distribution, by Jeffrey Mark Siskind
+"Qobi").  I ran them on an UltraSparc running Solaris 2.6.
+I compared Kawa, running under JavaSoft's JDK 1.1.5,
+with two representative Scheme implementations:
+Guile is the Free Software Foundation's Scheme implementation.
+It is an interpreter based on the heavily-tuned SCM (written
+by Aubrey Jaffer).  Scheme48 (written by Richard Kelsey and Jonathan Rees)
+compiles to a Scheme-specific bytecode, which is then interpreted 
+(Note that Kawa is doing the various inlining optimizations mentioned earlier;
+this makes a substantial difference, but could break some unusual programs.)
+The Puzzle benchmark is based on the old Forrest Baskett benchmark,
+and uses vectors and <tt>do</tt>-loops extensively.
+Traverse creates and traverses a tree structure.
+Takl is the Takeuchi function using lists as counters.
+</p>
+                <div id="N3083" class="informaltable">
+                    <p>
+                    </p>
+                    <a name="N3083"></a>
+                    <table border="1">
+                        <colgroup>
+                            <col>
+                            <col>
+                            <col>
+                            <col>
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th>&nbsp;</th><th>Kawa</th><th>Scheme48</th><th> Guile </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Puzzle</td><td>21s</td><td>14s</td><td>67s</td>
+                            </tr>
+                            <tr>
+                                <td>Traverse</td><td>18s</td><td>14s</td><td>46s</td>
+                            </tr>
+                            <tr>
+                                <td>Takl</td><td>81s</td><td>36s</td><td>87s</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p>
+                    </p>
+                </div>
+                <p>
+These results show Kawa beating Guile on all benchmarks,
+the first two substantially.  Scheme48 is faster, but by
+less than a factor of two (on average).  It is interesting that Kawa
+does as well as it does, using a bytecode designed for Java,
+as opposed to Scheme48's bytecodes tailored specifically to Scheme.
+</p>
+            </div>
+            <div class="sect1" id="N3163">
+                <h2 class="title" style="clear: all">
+                    <a name="N3163"><b>Current and Future Work</b></a>
+                </h2>
+                <p>
+The main current priorities of Kawa are making it fully compatible
+with standard (R5RS) Scheme, implementing debugging facilities, and
+making the ECMAScript support usable.
+The major tasks for R5RS-compatibility are the rewrite to support
+general continuations and tail-calls, plus a redesign of how macros
+are implemented.</p>
+                <p>
+Implementing ECMAScript requires moving Scheme-specific code
+out of the Kawa core.  We also need a more general interface 
+to plug in new parsers, pre-defined functions, data types, and output
+formatting.  That will make it easier to add new languages
+and dialects.
+Of special interest is re-implementing some of the ideas and syntax
+from my earlier Q language  [Bothner88]. These include a
+line-oriented syntax with fewer parentheses, and high-level
+sequence and array operations (as in APL).</p>
+                <p>
+Also of interest is support for Emacs Lisp.
+This would require an extensive library to implement the Emacs
+data types (such as buffers and windows), in addition to the
+challenges of the Emacs Lisp language itself (it has different
+data types and name binding rules than Scheme), but may be
+a good way to build a next-generation Emacs.</p>
+                <p>
+There is very  preliminary threads support in Kawa.
+It provides an interface to Java threads that looks
+somewhat like <tt>delay</tt>, except that the delayed expression
+is evaluated in a new thread.  (The model is similar to to the
+"futures" concept of MultiScheme [Miller87],
+but there is no implicit force, at least yet.)  Some
+of the core classes (such <tt>Environment</tt>
+and <tt>Translator</tt>) now support threads
+with optionally separate top-level environments.</p>
+                <p>
+An interface to graphics primitives is needed.
+The new Swing toolkit seems like a more powerful
+base then the old Abstract Windowing Toolkit.</p>
+            </div>
+            <div class="sect1" id="N3205">
+                <h2 class="title" style="clear: all">
+                    <a name="N3205"><b>Conclusion</b></a>
+                </h2>
+                <p>
+Kawa is a solid implementation of Scheme with many features.
+It is portable to any environment that can run Java applications.
+It has active use and development, a 75-member mailing list,
+and is used for a number of different projects.
+Most people seem to be using it as a scripting language
+for Java packages.  Other people just prefer to use Scheme,
+but have to co-exist with Java.</p>
+            </div>
+            <div class="bibliography">
+                <h2 class="title">
+                    <a name="N3213">Bibliography</a>
+                </h2>
+                <div class="biblioentry" id="N3218">
+                    <a name="N3218"></a>
+                    <p>
+                        <span class="abbrev">[Bothner88] </span><span class="authorgroup">Per Bothner. </span><span class="title"><I>Efficiently Combining Logical Contraints with Functions</I>. </span><span class="bibliomisc">Ph.D. thesis,
+Department of Computer Science, Stanford University. </span><span class="pubdate">1988. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3243">
+                    <a name="N3243"></a>
+                    <p>
+                        <span class="abbrev">[Budd91Arith] </span><span class="authorgroup">Timothy Budd. </span><span class="title"><I>Generalized arithmetic in C++</I>. </span><span class="bibliomisc">Journal of Object-Oriented Programming. </span><span class="issuenum">3(6). </span><span class="pagenums">11-22. </span><span class="pubdate">February 1996. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3274">
+                    <a name="N3274"></a>
+                    <p>
+                        <span class="abbrev">[CommonLisp2] </span><span class="authorgroup">Guy L. Steele Jr.. </span><span class="title"><I>Common Lisp -- The Language</I>. </span><span class="bibliomisc">Second edition. </span><span class="bibliomisc">Digital Press and Prentice-Hall. </span><span class="pubdate">1990. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3302">
+                    <a name="N3302"></a>
+                    <p>
+                        <span class="abbrev">[DSSSL] </span><span class="authorgroup"><span class="corpauthor">International Standards Organization</span>. </span><span class="title"><I>Document Style Semantics and Specification Language</I>. </span><span class="pubdate">1996. </span><span class="bibliomisc">International Standard ISO/IEC 10179:1996(E). </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3321">
+                    <a name="N3321"></a>
+                    <p>
+                        <span class="abbrev">[ECMAScript] </span><span class="authorgroup"><span class="corpauthor">ECMA</span>. </span><span class="title"><I>ECMAScript Language Specification</I>. </span><span class="bibliomisc"><tt>http://www.ecma.ch/stand/ecma-262.htm</tt>. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3338">
+                    <a name="N3338"></a>
+                    <p>
+                        <span class="abbrev">[GccJava] </span><span class="authorgroup">Per Bothner. </span><span class="title"><I>A Gcc-based Java Implementation</I>. </span><span class="bibliomisc">IEEE Compcon 1997 Proceedings. </span><span class="pagenums">174-178. </span><span class="pubdate">February 1997. </span><span class="bibliomisc">See also <tt>http://www.cygnus.com/product/javalang</tt>. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3371">
+                    <a name="N3371"></a>
+                    <p>
+                        <span class="abbrev">[gmp] </span><span class="authorgroup">Torbj&ouml;rn Granlund. </span><span class="title"><I>The GNU Multiple Precision Arithmetic Library</I>. </span><span class="pubdate">1996. </span><span class="bibliomisc">(<tt>Gmp</tt> and its manual are available
+on most GNU archives.). </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3401">
+                    <a name="N3401"></a>
+                    <p>
+                        <span class="abbrev">[Ingalls86] </span><span class="authorgroup">Daniel Ingalls. </span><span class="title"><I>A Simple Technique for Handling Multiple Polymorphism</I>. </span><span class="bibliomisc">ACM SIGPLAN Notices. </span><span class="issuenum">21(11). </span><span class="pagenums">347-349. </span><span class="pubdate">November 1986. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3434">
+                    <a name="N3434"></a>
+                    <p>
+                        <span class="abbrev">[JavaSpec] </span><span class="authorgroup">James Gosling, Bill Joy, and Guy Steele. </span><span class="title"><I>The Java Language Specification</I>. </span><span class="publisher"><span class="publishername">Addison-Wesley. </span></span><span class="copyright">Copyright &copy; 1996 . </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3479">
+                    <a name="N3479"></a>
+                    <p>
+                        <span class="abbrev">[JavaVMSpec] </span><span class="authorgroup">Tim Lindholm and Frank Yellin. </span><span class="title"><I>The Java Virtual Machine Specification</I>. </span><span class="publisher"><span class="publishername">Addison-Wesley. </span></span><span class="copyright">Copyright &copy; 1996 . </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3517">
+                    <a name="N3517"></a>
+                    <p>
+                        <span class="abbrev">[Kaffe] </span><span class="authorgroup">Tim Wilkinson. </span><span class="title"><I>Kaffe - a free virtual machine to run Java code</I>. </span><span class="bibliomisc"><tt>http://www.kaffe.org/</tt>. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3540">
+                    <a name="N3540"></a>
+                    <p>
+                        <span class="abbrev">[Kawa] </span><span class="authorgroup">Per Bothner. </span><span class="title"><I>Kawa, the Java-based Scheme System</I>. </span><span class="bibliomisc"><tt>http://www.cygnus.com/~bothner/kawa.html</tt>. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3563">
+                    <a name="N3563"></a>
+                    <p>
+                        <span class="abbrev">[Miller87] </span><span class="authorgroup">James Miller. </span><span class="title"><I>MultiScheme: A Parallel Processing System based on MIT Scheme</I>. </span><span class="bibliomisc">Ph.D. thesis,
+Department of Electrical Engineering and Computer Science, MIT. </span><span class="pubdate">1987. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3588">
+                    <a name="N3588"></a>
+                    <p>
+                        <span class="abbrev">[MLtoC] </span><span class="authorgroup">David Tarditi, Peter Lee, and Anurag Acharya. </span><span class="title"><I>No Assembly Required: Compiling Standard ML to C</I>. </span><span class="bibliomisc">ACM Letters on Programming Languages and Systems. </span><span class="pubdate">1992. </span><span class="issuenum">1(2). </span><span class="pagenums">161-177. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3635">
+                    <a name="N3635"></a>
+                    <p>
+                        <span class="abbrev">[R5RS] </span><span class="title"><I>Revised<sup>5</sup> Report on the Algorithmic Language Scheme</I>. </span><span class="authorgroup">Richard Kelsey, William Clinger, and Jonathan Rees (editors). </span><span class="pubdate">1998. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3676">
+                    <a name="N3676"></a>
+                    <p>
+                        <span class="abbrev">[RScheme] </span><span class="authorgroup">Donovan Kolbly, Paul Wilson, and others. </span><span class="bibliomisc"><tt>http://www.rscheme.org/</tt>. </span>
+                    </p>
+                </div>
+                <div class="biblioentry" id="N3707">
+                    <a name="N3707"></a>
+                    <p>
+                        <span class="abbrev">[SGML] </span><span class="authorgroup"><span class="corpauthor">International Standards Organization</span>. </span><span class="title"><I>SGML (Standard Generalized Markup Language) ISO 8879</I>. </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

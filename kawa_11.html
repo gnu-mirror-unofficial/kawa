@@ -1,0 +1,408 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+
+<TITLE>Kawa, the Java-based Scheme system - The Scheme-Java interface</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_10.html">previous</A>, <A HREF="kawa_12.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC62" HREF="kawa_toc.html#TOC62">The Scheme-Java interface</A></H1>
+
+<P>
+Kawa has extensive features so you can work with Java objects
+and call Java methods.
+
+
+
+<UL>
+<LI><A HREF="kawa_11.html#SEC63">Scheme types in Java</A>
+<LI><A HREF="kawa_11.html#SEC64">Array operations</A>: Low-level operations on Java arrays
+<LI><A HREF="kawa_11.html#SEC65">Low-level Method invocation</A>
+<LI><A HREF="kawa_11.html#SEC66">Low-level Field operations</A>
+<LI><A HREF="kawa_11.html#SEC67">Loading a ModuleBody</A>
+<LI><A HREF="kawa_11.html#SEC68">Evaluating Scheme expressions from Java</A>
+</UL>
+
+
+
+<H2><A NAME="SEC63" HREF="kawa_toc.html#TOC63">Scheme types in Java</A></H2>
+
+<P>
+All Scheme values are implemented by sub-classes of <SAMP>`java.lang.Object'</SAMP>.
+
+
+<P>
+Scheme symbols are implemented using <CODE>java.lang.String</CODE>.
+(Don't be confused by the fact the Scheme sybols are represented
+using Java Strings, while Scheme strings are represented by
+<CODE>kawa.lang.Scheme</CODE>.  It is just that the semantics of Java strings
+match Scheme symbols, but do not match mutable Scheme strings.)
+Interned symbols are presented as interned Strings.
+(Note that with JDK 1.1 string literals are automatically interned.)
+
+
+<P>
+Scheme integers are implemented by <CODE>gnu.math.IntNum</CODE>.
+Use the make static function to create a new IntNum from an int or a long.
+Use the intValue or longValue methods to get the int or long value of
+an IntNum.
+
+
+<P>
+A Scheme "flonum" is implemented by <CODE>gnu.math.DFloNum</CODE>.
+
+
+<P>
+A Scheme pair is implemented by <CODE>kawa.lang.Pair</CODE>.
+
+
+<P>
+A Scheme vector is implemented by <CODE>kawa.lang.Vector</CODE>.
+
+
+<P>
+Scheme characters are implemented using <CODE>kawa.lang.Char</CODE>.
+
+
+<P>
+Scheme strings are implemented using <CODE>kawa.lang.FString</CODE>.
+
+
+<P>
+Scheme procedures are all sub-classes of <CODE>kawa.lang.Procedure</CODE>.
+Normally each function (lambda expression) in the source code is
+compiled to a separate sub-class of <SAMP>`Procedure'</SAMP>.
+The "action" of a <SAMP>`Procedure'</SAMP> is invoked by using one of
+the <SAMP>`apply*'</SAMP> methods:  <SAMP>`apply0'</SAMP>, <SAMP>`apply1'</SAMP>,
+<SAMP>`apply2'</SAMP>, <SAMP>`apply3'</SAMP>, <SAMP>`apply4'</SAMP>, or <SAMP>`applyN'</SAMP>.
+Various sub-class of <SAMP>`Procedure'</SAMP> provide defaults
+for the various <SAMP>`apply*'</SAMP> methods.  For example,
+a <SAMP>`Procedure2'</SAMP> is used by 2-argument procedures.
+The <SAMP>`Procedure2'</SAMP> class provides implementations of all
+the <SAMP>`apply*'</SAMP> methods <EM>except</EM> <SAMP>`apply2'</SAMP>,
+which must be provided by any class that extends <CODE>Procedure2</CODE>.
+
+
+
+
+<H2><A NAME="SEC64" HREF="kawa_toc.html#TOC64">Low-level Operations on Java Arrays</A></H2>
+
+<P>
+The following macros evaluate to procedures that can be used to
+manipulate primitive Java array objects.
+The compiler can inline each to a single bytecode instruction
+(not counting type conversion).
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-array-new</B> <I>element-type</I>
+<DD><A NAME="IDX252"></A>
+Evaluates to a one-argument procedure.  Applying the resulting procedure to
+an integer count allocates a new Java array of the specified length,
+and whose elements have type <VAR>element-type</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-array-set</B> <I>element-type</I>
+<DD><A NAME="IDX253"></A>
+Evaluates to a three-argument procedure.  The first argument of
+the resulting procedure must be an array whose elements have type
+<VAR>element-type</VAR>;  the second argument is an index;  and the third
+argument is a value (coercible to <VAR>element-type</VAR>) which replaces
+the value specified by the index in the given array.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-array-get</B> <I>element-type</I>
+<DD><A NAME="IDX254"></A>
+Evaluates to a two-argument procedure.  The first argument of
+the resulting procedure must be an array whose elements have type
+<VAR>element-type</VAR>;  the second argument is an index.
+Applying the procedure returns the element at the specified index.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-array-length</B> <I>element-type</I>
+<DD><A NAME="IDX255"></A>
+Evaluates to a one-argument procedure.  The argument of
+the resulting procedure must be an array whose elements have type
+<VAR>element-type</VAR>.
+Applying the procedure returns the length of the array.
+(Alternatively, you can use <CODE>(field <VAR>array</VAR> 'length)</CODE>.)
+</DL>
+
+
+
+
+<H2><A NAME="SEC65" HREF="kawa_toc.html#TOC65">Low-level Method invocation</A></H2>
+
+<P>
+The following lower-level primitives require you to specify
+the parameter and return types explicitly.
+Type specifications are currently required to be string literals
+or one of the standard types (see section <A HREF="kawa_9.html#SEC48">Standard Types</A>).
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-constructor</B> <I>class (argtype ...)</I>
+<DD><A NAME="IDX256"></A>
+Returns a new anonymous procedure, which when called will create
+a new object of the specified class, and will then call the
+constructor matching the specified argument types.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-virtual-method</B> <I>class method rtype (argtype ...)</I>
+<DD><A NAME="IDX257"></A>
+Returns a new anonymous procedure, which when called will
+invoke the instance method whose name is the string <VAR>method</VAR>
+in the class whose name is <VAR>class</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-static-method</B> <I>class method rtype (argtype ...)</I>
+<DD><A NAME="IDX258"></A>
+Returns a new anonymous procedure, which when called will
+invoke the static method whose name is the string <VAR>method</VAR>
+in the class whose name is <VAR>class</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-interface-method</B> <I>interface method rtype (argtype ...)</I>
+<DD><A NAME="IDX259"></A>
+Returns a new anonymous procedure, which when called will
+invoke the matching method from the interface whose name is <VAR>interface</VAR>.
+</DL>
+
+
+<P>
+The macros return procedure values, just like <CODE>lambda</CODE>.
+If the macros are used directly as the procedure of a procedure call,
+then kawa can inline the correct bytecodes to call the specified methods.
+(Note also that neither macro
+checks that there really is a method that matches the specification.)
+Otherwise, the Java reflection facility is used.
+
+
+
+
+<H2><A NAME="SEC66" HREF="kawa_toc.html#TOC66">Low-level Operations on Object Fields</A></H2>
+
+<P>
+The following macros evaluate to procedures that can be used to
+access or change the fields of objects or static fields.
+The compiler can inline each to a single bytecode instruction
+(not counting type conversion).
+
+
+<P>
+These macros are deprecated.
+The <CODE>fields</CODE> and <CODE>static-field</CODE> functions
+(see section <A HREF="kawa_10.html#SEC55">Accessing fields of Java objects</A>) are easier to use, more powerful, and
+just as efficient.  (One exception is for <CODE>primitive-set-static</CODE>;
+while its functionality can be expressed using
+<CODE>(set! (static-field ...) ...)</CODE>, that idiom is currently
+less efficient.)  Also, the high-level functions currently do
+not provide access to private fields.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-get-field</B> <I>class fname ftype</I>
+<DD><A NAME="IDX260"></A>
+Use this to access a field named <VAR>fname</VAR> having type <VAR>type</VAR> in
+class <VAR>class</VAR>.  Evaluates to a new one-argument procedure,
+whose argument is a reference to an object of the specified <VAR>class</VAR>.
+Calling that procedure returns the value of the specified field.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-set-field</B> <I>class fname ftype</I>
+<DD><A NAME="IDX261"></A>
+Use this to change a field named <VAR>fname</VAR> having type <VAR>type</VAR> in
+class <VAR>class</VAR>.  Evaluates to a new two-argument procedure,
+whose first argument is a reference to an object of the
+specified <VAR>class</VAR>, and the second argument is the new value.
+Calling that procedure sets the field to the specified value.
+(This macro's name does not end in a <SAMP>`!'</SAMP>, because it does not actually
+set the field.  Rather, it returns a function for setting the field.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-get-static</B> <I>class fname ftype</I>
+<DD><A NAME="IDX262"></A>
+Like <CODE>primitive-get-field</CODE>, but used to access static fields.
+Returns a zero-argument function, which when called returns
+the value of the static field.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>primitive-set-static</B> <I>class fname ftype</I>
+<DD><A NAME="IDX263"></A>
+Like <CODE>primitive-set-field</CODE>, but used to modify static fields.
+Returns a one-argument function, which when called sets the
+value of the static field to the argument.
+</DL>
+
+
+
+
+<H2><A NAME="SEC67" HREF="kawa_toc.html#TOC67">Loading a ModuleBody</A></H2>
+
+<P>
+The "top" class created by <CODE>kawa -C</CODE> (see section <A HREF="kawa_7.html#SEC16">Compiling Scheme to a set of .class files</A>)
+extends the <CODE>ModuleBody</CODE> class.  It is actually fairly
+easy to write a <CODE>ModuleBody</CODE> by hand in Java, and you can
+then use the Scheme <CODE>load</CODE> procedure to cause arbitrary
+actions.  Here is an example.
+<EM>(Note that the details are subject to change!)</EM>
+
+
+
+<PRE>
+package MyDev;
+import kawa.lang.*;
+class MyDevFunc extends Procedure2
+{
+  public Object apply2 (Object arg1, Object arg2)
+  {
+    ... stuff to control my device ...;
+  }
+}
+
+public class MyDevice extends ModuleBody
+{
+  public Object run (Environment env)
+    throws WrongArguments, WrongType, GenericError, UnboundSymbol
+  {
+    ... initialize my device here ...;
+
+    // Declare (handle-my-device x y) to call MyDevFunc.apply2 (x, y):
+    env.define ("handle-my-device", new MyDevFunc ());
+
+    // Return the void value (i.e. no value).
+    return Interpreter.voidObject;
+  }
+}
+</PRE>
+
+<P>
+If this text is in the file <CODE>MyDev/MyDevice.java</CODE>, and you compile
+it with <CODE>javac</CODE>, you will get <CODE>MyDev/MyDevice.class</CODE>
+and <CODE>MyDev/MyDevFunc.class</CODE>.  Assuming the current directory
+is in your <CODE>CLASSPATH</CODE>, you can now do the following in Kawa:
+
+<PRE>
+(load "MyDev/MyDevice.class")
+</PRE>
+
+<P>
+or:
+
+<PRE>
+(load "MyDev.MyDevice")
+</PRE>
+
+<P>
+This will cause the actions in <CODE>MyDevice.run</CODE> to be executed.
+The current environment is passed in as the parameter <CODE>env</CODE>.
+One of those actions is to define the procedure <CODE>handle-my-device</CODE>.
+
+
+
+
+<H2><A NAME="SEC68" HREF="kawa_toc.html#TOC68">Evaluating Scheme expressions from Java</A></H2>
+
+<P>
+The following methods are recommended if you need to evaluate a
+Scheme expression from a Java method.
+(Some details (such as the <SAMP>`throws'</SAMP> lists) may change.)
+
+
+<P>
+<DL>
+<DT><U>Static method:</U> void <B>Scheme.registerEnvironment</B> <I>()</I>
+<DD><A NAME="IDX264"></A>
+Initializes the Scheme environment.  Maybe needed if you
+try to load a module compiled from a Scheme source file.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Static method:</U> Object <B>Scheme.eval</B> <I>(InPort <VAR>port</VAR>, Environment <VAR>env</VAR>)</I>
+<DD><A NAME="IDX265"></A>
+Read expressions from <VAR>port</VAR>, and evaluate them in the
+<VAR>env</VAR> environment, until end-of-file is reached.
+Return the value of the last expression,
+or <CODE>Interpreter.voidObject</CODE> if there is no expression.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Static method:</U> Object <B>Scheme.eval</B> <I>(String <VAR>string</VAR>, Environment <VAR>env</VAR>)</I>
+<DD><A NAME="IDX266"></A>
+Read expressions from <VAR>string</VAR>, and evaluate them in the
+<VAR>env</VAR> environment, until the end of the string is reached.
+Return the value of the last expression,
+or <CODE>Interpreter.voidObject</CODE> if there is no expression.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Static method:</U> Object <B>Scheme.eval</B> <I>(Object <VAR>sexpr</VAR>, Environment <VAR>env</VAR>)</I>
+<DD><A NAME="IDX267"></A>
+The <VAR>sexpr</VAR> is an S-expression (as may be returned by <CODE>read</CODE>).
+Evaluate it in the <VAR>env</VAR> environment, and return the result.
+</DL>
+
+
+<P>
+For the <CODE>Environment</CODE> in most cases you could use
+<SAMP>`Environment.current()'</SAMP>.  Before you start, you
+need to initialize the global environment,
+which you can with
+
+<PRE>
+Environment.setCurrent(new Scheme().getEnvironment());
+</PRE>
+
+<P>
+Alternatively, rather than setting the global environment,
+you can use this style:
+
+<PRE>
+Scheme scm = new Scheme();
+Object x = scm.eval("(+ 3 2)");
+System.out.println(x);
+</PRE>
+
+<P><HR><P>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_10.html">previous</A>, <A HREF="kawa_12.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+</BODY>
+</HTML>

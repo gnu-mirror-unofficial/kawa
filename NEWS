@@ -1,0 +1,755 @@
+Changes from Kawa 1.6.68 to 1.6.70.
+==================================
+The bare beginnings of Common Lisp support, enabled by the --commonlisp
+(or --clisp) command line option.  This is so far little more than a
+hack of the EmacsLisp support, but with lexical scoping and CL-style format.
+
+Changes from Kawa 1.6.66 to 1.6.68.
+==================================
+JEmacs news:
+- Define emacs-version as Kawa version but with leading 0 instead of 1.
+For example, the current value is "0.6.68 JEmacs".
+- New testsuite directory.
+- Improved autoload framework.  Handle ELisp autoload comments.
+- Handle escape and meta-key.
+- Handle lot more of ELisp.
+- Lots more is now done in ELisp, using .el files imported from XEmacs.
+- Incomplete support for setting mark, including using selection.
+- Basic (but incomplete) implementation of (interactive spec).
+- Common Lisp extensions: typep, default arguments.
+- A new status.html file to note what works and what doesn't.
+
+You can now specify in define and define-private the type of a
+variable.  If the variable is module-level,
+(define name :: <type> value) creates a field named "name"
+having the specified type and initial value.  (If type is not
+specified, the default is not Object, but rather a Binding
+that *contains* the variable's value.)
+
+You can now define the type of a module-level variable:  In
+(define[-private] :: type expression)
+New (define-constant name [:: type] expression) definition form.
+
+A procedure can now have arbitrary properties associated with it.
+Use procedure-property and set-procedure-property! to get and set them.
+
+The new procedure make-procedure creates a generic procedure that
+may contain one or more methods, as well as specified properties.
+
+New declaration form define-base-unit.  Both it and define-unit have been
+re-implemented to be module-safe.  Basically '(define-unit ft 12in)'
+is sugar for '(define-constant ft$unit (... (* 12 in$unit)))', where
+ft$unit and in$unit are standard identifiers managed by the module
+system.  Also, the output syntax for units and quantities is cleaner.
+
+The new declaration (module-export name ...) allows control over the
+names exported from a module.  The new declaration (module-static ...)
+allows control over which definitions are static and which are
+non-static.  This makes it easier to use a module as a Java class.
+
+Procedures names that accidentally clash with inherited method
+names (such as "run") are now re-named.
+
+Simple aliases (define-aliases defining an alias for a variable name)
+are implemented more efficiently.
+
+The package hierarchy is getter cleaner, with fewer cyclic dependencies:
+The gnu.math package no longer has any dependencies on kawa.* or gnu.*.
+Two classes were moved from gnu.text to other classes, avoiding another
+cyclic package dependency between gnu.text and gnu.mapping.  The new
+gnu.kawa.lispexpr is for compile-time handling of Lisp-like languages.
+
+Compliation of literals has been re-done.  A class that can be used
+in a literal no longer needs to be declared as Compilable.  Instead,
+you declare it as implementaing java.io.Externalizable, and make
+sure it has appropriate methods.
+
+All the standard "data" types (i.e. not procedures or ports) now
+implement java.io.Externalizable, and can thus be serialized.
+If they appear in literals, they can also be compiled.
+
+Created a new class gnu.kawa.util.AbstractString, with the Scheme
+alias <abstract-string>.  The old gnu.kawa.util.FString now
+extends AbstractString.  A new class CharBuffer provides an
+growable buffer, with markers (automatically-adjusted positions).
+Many of the Scheme <string> procedures now work on <abstract-string>.
+The JEmacs BufferContnat class (contains the characters of a buffer)
+now extends CharBuffer.
+
+Some JEmacs changes to support a "mode" concept, as well as
+preliminary support for inferior-process and telnet modes.
+
+New section in manual / web page for projects using Kawa.
+
+The record feasture (make-record-type etc) how handles "funny" type
+and fields names that need to be "mangled" to Java names.
+
+Re-did implementation of define-alias.  For example, you can
+define type-aliases: (define-alias <marker> <gnu.jemacs.buffer.Marker>)
+and then use <marker> instead of <gnu.jemacs.buffer.Marker>.
+
+(field ARRAY 'length) now works.
+
+Changes from Kawa 1.6.64 to 1.6.66
+==================================
+Added documentation to the manual for Homogeneous numeric vector datatypes
+(SRFI-4).
+
+You can now specify characters using their Unicode value:  #\u05d0 is alef.
+
+Kawa now uses a more mnemonic name mangling Scheme.  For example,
+a Scheme function named `<=' would get compiled to method `$Ls$Eq'.
+
+There is now working and useful module support, thought not all
+features are implemented.  The basic idea is that a module can be any
+class that has a default constructor (or all of whose fields and
+methods are static);  the public fields and methods of such a
+class are its exported definitions.  Compiling a Scheme file
+produces such a module.  Doing:
+	(require <classname>)
+will create an anonymous instance of <classname> (if needed), and add
+all its exported definitions to the current environment.  Note that if
+you import a class in a module you are compiling, then an instance of
+the module will be created at compile-time, and imported definitions
+are not re-imported.
+(For now you must compile a module, you cannot just load it.)
+
+The define-private keyword creates a module-local definition.
+
+New syntax to override some properties of the current module:
+(module-name <NAME>) overrides the default name for a module.
+(module-extends <CLASS>) specifies the super-class.
+(module-implements <INTERFACE> ...) specfies the implemented interfaces.
+
+The syntax:
+	(require 'keyword)
+is syntactic sugar for (require <classname>) where the classname
+is find is a "module catalog" (currently hard-wired).
+This provides compatibility with Slib.  The Slib "features"
+gen-write, pretty-print, pprint-file, and printf are now
+available in Kawa;  more will be added, depending on time and demand.
+See the package directory gnu/kawa/slib for what is available.
+
+Changes from Kawa 1.6.62 to 1.6.64
+==================================
+A lot of improvements to JEmacs (see JEmacs.SourceForge.net).
+
+kawa-compiled-VERSION.zip is replaced by kawa-compiled-VERSION.jar.
+
+You can now use Kawa to generate applets, using the new --applet switch,
+Check the "Applet compilation" section in the manual.
+Generating an application using the --main flag should work again.
+Neither --applet nor --main has Scheme hard-wired any more.
+
+A new macro `(this)' evaluates to the "this object" - the current instance
+of the current class.  The current implementation is incomplete, and buggy,
+but it will have to do for now.
+
+The command-line argument -f FILENAME will load the same files types as load.
+
+When a source file is compiled, the top-level definitions (procedures,
+variables, and macros) are compiled to final fields on the resulting class.
+This are not automatically entered into the current environment;  instead
+that is the responsibility of whoever loads the compiled class.  This
+is a major step towards a module system for Kawa.
+
+There is a new form define-private which is like define, except that
+the defined name is not exported from the current module.
+
+A procedure that has optional arguments is now typically compiled into
+multiple methods.  If it's a top-level procedure, these will be methods
+in the modules "ModuleBody" class, with the same (mangled) name.
+The compiler can in many cases call the appropriate method directly.
+Usually, each method takes a fixed number of arguments, which means
+we save the overhead of creating an array for the arguments.
+
+A top-level procedure declared using the form
+	(define (NAME ARS ...) BODY ..)
+is assumed to be "constant" if it isn't assigned to in the current
+compilation unit.  A call in the same compilation unit will now be
+implemented as a direct method call.  This is not done if the
+prcedure is declared with the form:
+	(define NAME (lambda (ARGS ,,,) BODY ...)
+
+gnu.expr.Declaration no longer inherits from gnu.bytecode.Variable.
+
+A gnu.mapping.Environment now resolves hash index collisions using
+"double hashing" and "open addressing" instead of "chaining" through
+Binding.  This allows a Binding to appear in multiple Environments.
+
+The classes Sequence, Pair, PairWithPosition, FString, and Char were
+moved from kawa.lang to the new package gnu.kawa.util.  It seems that
+these classes (except perhaps Char) belong together.  The classes List
+and Vector were also moved, and at the same time renamed to LList and
+FVector, respectively, to avoid clashed with classes in java.util.
+
+New data types and procedures for "uniform vectors" of primitive types
+were implemented.  These follow the SRFI-4 specification, which you
+can find at http://srfi.schemers.org/srfi-4/srfi-4.html .
+
+You can now use the syntax NAME :: TYPE to specify the type of a parameter.
+For example: (define (vector-length x :: <vector>) (invoke x 'length)).
+The following also works: (define (vector-length (x :: <vector>)) ...).
+
+(define-member-alias NAME OBJECT [FNAME]) is new syntactic sugar
+for (define-alias NAME (field OBJECT FNAME)), where the default for
+FNAME is the mangling of NAME.
+
+Changes from Kawa 1.6.60 to 1.6.62
+==================================
+The new function `invoke' allows you to call a Java method.
+All of `invoke', `invoke-static' and `make' now select the
+bets method.  They are also inlined at compile time in many
+cases.  Specifically, if there is a method known to be
+definitely applicable, based on compile-time types of the
+argument expressions, the compiler will choose the most
+specific such method.
+
+The functions slot-ref, slot-set!, field, and static-field are
+now inlined by the compiler when it can.
+
+Added open-input-string, open-output-string, get-output-string from SRFI-6.
+See http://srfi.schemers.org/srfi-6/srfi-6.html.
+
+The manual has a new section "Mapping Scheme names to Java names",
+and a new chapter "Types".  The chapters "Extensions", "Objects and
+Classes", and "Low-level functions" have been extensivley re-organized.
+
+The Kawa license has been simplified.  There used to be two licenses:
+One for the packages gnu.*, and one for the packages kawa.*.  There
+latter has been replaced by the former.  The "License" section of the
+manual was also improved.
+
+Changes from Kawa 1.6.59 to 1.6.60
+==================================
+There is a new package gnu.kawa.reflect.  Some classes
+that used to be in kawa.lang or kawa.standard are now there.
+
+The procedures slot-ref and slot-set! are now available.
+They are equivalent to the existing `field', but reading
+a field `x' will look for `getX' method if there is no public
+`x' field; writing to a field will look for `setX'.
+
+The procedure `make' makes it convenient to create new
+objects.
+
+There is now a teaser screen snapshot of "JEmacs"
+at http://www.bothner.com/~per/papers/jemacs.png.
+
+The html version of the manual now has a primitive index.
+The manual has been slightly re-organized, with a new
+"Classes and Objects" chapter.
+
+The new functions invoke-static and class-methods allow you
+to call an arbitary Java method.  They both take a class
+specification and a method name.  The result of class-methods
+is a generic procedure consisting of those methods whose names
+match.  (Instance methods are also matched;  they are treated
+the asme as class methods with an extra initial argument.)
+The invoke-static function also takes extra arguments, and
+actually calls the "best"-matching method.  An example:
+        (invoke-static <java.lang.Thread> 'sleep 100)
+
+Many fewer classes are now generated when compiling a Scheme file.
+It used to be that each top-level procedure got compiled to its
+own class;  that is no longer the case.  The change should
+lead to faster startup and less resource use, but procedure
+application will probably be noticably slower (though not so much
+slower as when reflection is used).  The reason for the slowdown
+is that we in the general case now do an extra method call, plus
+a not-yet-optimized switch statement.  This change is part of the
+new Kawa module system.  That will allow the compiler to
+substitute direct methods calls in more cases, which I hope will
+more than make up for the slowdown.
+
+A Scheme procedure is now in general compiled to a Java method
+whose name is a "mangling" of the Scheme procedure's name.  If the
+procedure takes a variable number of parameters, then "$V" is added
+to the name;  this indicates that the last argument is a Java
+array containing the rest of the arguments.  Conversely, calling a
+Java method whose name ends in "$V" passes any excess arguments in
+the last argument, which must be an array type.
+
+Many changes to the "Emacs-emulation" library in gnu.jemacs.buffer:
+* Implemented commands to read and save files.
+* We ask for file and buffer names using a dialog pop-up window.
+* Split windows correctly, so that the windows that are not split
+keep their sizes, the windows being split gets split as specified,
+and the frame does not change size.  Now also handles horizonal splits.
+* Fairly good support for  buffer-local keymaps and Emacs-style keymap
+search order.  A new class BufferKeymap manages the active keymaps of
+a buffer.  Multi-key key-sequences are handled.  Pending prefix keys
+are remembered on a per-buffer basis (whereas Emacs does it globally).
+
+There is now some low-level support for generic procedures.
+
+The R5RS primitives let-syntax and letrec-syntax for defining local
+syntax extensions (macros) should now work.  Also define-syntax works
+as an internal definition.  All of these should now be properly
+"hygienic".  (There is one known exception:  symbols listed among the
+literals lists are matched as raw symbols, rather that checking that
+the symbol has the same binding, if any, as at the defining site.)
+The plan is to support general functions as hygienic rewriters, as in
+the Chez Scheme "syntax-case" system;  as one part of that plan, the
+syntax-case primitive is available, but so far without any of the
+supporting machinary to support hygiene.
+
+The read-line procedure was added.  This allows you to efficiently
+read a line from an input port.  The interface is the same as scsh
+and Guile.
+
+Changes from Kawa 1.6.58 to 1.6.59
+==================================
+define-alias now works both top-level and inside a function.
+
+Optimized eqv? so if one of the arguments is constant and
+not Char or Numeric, inline it the same way eq? is.
+(This helps case when the labels are symbols,
+which help the "lattice" benchmark.) ???
+
+The Emacs-related packages are now grouped under a new gnu.jemacs package.
+
+Improved framework for catching errors.  This means improved error
+messages when passing a parameter of the wrong type.  Many standard
+procedures have been improved.
+
+Simplified, documented, and tested (!) procedure for building Kawa
+from source under Windows (95/98/NT).
+
+New macros trace and untrace for tracing procedures.
+After executing (trace PROCEDURE), debugging output will
+be written (to the standard error port) every time PROCEDURE
+is called, with the parameters and return value.  Use
+(untrace PROCEDURE) to turn tracing off.
+
+New utility functions (system-tmpdir) and (make-temporary-file [format]).
+
+A new (unfinished) framework supports multiple languages.  The
+command-line option --elisp selects Emacs Lisp, while --scheme
+(the default) selects Scheme.  (The only difference so far is the
+reader syntax;  that will change.)
+
+The `format' function now  provides fairly complete functionality
+for CommonLisp-style formatting.  (See the Comon Lisp hyperspec at
+http://www.harlequin.com/education/books/HyperSpec/Body/sec_22-3.html.)
+The floating point formatters (~F, ~E, ~G, ~$) now pass the formatst.scm
+test (from Slib, but with some "fixes"; in the testsuite directory).  Also,
+output ports now track column numbers, so ~T and ~& also work correctly.
+
+A new package gnu.emacs provides various building blocks
+for building an Emacs-like text editor.  These classes
+are only compiled when Kawa is configured with the
+new --with-swing configuration option.  This is a large
+initial step towards "JEmacs" - an Emacs re-implemented
+to use Kawa, Java, and Swing, but with full support (using
+gnu.elisp) for traditional Emacs Lisp.  For more imformation
+see gnu/emacs/overview.html.
+
+A new configuration option --with-swing can be used if Swing is available.
+It is currently only used in gnu.emacs, but that may change.
+
+Changes from Kawa 1.6.56 to 1.6.58
+==================================
+Kawa is now "properly tail-recursive" if you invoke it with the
+--full-tail-calls flag.  (Exception: the eval procedure does not
+perform proper tail calls, in violation of R5RS.  This will be
+fixed in a future release.)  Code compiled when --full-tail-calls is
+in effect is also properly tail-recursive.  Procedures compiled with
+--full-tail-calls can call procedures compiled without it, and vice
+versa (but of course without doing proper tail calls).  The default
+is still --no-full-tail-calls, partly because of performance concerns,
+partly because that provides better compatibility with Java
+conventions and tools.
+
+The keywords let (including named let), let*, and letrec support type
+specifiers for the declared variables  For example:
+	(let ((lst :: <list> (foo x))) (reverse lst))
+
+Square brackets [ ... ] are allowed as a synonym of parentheses ( ... ).
+
+Changes from Kawa 1.6.55 to 1.6.57
+==================================
+A new command-line flag --server PORT specifies that Kawa should run
+as a telnet server on the specified PORT, creating a new read-eval-print
+loop for each connection.  This allows you to connect using any
+telnet client program to a remote "Kawa server".
+
+A new front-end program, written in C, that provides editing of
+input lines, using the GNU readline library.  This is a friendlier
+interface than the plain "java kawa.repl".  However, because kawa.c
+needs readline and suitable networking library support, it is not
+built by default, but only when you configure Kawa with the
+--enable-kawa-frontend flag.
+
+The way Scheme names are mapped ("mangled") into Java identifiers
+is now more natural.  E.g. "foo-bar?" now is mapped to "isFooBar".
+
+New syntax (object (SUPERS ...) FIELD-AND-METHODS ...) for creating
+a new object instance of an anonymous class.  Now fairly powerful.
+
+New procedures field and static-field for more convenient field access.
+
+Syntactic sugar:  (lambda ARGS <TYPE> BODY) -> (lambda ARGS (as <TYPE> BODY)).
+This is especially useful for declaring methods in classes.
+
+A new synchonized form allows you to synchronize on an arbitrary Java
+object, and execute some forms while having an exclusive lock on the
+object.  (The syntax matches that used by Skij.)
+
+Changes from Kawa 1.6.53 to 1.6.55
+==================================
+New --debug-dump-zip option writes out a .zip file for compilation.
+(Useful for debugging Kawa.)
+
+You can now declare parameter types.
+
+Lot of work on more efficient procedure representation and calling
+convention:  Inlining, directly callable statics method, plus some
+procedures no longer generate a separate Class.
+
+Local functions that are only called from one locations, except for
+tail-recursion, are now inlined.  This inlines do loops, and most
+"named let" loops.
+
+New representation of closures (closures with captured local variables).
+We no longer use an array for the closure.  Instead we store the captured
+variables in the Procedure itself.  This should be faster (since
+we can use field accesses rather than array indexing, which requires
+bounds checking), and avoids a separate environment object.
+
+If the compiler sees a function call whose (non-lexically-bound) name
+matches an existing (globally-defined) procedure, and that procedure
+instance has a static method named either "apply" or the mangled
+procedure name, them the compiler emits a direct call to that method.
+This can make a very noticable speed difference, though it may
+violate strict Scheme sementics, and some code may break.
+
+Partial support for first-class "location" variables.
+
+Changes from Kawa 1.6.53 to 1.6.54
+==================================
+Created new packages gnu.mapping and gnu.expr.  Many classes were
+moved from kawa.lang to the new packages.
+(This is part of the long-term process of splitting Kawa into more
+manageable chunks, separating the Scheme-specific code from the
+language-independent code, and moving classes under the gnu hierarchy.)
+
+You can now write keywords with the colon first (e.g. :KEYWORD),
+which has exactly the same effect and meaning as putting the colon
+last (e.g. KEYWORD:).  The latter is preferred is being more consistent
+with normal English use of punctuation, but the former is allowed
+for compatibility with soem other Scheme implementations and Common Lisp.
+
+Changes from Kawa 1.6.52 to 1.6.53
+==================================
+The new package gnu.text contains facilities for reading, formatting,
+and manipulating text.  Some classes in kawa.lang where moved to there.
+
+Added string-upcase!, string-downcase!, string-capitalize!, string-upcase,
+string-downcase, and string-capitalize;  compatible with Slib.
+
+Character constants can now use octal notation (as in Guile).
+Writing a character uses octal format when that seems best.
+
+A format function, similar to that in Common Lisp (and Slib) has been
+added.
+
+The default parameter of a #!optional or #!key parameter can now be #!null.
+
+Changes since Kawa 1.6.51
+=========================
+The "record" feature has been changed to that a "record-type descriptor"
+is now a gnu.bytecode.ClassType (a <record-type>), rather than a
+java.lang.Class.  Thus make-record-type now returns a <record-type>,
+not a Class, and record-type-descriptor takes a <record-type>,
+not a Class.
+
+More robust Eval interfaces.
+
+New Lexer abstract class.  New ScmRead class (which extends Lexer)
+now contains the Scheme reader (moved from Inport).
+Now read errors are kept in queue, and can be recovered from.
+
+Comparing an exact rational and an inexact real (double) is now done
+as if by first converting the double to exact, to satisfy R5RS.
+
+Changes since Kawa 1.6.1
+========================
+The compile virtual method in Expression now takes a Target object,
+representing the "destination".  The special ConditionalTarget is
+used to evaluate the test of an 'if expression.  This allows us to
+generate much better code for and, or, eq?, not and nested if
+inside an if.
+
+Added port-line, port-column, and set-port-line! to match Guile.
+
+The Makefiles have been written so all out-of-date .java (or .scm).
+files in a directory are compiled using a single invocation of
+javac (or kawa).  Building Kawa should now be much faster.
+(But note that this depends on unreleased recent autoamke changes.)
+
+How the Kawa version number is compiled into Kawa was changed
+to make it easier for people who want to build from source on
+non-Unix-like systems.
+
+A new gnu.ecmascript package contains an extremely incomplete implementation
+of ECMSScript, the ECMA standardized version of JavaScript.  It includes
+an ECMAScript lexer (basically complete), parser (the framework is
+there but most of the language is missing), incomplete expression evaluation,
+and a read-eval-print-loop (for testing only).
+
+Changes in Kawa 1.6.1
+=====================
+Improved Kawa home page with extra links, pointer to Java-generated api docs,
+and homepages for gnu.math and gnu.bytecode.
+
+Implemented system, make-process, and some related procedures.
+
+Added macros for primitive access to object fields, static fields, and
+Java arrays.  Added constant-fold syntax, and used it for the other macros.
+
+The --main flag compiles Scheme code to an application (containing a main
+method), which can be be invoked directly by a Java interpreter.
+
+Implemented --version (following GNU standards) as kawa.repl command-line flag.
+
+Changes since Kawa 1.5.93
+=========================
+Adding make procedure to create new objects/records.
+
+Extended (set! (f . args) value) to be equivalent to ((setter f) value . args).
+Implemented setter, as well as (setter car) and (setter cdr).
+
+Can now get and set a record field value using an application:
+(rec 'fname) gets the value of the field named fname in record rec.
+(set! (rec 'fname) value) sets the value of the field named fname in rec.
+
+A partial re-write of the implementation of input ports and the Scheme
+reader, to fix some problems, add some features, and improve performance.
+
+Compiled .class files are now installed in $(datadir)/java,
+rather than $(prefix)/java.  By default, that means they are
+installed in /usr/local/shared/java, rather than /usr/local/java.
+
+There is now internal infrastructure to support inlining of
+procedures, and general procedure-specific optimized code
+generation.
+
+There is better testing that the right number of arguments are
+passed to a procedure, and better error messages when you don't.
+If the procedure is inlined, you get a compile-time error message.
+
+The functions created by primitive-constructor, primitive-virtual-method,
+primitive-static-method, and primitive-interface-method are now
+first-class procedure values.  They use the Java reflection facily,
+except when the compiler can directly inline them (in which case
+it generates the same efficient bytecodes as before).
+
+New functions instance? (tests type membership) and as (converts).
+
+The kawa.html is now split into several files, one per chapter.
+The table of contents is now kawa_toc.html.
+
+The syntactic form try-catch provides low-level exception
+handler support.  It is basically the same as Java's try/catch
+form, but in Scheme syntax.  The new procedure primitive-throw
+throws an exception object.
+
+The higher-level catch and throw procedures implement
+exception handling where the handler is specified with a "key"
+(a symbol).  These functions were taken from Guile.
+
+The error function has been generalized to take multiple arguments
+(as in Guile).  It is now a wrapper around (throw 'misc-error ...).
+
+There is a new "friendly" GUI access to the Kawa command-line.
+If you invoke kawa.repl with the -w flag, a new interaction
+window is created.  This is uses the AWT TextArea class.  You can
+create multiple "consoles".  They can either share top-level
+enevironments, or have separate environments.  This window
+interface has some nice features, including editing.  Added a
+scheme-window procedure, which is another way to create a window.
+
+Changes since Kawa 1.5
+======================
+The default prompt now shows continuations lines differently.
+
+The copy-file function was added.
+
+The variable port-char-encoding controls how external files
+are converted to/from internal Unicode characters.  It also
+controls whether CR and CR-LF are converted to LF.
+
+The reader by default no longer down-cases letters in symbols.
+A new variable symbol-read-case control how case is handled:
+'P (the default) preserves case;  'U upper-cases letters;
+'D or -" down-cases letters; and 'I inverts case.
+
+The gnu.bytecode package now supports exception handlers.
+The new syntactic form try-finally supports a cleanup hook that is run
+after some other code finishes (normally or abnormally).
+Try-finally is used to implement dynamic-wind and fluid-let.
+
+The environment handling has been improved to support thread-specific
+environments, a thread-safe fluid-let, and multiple top-levels.
+(The latter still needs a bit of work.)
+
+The gnu.bytecode package has been extensively changed.
+There are new classes representing the various standard Attributes,
+and data associated with an attribute is now stored there.
+
+Added new procedures environment-bound? and scheme-implementation-version.
+
+Scheme symbols are represented as java.lang.String objects.
+Interned symbols are interned Strings;  uninterned symbols are
+uninterned Strings.  Note that Java strings literals are
+automatically interned in JDK 1.1.  This change makes symbols
+slightly more efficient, and moves Kawa closer to Java.
+
+Ports now use the JDK 1.1 character-based Reader and Writer classes,
+rather than the byte-oriented InputStream and OutputStream classes.
+This supports different reading and writing different character
+encodings [in theory - there is no support yet for other than Ascii
+or binary files].
+
+An interactive input port now has a prompt function associated with it.
+It is settable with set-input-port-prompter!.  The prompt function
+takes one argument (the input port), and returns a prompt string.
+There are also user functions for inquiring about the current line
+and column number of an input port.
+
+The R4RS procedures transcript-on and transcript-off are implemented.
+
+Standard types can be referred to using syntax similar to RScheme.
+For example Scheme strings now have the type <string> which is
+preferred to "kawa.lang.FString" (which in addition to being longer,
+is also more suspectible to changes in internal implementation).
+Though these types are first-class values, this is so far mainly
+useful for invoking primitive methods.
+
+Changes from Kawa 1.4 to 1.5
+============================
+Execute a ~/.kawarc.scm file on startup, if it exists.
+
+Add a number of functions for testing, renaming, and deleting files.
+These are meant to be compatible with scsh, Guile, and MIT Scheme:
+file-exists?, file-directory?, file-readable?, file-writable?, delete-file,
+rename-file, create-diretory, and the variable home-directory.
+
+Fixed some small bugs, mainly in gnu.math and in load.
+
+Generalize apply to accept an arbitrary Sequence, or a primitive Java array.
+
+Changes from Kawa 1.2 to 1.4
+============================
+The codegen package has been renamed gnu.bytecode.
+The kawa.math package has been moved to gnu.math.
+Both packages have new license:  No restrictions if you use an
+unmodified release, but GNU General Public License.  Let me know
+if that causes problems.  The rest of Kawa still has the old license.
+
+Implement defmacro and gentemp.
+
+Implement make-record-type and related functions to create and use
+new record types.  A record type is implemented as a java.lang.Class
+object, and this feature depends on the new reflection features of JDK 1.1.
+
+Implement keywords, and extend lambda parameter lists to support
+#!optional #!rest and #!keyword parameters (following DSSSL).
+
+Added more primitives to call arbitrary interface and constructor methods.
+
+Changes from Kawa 1.0 to 1.2
+============================
+
+Added primitives to make it easy to call arbitrary Java methods
+from Scheme.
+
+Exact rational arithetic is now fully implemented.
+All integer functions now believed to correctly handle bignums.
+Logical operations on exact integers have been implemented.
+These include all the logical functions from Guile.
+
+Complex numbers are implemented (except {,a}{sin,cos,tan}).
+Quantities (with units) are implemented (as in DSSSL).
+
+Eval is available, as specified for R5RS.
+Also implemented are scheme-report-environment, null-environment, and
+interaction-environment.
+
+Internal define is implemented.
+
+Rough support for multiple threads is implemented.
+
+Moved kawa class to kawa/repl.  Merged in kawac (compiler)
+functionality.  A 'kawa' shell-script is now created.
+This is now the preferred interface to both the interactive
+evaluator and the compiler (on Unix-like systems).
+
+Now builds "without a snag" using Cafe 1.51 under Win95.
+(Symantec JIT (ver 2.00b19) requires disabling JIT - JAVA_COMPCMD=disable.)
+Compiles under JDK 1.1 beta (with some warnings).
+
+A testsuite (and testing framework) was added.
+
+Documentation moved to doc directory.
+There is now an internals overview, in doc/kawa-tour.ps.
+
+Changes since 0.4:
+==================
+
+The numeric classes have been re-written.  There is partial support
+for bignums (infinite-precision integers), but divide (for example)
+has not been implemented yet.  The representation of bignums uses
+2's complement, where the "big digits" are laid out so as to be
+compatible with the mpn functions of the GNU Multi-Precision library
+(gmp).  (The intent is that a future version of Kawa will support
+an option to use gmp native functions for speed.)
+
+The kawa application takes a number of useful command-line switches.
+
+Basically all of R4RS has been implemented.  All the essential
+forms and functions are implemented.  Almost all of the optional
+forms are implemented.  The exceptions are transcript-on,
+transcript-off, and the functions for complex numbers,
+and fractions (exact non-integer rationals).
+
+Loading a source file with load now wraps the entire file in
+a lambda (named "atFileLevel").  This is for better error
+reporting, and consistency with compile-file.
+
+Changes since 0.3:
+==================
+The hygienic macros described in the appendix to R4RS are now
+impemented (but only the define-syntax form).  They are
+used to implement the standard "do" form.
+
+The R5RS multiple value functions values and call-with-values are implemented.
+
+Macros (and primitive syntax) can now be autoloaded as well as procedures.
+
+New kawac application compiles to one or more .class files.
+
+Compile time errors include line numbers.
+Uncaught exceptions cause a stack trace that includes .scm line numbers.
+This makes it more practical to debug Kawa with a Java debugger.
+
+Quasiquotation is implemented.
+
+Various minor bug fixes and optimizations.
+
+Changes since 0.2:
+==================
+The biggest single change is that Scheme procedures are now compiled
+to Java bytecodes.  This is mainly for efficiency, but it also allows
+us to do tail-recursion-elimination in some cases.
+
+The "codegen" library is included.  This is a toolkit that handles
+most of the details needed to generate Java bytecode (.class) files.
+
+The internal structure of Kawa has been extensively re-written,
+especially how syntax transforms, eval, and apply are done,
+largely due to the needs for compilation.
+
+Almost all the R4RS procedures are now implemented, except that
+there are stiil large gaps in Section 6.5 "Numbers".

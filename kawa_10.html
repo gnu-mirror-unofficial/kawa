@@ -1,0 +1,885 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+
+<TITLE>Kawa, the Java-based Scheme system - Object, Classes and Modules</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_9.html">previous</A>, <A HREF="kawa_11.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC50" HREF="kawa_toc.html#TOC50">Object, Classes and Modules</A></H1>
+
+<P>
+Kawa provides various ways to define, create, and access Java objects.
+Here are the currently supported features.
+
+
+<P>
+The Kawa module system is based on the features of the Java class system.
+
+
+
+<UL>
+<LI><A HREF="kawa_10.html#SEC51">Records</A>
+<LI><A HREF="kawa_10.html#SEC52">Mangling</A>: Mapping Scheme names to Java names
+<LI><A HREF="kawa_10.html#SEC53">Allocating objects</A>
+<LI><A HREF="kawa_10.html#SEC55">Field operations</A>: Accessing fields of Java objects
+<LI><A HREF="kawa_10.html#SEC54">Method operations</A>: Calling Java methods from Scheme
+<LI><A HREF="kawa_10.html#SEC56">Anonymous classes</A>
+<LI><A HREF="kawa_10.html#SEC57">Module classes</A>: Modules and how they are compiled to classes
+</UL>
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>this</B>
+<DD><A NAME="IDX222"></A>
+Returns the "this object" - the current instance of the current class.
+The current implementation is incomplete, not robust, and not
+well defined.  However, it will have to do for now.
+Note:  "<CODE>this</CODE>" is a macro, not a variable, so you have to write
+it using parentheses: <SAMP>`(this)'</SAMP>.  A planned extension will
+allow an optional class specifier (needed for nested clases).
+</DL>
+
+
+
+
+<H2><A NAME="SEC51" HREF="kawa_toc.html#TOC51">Records</A></H2>
+
+<P>
+The Record package provides a facility for users to define their own
+record data types.  Records are extensions of the class <CODE>Record</CODE>.
+These procedures use the Java 1.1 reflection facility.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make-record-type</B> <I>type-name field-names</I>
+<DD><A NAME="IDX223"></A>
+Returns a <EM>record-type descriptor</EM>, a value representing a new data
+type disjoint from all others.  The <VAR>type-name</VAR> argument must be a
+string, but is only used for debugging purposes (such as the printed
+representation of a record of the new type).  The <VAR>field-names</VAR>
+argument is a list of symbols naming the <EM>fields</EM> of a record of the
+new type.  It is an error if the list contains any duplicates.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-constructor</B> <I>rtd [field-names]</I>
+<DD><A NAME="IDX224"></A>
+Returns a procedure for constructing new members of the type represented
+by <VAR>rtd</VAR>.  The returned procedure accepts exactly as many arguments
+as there are symbols in the given list, <VAR>field-names</VAR>; these are
+used, in order, as the initial values of those fields in a new record,
+which is returned by the constructor procedure.  The values of any
+fields not named in that list are unspecified.  The <VAR>field-names</VAR>
+argument defaults to the list of field names in the call to
+<CODE>make-record-type</CODE> that created the type represented by <VAR>rtd</VAR>;
+if the <VAR>field-names</VAR> argument is provided, it is an error if it
+contains any duplicates or any symbols not in the default list.
+
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-predicate</B> <I>rtd</I>
+<DD><A NAME="IDX225"></A>
+Returns a procedure for testing membership in the type represented by
+<VAR>rtd</VAR>.  The returned procedure accepts exactly one argument and
+returns a true value if the argument is a member of the indicated record
+type; it returns a false value otherwise.
+
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-accessor</B> <I>rtd field-name</I>
+<DD><A NAME="IDX226"></A>
+Returns a procedure for reading the value of a particular field of a
+member of the type represented by <VAR>rtd</VAR>.  The returned procedure
+accepts exactly one argument which must be a record of the appropriate
+type; it returns the current value of the field named by the symbol
+<VAR>field-name</VAR> in that record.  The symbol <VAR>field-name</VAR> must be a
+member of the list of field-names in the call to <CODE>make-record-type</CODE>
+that created the type represented by <VAR>rtd</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-modifier</B> <I>rtd field-name</I>
+<DD><A NAME="IDX227"></A>
+Returns a procedure for writing the value of a particular field of a
+member of the type represented by <VAR>rtd</VAR>.  The returned procedure
+accepts exactly two arguments: first, a record of the appropriate type,
+and second, an arbitrary Scheme value; it modifies the field named by
+the symbol <VAR>field-name</VAR> in that record to contain the given value.
+The returned value of the modifier procedure is unspecified.  The symbol
+<VAR>field-name</VAR> must be a member of the list of field-names in the call
+to <CODE>make-record-type</CODE> that created the type represented by <VAR>rtd</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record?</B> <I>obj</I>
+<DD><A NAME="IDX228"></A>
+Returns a true value if <VAR>obj</VAR> is a record of any type and a false
+value otherwise.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-type-descriptor</B> <I>record</I>
+<DD><A NAME="IDX229"></A>
+Returns a record-type descriptor representing the type of the given
+record.  That is, for example, if the returned descriptor were passed to
+<CODE>record-predicate</CODE>, the resulting predicate would return a true
+value when passed the given record.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-type-name</B> <I>rtd</I>
+<DD><A NAME="IDX230"></A>
+Returns the type-name associated with the type represented by rtd.  The
+returned value is <CODE>eqv?</CODE> to the <VAR>type-name</VAR> argument given in
+the call to <CODE>make-record-type</CODE> that created the type represented by
+<VAR>rtd</VAR>.</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>record-type-field-names</B> <I>rtd</I>
+<DD><A NAME="IDX231"></A>
+Returns a list of the symbols naming the fields in members of the type
+represented by <VAR>rtd</VAR>.  The returned value is <CODE>equal?</CODE> to the
+field-names argument given in the call to <CODE>make-record-type</CODE> that
+created the type represented by <VAR>rtd</VAR>.</DL>
+
+
+
+
+<H2><A NAME="SEC52" HREF="kawa_toc.html#TOC52">Mapping Scheme names to Java names</A></H2>
+
+<P>
+Programs use "names" to refer to various values and procedures.
+The definition of what is a "name" is different in different
+programming languages.  A name in Scheme (and other Lisp-like
+languages) can be principle contain any character (if using a
+suitable quoting convention), but typically names consist of
+"words" (one or more letters) separated by hyphens, such
+as <SAMP>`make-temporary-file'</SAMP>.  Digits
+and some special symbols are also used.  Standard Scheme
+is case-insensitive;  this means that the names <SAMP>`loop'</SAMP>,
+<SAMP>`Loop'</SAMP>, and <SAMP>`LOOP'</SAMP> are all the same name.  Kawa
+is by default case-sensitive, but we recommend that you
+avoid using upper-case letters as a general rule.
+
+
+<P>
+The Java language and the Java virtual machine uses names for
+classes, variables, fields and methods.  These names can
+contain upper- and lower-case letters, digits, and the special
+symbols <SAMP>`_'</SAMP> and <SAMP>`$'</SAMP>.
+
+
+<P>
+Given a name in a Scheme program,
+Kawa needs to map that name into a valid Java name.  A typical
+Scheme name such as <SAMP>`make-temporary-file'</SAMP> is not a valid
+Java name.  The convention for Java names is to use
+"mixed-case" words, such as <SAMP>`makeTemporaryFile'</SAMP>.
+So Kawa will translate a Scheme-style name into a Java-style
+name.  The basic rule is simple:  Hyphens are dropped, and
+a letter that follows a hyphen is translated to its
+upper-case (actually "title-case") equivalent.  Otherwise,
+letters are translated as is.
+
+
+<P>
+Some special characters are handled specially.  A final <SAMP>`?'</SAMP>
+is replaced by an <EM>initial</EM> <SAMP>`is'</SAMP>, with the following
+letter converted to titlecase.  Thus <SAMP>`number?'</SAMP> is
+converted to <SAMP>`isNumber'</SAMP> (which fits with Java conventions),
+and <SAMP>`file-exists?'</SAMP> is converted to <SAMP>`isFileExists'</SAMP>
+(which doesn't really).
+The pair <SAMP>`-&#62;'</SAMP> is translated to <SAMP>`$To$'</SAMP>.
+For example <SAMP>`list-&#62;string'</SAMP> is translated to <SAMP>`list$To$string'</SAMP>.
+
+
+<P>
+Some symbols are mapped to a mnemonic sequence, starting with a dollar-sign,
+followed by a two-character abbreviation.  For example, the less-than
+symbol <SAMP>`&#60;'</SAMP> is mangled as <SAMP>`$Ls'</SAMP>.
+See the source code to the <CODE>mangleName</CODE> method in the
+<CODE>gnu.expr.Compilation</CODE> class for the full list.
+Characters that do not have a mnemonic abbreviation are
+mangled as <SAMP>`$'</SAMP> followed by a four-hex-digit unicode value.
+For example <SAMP>`Tamil vowel sign ai'</SAMP> is mangled as <SAMP>`$0bc8'</SAMP>.
+
+
+<P>
+Note that this mapping may map different Scheme names to the
+same Java name.  For example <SAMP>`string?'</SAMP>, <SAMP>`String?'</SAMP>,
+<SAMP>`is-string'</SAMP>, <SAMP>`is-String'</SAMP>,
+and <SAMP>`isString'</SAMP> are all mapped to the same Java identifier
+<SAMP>`isString'</SAMP>.  Code that uses such "Java-clashing" names
+is <EM>not</EM> supported.  There is very partial support for
+renaming names in the case of a clash, and there may be better
+support in the future.  However, some of the nice features of
+Kawa depend on being able to map Scheme name to Java names
+naturally, so we urge you to <EM>not</EM> write code that
+"mixes" naming conventions by using (say) the names <SAMP>`open-file'</SAMP>
+and <SAMP>`openFile'</SAMP> to name two different objects.
+
+
+
+
+<H2><A NAME="SEC53" HREF="kawa_toc.html#TOC53">Allocating objects</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make</B> <I>type args ...</I>
+<DD><A NAME="IDX232"></A>
+Constructs a new object instance of the specified <VAR>type</VAR>,
+which must be either a <CODE>java.lang.Class</CODE> or a
+<CODE>&#60;gnu.bytecode.ClassType&#62;</CODE>.
+
+
+<P>
+The <VAR>args ...</VAR> are passed to the constructor of the class type.
+If there is no applicable constructor, and the <VAR>args ...</VAR>
+consist of a set of (<VAR>keyword</VAR>,<VAR>value</VAR>)-pairs,
+then the default constructor is called, and each
+(<VAR>keyword</VAR>,<VAR>value</VAR>)-pair is used to set the correspdong slot
+of the result, as if by:
+<CODE>(slot-set! <VAR>result</VAR> <VAR>keyword</VAR> <VAR>value</VAR>)</CODE>.
+
+
+<P>
+For example, the following are all equivalent:
+
+<PRE>
+(set! p (make &#60;java.awt.Point&#62; 3 4))
+
+(set! p (make &#60;java.awt.Point&#62; y: 4 x: 3))
+
+(set! p (make &#60;java.awt.Point&#62;))
+(slot-set! p 'x 3)
+(set! (slot-ref p 'y) 4)
+</PRE>
+
+</DL>
+
+
+
+<H2><A NAME="SEC54" HREF="kawa_toc.html#TOC54">Calling Java methods from Scheme</A></H2>
+
+<P>
+Kawa has both a low-level and a high-level 
+"Foreign Function Interface",
+which allows you to call any (virtual or static) Java method
+as if it were a Scheme procedure.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>invoke-static</B> <I>class name args ...</I>
+<DD><A NAME="IDX233"></A>
+The <VAR>class</VAR> can be a <CODE>&#60;java.lang.Class&#62;</CODE>, a
+<CODE>&#60;gnu.bytecode.ClassType&#62;</CODE>, or a <CODE>&#60;symbol&#62;</CODE> or <CODE>&#60;string&#62;</CODE>
+that names a Java class.  The <VAR>name</VAR> can be <CODE>&#60;symbol&#62;</CODE> or
+<CODE>&#60;string&#62;</CODE> that names one or more methods in the Java class.
+The name is "mangled" (see section <A HREF="kawa_10.html#SEC52">Mapping Scheme names to Java names</A>) into a valid Java name.
+
+
+<P>
+Any public methods (static or instance) in the specified <VAR>class</VAR> (or its
+super-classes) that match "<VAR>name</VAR>" or "<VAR>name</VAR>$V" collectively form a
+generic procedure.  When the procedure is applied to the argument list,
+the most specific applicable method is chosen depending on the
+argument list;  that method is then
+called with the given arguments.  Iff the method is an instance method,
+the first actual argument is used as the <CODE>this</CODE> argument.  If there are
+no applicable methods (or no methods at all!), or there is no "best"
+method, <CODE>WrongType</CODE> is thrown.
+
+
+<P>
+("<VAR>name</VAR>$V" is used for procedures with <CODE>#!rest</CODE> or keyword args;
+the last argument must be an array type;  all the "extra" arguments
+must be compatible with the type of the array elements.)
+
+
+<P>
+An example (derived from the Skij FAQ):
+
+<PRE>
+(invoke-static &#60;java.lang.Thread&#62; 'sleep 100)
+</PRE>
+
+<P>
+The behavior of interpreted code and compiled code is not
+indentical, though you should get the same result either way
+unless you have designed the classes rather strangely.  The
+details will be nailed down later, but the basic idea is that
+the compiler will "inline" the <CODE>invoke-static</CODE> call
+if it can pick a single "best" matching method.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>invoke</B> <I>object name args ...</I>
+<DD><A NAME="IDX234"></A>
+The <VAR>name</VAR> can be <CODE>&#60;symbol&#62;</CODE> or
+<CODE>&#60;string&#62;</CODE> that names one or more methods in the Java class.
+The name is "mangled" (see section <A HREF="kawa_10.html#SEC52">Mapping Scheme names to Java names</A>) into a valid Java name.
+
+
+<P>
+Any public methods (static or instance) in the specified <VAR>class</VAR> (or its
+super-classes) that match "<VAR>name</VAR>" or "<VAR>name</VAR>$V" collectively form a
+generic procedure.  When the procedure is applied to the argument list,
+the most specific applicable method is chosen depending on the
+argument list;  that method is then
+called with the given arguments.  Iff the method is an instance method,
+the <VAR>object</VAR> is used as the <CODE>this</CODE> argument;
+otherwise <VAR>object</VAR> is prepended to the <VAR>args</VAR> list.  If there are
+no applicable methods (or no methods at all!), or there is no "best"
+method, <CODE>WrongType</CODE> is thrown.
+
+
+<P>
+("<VAR>name</VAR>$V" is used for procedures with <CODE>#!rest</CODE> or keyword args;
+the last argument must be an array type;  all the "extra" arguments
+must be compatible with the type of the array elements.)
+
+
+<P>
+The behavior of interpreted code and compiled code is not
+indentical, though you should get the same result either way
+unless you have designed the classes rather strangely.  The
+details will be nailed down later, but the basic idea is that
+the compiler will "inline" the <CODE>invoke-static</CODE> call
+if it can pick a single "best" matching method.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>class-methods</B> <I>class name</I>
+<DD><A NAME="IDX235"></A>
+Return a generic function containing those methods of <VAR>class</VAR>
+that match the name <VAR>name</VAR>, in the sense of <CODE>invoke-static</CODE>.
+Same as:
+
+<PRE>
+(lambda args (apply invoke-static (cons class (cons name args))))
+</PRE>
+
+</DL>
+
+<P>
+Some examples using these functions are <SAMP>`vectors.scm'</SAMP>
+and <SAMP>`characters.scm'</SAMP> the directory <SAMP>`kawa/lib'</SAMP> in
+the Kawa sources.
+
+
+
+
+<H2><A NAME="SEC55" HREF="kawa_toc.html#TOC55">Accessing fields of Java objects</A></H2>
+
+<P>
+Kawa has both a high-level interface and a low-level interface for accessing
+the fields of Java objects and static fields.
+The lower-level interfaces are macros that return functions.
+These functions can be inlined, producing efficient code.
+The higher-level functions are less verbose and more convenient.
+However, they can only access public fields.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>field</B> <I>object fieldname</I>
+<DD><A NAME="IDX236"></A>
+Get the instance field with the given <VAR>fieldname</VAR> from the given
+<VAR>Object</VAR>.  Returns the value of the field, which must be public.
+This procedure has a <CODE>setter</CODE>, and so can be used as the first
+operand to <CODE>set!</CODE>.
+
+
+<P>
+The field name is "mangled" (see section <A HREF="kawa_10.html#SEC52">Mapping Scheme names to Java names</A>) into a valid Java name.
+If there is no accessible field whose name is <CODE>"<VAR>fieldname</VAR>"</CODE>,
+we look for a no-argument method whose name is <CODE>"get<VAR>Fieldname</VAR>"</CODE>.
+
+
+<P>
+If <VAR>object</VAR> is a primitive Java array, then <VAR>fieldname</VAR> can only
+be <CODE>'length</CODE>, and the result is the number of elements of the array.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>static-field</B> <I>class fieldname</I>
+<DD><A NAME="IDX237"></A>
+Get the static field with the given <VAR>fieldname</VAR> from the given
+<VAR>class</VAR>.  Returns the value of the field, which must be public.
+This procedure has a <CODE>setter</CODE>, and so can be used as the first
+operand to <CODE>set!</CODE>.
+</DL>
+
+
+<P>
+Examples:
+
+<PRE>
+(static-field &#60;java.lang.System&#62; 'err)
+;; Copy the car field of b into a.
+(set! (field a 'car) (field b 'car))
+</PRE>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>slot-ref</B> <I>object fieldname</I>
+<DD><A NAME="IDX238"></A>
+A synonym for <CODE>(field <VAR>object</VAR> <VAR>fieldname</VAR>)</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>slot-set!</B> <I>object fieldname value</I>
+<DD><A NAME="IDX239"></A>
+A synonym for <CODE>(set! (field <VAR>object</VAR> <VAR>fieldname</VAR>) <VAR>value</VAR>)</CODE>.
+</DL>
+
+
+
+
+<H2><A NAME="SEC56" HREF="kawa_toc.html#TOC56">Anonymous classes</A></H2>
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>object</B> <I>(supers ...) field-or-method-decl ...</I>
+<DD><A NAME="IDX240"></A>
+Returns a new instance of an anonymous (inner) class.
+
+<PRE>
+<VAR>field-or-method</VAR> = <VAR>field-decl</VAR> | <VAR>method-decl</VAR>
+<VAR>field-decl</VAR> = (<VAR>field-name</VAR> [[<VAR>field-type</VAR>] <VAR>field-init</VAR>])
+<VAR>method-decl</VAR> = ((<VAR>method-name</VAR> <VAR>formal-arguments</VAR>) [<VAR>rtype</VAR>] <VAR>body</VAR>)
+</PRE>
+
+<P>
+Returns a new instance of a unique (anonymous) class.
+The class inherits from the list of <VAR>supers</VAR>, where at most one of the
+elements should be the base class being extended from, and the rest
+are interfaces.
+
+
+<P>
+Each <VAR>field-decl</VAR> declares a public instance field.
+If <VAR>field-type</VAR> is given, it specifies the type of the field.
+If <VAR>field-init</VAR> is given, it is an expression whose value
+becomes the initial value of the field.
+The <VAR>field-init</VAR> is evaluated at the same time as the <CODE>object</CODE>
+expression is evaluated,
+in a scope where all the <VAR>field-name</VAR>s are visible.
+
+
+<P>
+Each <VAR>method-decl</VAR> declares a public non-static method,
+whose name is <VAR>method-name</VAR>.  (If <VAR>method-name</VAR> is not a valid
+Java method name, it is mapped to something reasonable.
+For example <CODE>foo-bar?</CODE> is mapped to <CODE>isFooBar</CODE>.)
+The types of the method arguments can be specified in the
+<VAR>formal-arguments</VAR>.  The return type can be specified by <VAR>rtype</VAR>,
+or is otherwise the type of the <VAR>body</VAR>.
+Currently, the <VAR>formal-arguments</VAR> cannot contain optional, rest,
+or keyword parameters.  (The plan is to allow optional parameters,
+implemented using multiple overloaded methods.)
+
+
+<P>
+The scope of the <VAR>body</VAR> of a method includes the <VAR>field-decl</VAR>s
+of the object.  It does include the surrounding lexical scope.
+It sort-of also includes the declared methods, but this is not working yet.
+</DL>
+
+
+
+
+<H2><A NAME="SEC57" HREF="kawa_toc.html#TOC57">Modules and how they are compiled to classes</A></H2>
+
+<P>
+A <EM>module</EM> is a set of definitions that the module <EM>exports</EM>,
+as well as some <EM>actions</EM> (expressions evaluated for their side effect).
+The top-level forms in a Scheme source file compile a module;
+the source file is the <EM>module source</EM>.
+When Kawa compiles the module source, the result is the
+<EM>module class</EM>.  Each exported definition is translated to
+a public field in the module class.
+
+
+<P>
+There are two kinds of module class:
+A <EM>static module</EM> is a class (or gets compiled to a class)
+all of whose public fields a static, and that does not have a
+public constructor.  A JVM can only have a single global instance of
+a static module.
+An <EM>instance module</EM> has a public default constructor,
+and usually has at least one non-static public field.
+There can be multiple instances
+of an instance module; each instance is called a <EM>module instance</EM>.
+However, only a single instance of a module can be <EM>registered</EM>
+in an environment, so in most cases there is only a single
+instance of instance modules.  Registering an instance in an environment
+means creating a binding mapping a magic name (derived from the class name)
+to the instance.
+
+
+<P>
+In fact, any Java class class that has the properties of either
+an instance module or a static module, is a module, and can be
+loaded or imported as such;  the class need not have written
+using Scheme.
+
+
+
+
+<H3><A NAME="SEC58" HREF="kawa_toc.html#TOC58">Name visibility</A></H3>
+
+<P>
+The definitions that a module exports are accessible to other modules.
+These are the "public" definitions, to use Java terminology.
+By default, all the identifiers declared at the top-level of a module
+are exported, except those defined using <CODE>define-private</CODE>.
+However, a major purpose of using modules is to control the set of
+names exported.  One reason is to reduce the chance of accidental
+name conflicts between separately developed modules.  An even more
+important reason is to enforce an interface:  Client modules should
+only use the names that are part of a documented interface, and should
+not use internal implementation procedures (since those may change).
+
+
+<P>
+If there is a <CODE>module-export</CODE> declaration in the module, then
+only those names listed in a <CODE>module-export</CODE> are exported.
+There can be more than one <CODE>module-export</CODE>, and they can be
+anywhere in the Scheme file.  As a matter of good style, I recommend
+a single <CODE>module-export</CODE> near the beginning of the file.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>module-export</B> <I>name ...</I>
+<DD><A NAME="IDX241"></A>
+Make the definition for each <VAR>name</VAR> be exported.
+Note that it is an error if there is no definition for <VAR>name</VAR>
+in the current module, or if it is defined using <CODE>define-private</CODE>.
+</DL>
+
+
+<P>
+In this module, <CODE>fact</CODE> is public and <CODE>worker</CODE> is private:
+
+<PRE>
+(module-export fact)
+(define (worker x) ...)
+(define (fact x) ...)
+</PRE>
+
+<P>
+Alternatively, you can write:
+
+<PRE>
+(define-private (worker x) ...)
+(define (fact x) ...)
+</PRE>
+
+
+
+<H3><A NAME="SEC59" HREF="kawa_toc.html#TOC59">Definitions</A></H3>
+
+<P>
+In addition to <CODE>define</CODE> (which can take an optional type specifier),
+Kawa has some extra definition forms.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>define-private</B> <I>name [:: type] value</I>
+<DD><A NAME="IDX242"></A>
+<DT><U>Syntax:</U> <B>define-private</B> <I>(name formals) body</I>
+<DD><A NAME="IDX243"></A>
+Same as <CODE>define</CODE>, except that <CODE>name</CODE> is not exported.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>define-constant</B> <I>name [:: type] value</I>
+<DD><A NAME="IDX244"></A>
+Definites <VAR>name</VAR> to have the given <VAR>value</VAR>.
+The value is readonly, and you cannot assign to it.
+(This is not fully enforced.)
+If the definition is at module level, then the compiler
+will create a <CODE>final</CODE> field with the given name and type.
+If <VAR>value</VAR> is evaluated as normal; however, if it is a
+compile-time constant, it defaults to being static.
+</DL>
+
+
+
+
+<H3><A NAME="SEC60" HREF="kawa_toc.html#TOC60">How a module becomes a class</A></H3>
+
+<P>
+If you want to just use a Scheme module as a module (i.e. <CODE>load</CODE>
+or <CODE>require</CODE> it), you don't care how it gets translated
+into a module class.  However, Kawa gives you some control over how this
+is done, and you can use a Scheme module to define a class which
+you can use with other Java classes.  This style of class definition
+is an alternative to <CODE>define-class</CODE> [not yet implemented]
+which lets you define classes and instances fairly conveniently.
+
+
+<P>
+The default name of the module class is the main part of the
+filename of the Scheme source file (with directories and extensions
+sripped off).  That can be overridden by the <CODE>-T</CODE> Kawa
+command-line flag.  The package-prefix specified by the <CODE>-P</CODE>
+flag is prepended to give the fully-qualified class name.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>module-name</B> <I>&#60;name&#62;</I>
+<DD><A NAME="IDX245"></A>
+Sets the name of the generated class, overriding the default.
+If there is no <SAMP>`.'</SAMP> in the <VAR>name</VAR>, the package-prefix
+(specified by the <CODE>-P</CODE> Kawa command-line flag) is prepended.
+</DL>
+
+
+<P>
+By default, the base class of the generated module class is unspecified;
+you cannot count on it being more specific than <CODE>Object</CODE>.
+However, you can override it with <CODE>module-extends</CODE>.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>module-extends</B> <I>&#60;class&#62;</I>
+<DD><A NAME="IDX246"></A>
+Specifies that the class generated from the immediately surrounding
+module should extend (be a sub-class of) the class <CODE>&#60;<VAR>class</VAR>&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>module-implements</B> <I>&#60;interface&#62; ...</I>
+<DD><A NAME="IDX247"></A>
+Specifies that the class generated from the immediately surrounding
+module should implement the interfaces listed.
+</DL>
+
+
+<P>
+Note that the compiler does <EM>not</EM> currently check that all the
+abstract methods requires by the base class or implemented interfaces
+are actually provided, and have the correct signatures.  This will
+hopefully be fixed, but for now, if you are forgot a method, you will
+probably get a verifier error
+
+
+<P>
+For each top-level exported definition the compiler creates a
+corresponding public field with a similar (mangled) name.
+By default, there is some indirection:  The value of the Scheme variable
+is not that of the field itself.  Instead, the field is a
+<CODE>gnu.mapping.Binding</CODE> object, and the value Scheme variable is
+defined to be the value stored in the <CODE>Binding</CODE>.
+Howewer, if you specify an explicit type, then the field will
+have the specified type, instead of being a <CODE>Binding</CODE>.
+The indirection using <CODE>Binding</CODE> is also avoided if you use
+<CODE>define-constant</CODE>.
+
+
+<P>
+If the Scheme definition defines a procedure (which is not re-assigned
+in the module), then the compiler assumes the variable as bound as a
+constant procedure.  The compiler generates one or more methods
+corresponding to the body of the Scheme procedure. It also generates
+a public field with the same name; the value of the field is an
+instance of a subclass of <CODE>&#60;gnu.mapping.Procedure&#62;</CODE> which when
+applied will execute the correct method (depending on the actual arguments).
+The field is used when the procedure used as a value (such as being passed
+as an argument to <CODE>map</CODE>), but when the compiler is able to do so,
+it will generate code to call the correct method directly.
+
+
+<P>
+You can control the signature of the generated method by declaring
+the parameter types and the return type of the method.  See the
+applet (see section <A HREF="kawa_7.html#SEC18">Compiling Scheme to an applet</A>) example for how this can be done.
+If the procedures has optional parameters, then the compiler will
+generate multiple methods, one for each argument list length.
+(In rare cases the default expression may be such that this is
+not possible, in which case an "variable argument list" method
+is generated instead.  This only happens when there is a nested
+scope <EM>inside</EM> the default expression, which is very contrived.)
+If there are <CODE>#!keyword</CODE> or <CODE>#!rest</CODE> arguments, the compiler
+generate a "variable argument list" method.  This is a method whose
+last parameter is either an array or a <CODE>&#60;list&#62;</CODE>, and whose
+name has <CODE>$V</CODE> appended to indicate the last parameter is a list.
+
+
+<P>
+Top-leval macros (defined using either <CODE>define-syntax</CODE>
+or <CODE>defmacro</CODE>) create a field whose type is currently a sub-class of
+<CODE>kawa.lang.Syntax</CODE>;  this allows importing modules to detect
+that the field is a macro and apply the macro at compile time.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>module-static</B> <I>name ...</I>
+<DD><A NAME="IDX248"></A>
+<DT><U>Syntax:</U> <B>module-static</B> <I><CODE>#t</CODE></I>
+<DD><A NAME="IDX249"></A>
+<DT><U>Syntax:</U> <B>module-static</B> <I><CODE>#f</CODE></I>
+<DD><A NAME="IDX250"></A>
+Control whether the generated fields and methods are static.
+If <CODE>#t</CODE> is specified, then the module will be a static module,
+<EM>all</EM> definitions will be static, and the module body is evaluated
+in the class's static initializer.
+Otherwise, the module is an instance module.  However, the <VAR>name</VAR>s
+that are explicitly listed will be compiled to static fields and methods.
+If <CODE>#f</CODE> is specified, then all exported names will be compiled
+to non-static (instance) fields and methods.
+
+
+<P>
+By default, if no <CODE>module-static</CODE> is specified, the following rules apply:
+
+<OL>
+<LI>
+
+If there is a <CODE>module-extends</CODE> or <CODE>module-implements</CODE>
+declaration, then <CODE>(module-static #f)</CODE> is implied.
+<LI>
+
+If the <CODE>--module-static</CODE> command-line parameter is specified,
+then <CODE>(module-static #t)</CODE> is implied.
+<LI>
+
+(Not yet implemented: If there are no top-level actions and all
+definitions are procedure definitions, macro definitions, or
+constant definitions, then <CODE>(module-static #t)</CODE> is implied.)
+<LI>
+
+Otherwise, a method will be static iff it doesn't need to reference non-static
+fields or methods of the module instance.  In that case, the corresponding
+field will also be static.
+</OL>
+
+<P>
+Note <CODE>(module-static #t)</CODE> usually produces more efficient
+code, and is recommended if a module contains only procedure or macro
+definitions.  (This may become the default.)
+However, a static module means that all environments in a JVM
+share the same bindings, which you may not want if you use
+multiple top-level environments.
+</DL>
+
+
+<P>
+Unfortuntely, the Java class verifier does not allow fields to have
+arbitrary names.  Therefore, the name of a field that represents a
+Scheme variable is "mangled" (see section <A HREF="kawa_10.html#SEC52">Mapping Scheme names to Java names</A>) into an acceptable Java name.
+The implementation can recover the original name of a field <CODE>X</CODE>
+as <CODE>((gnu.mapping.Named) X).getName()</CODE> because all the standard
+compiler-generate field types implemented the <CODE>Named</CODE> interface.
+
+
+<P>
+The top-level actions of a module will get compiled to a <CODE>run</CODE>
+method.  If there is an explicit <CODE>method-extends</CODE>, then the
+module class will also automatically implement <CODE>java.lang.Runnable</CODE>.
+(Otherwise, the class does not implement <CODE>Runnable</CODE>, since in that
+case the <CODE>run</CODE> method return an <CODE>Object</CODE> rather than <CODE>void</CODE>.
+This will likely change.)
+
+
+
+
+<H3><A NAME="SEC61" HREF="kawa_toc.html#TOC61">Requiring (importing) a module</A></H3>
+
+<P>
+You can import a module into the current namespace with <CODE>require</CODE>.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>require</B> <I>modulespec</I>
+<DD><A NAME="IDX251"></A>
+The <VAR>modulespec</VAR> can be either a <CODE>&#60;<VAR>classname</VAR>&#62;</CODE>
+or a <CODE>'<VAR>featurename</VAR></CODE>.  In either case the names
+exported by the specified module (class) are added to the current
+set of visible names.
+
+
+<P>
+If <VAR>modulespec</VAR> is <CODE>&#60;<VAR>classname</VAR>&#62;</CODE> where <VAR>classname</VAR>
+is an instance module (it has a public default constructor),
+and if no module instance for that class
+has been registered in the current environment, then a new instance
+is created and registered (using a "magic" identifier).
+If the module class either inherits from <CODE>gnu.expr.ModuleBody</CODE>
+or implements <CODE>java.lang.Runnable</CODE> then the corresponding <CODE>run</CODE>
+method is executed.  (This is done <EM>after</EM> the instance is
+registered so that cycles can be handled.)  These actions (creating,
+registering, and running the module instance) are done both at compile
+time and at run time, if necessary.
+
+
+<P>
+All the public fields of the module class are then incorporated
+in the current set of local visible names in the current module.
+This is done at compile time - no new bindings are created at run-time
+(except for the magic binding used to register the module instance),
+and the imported bindings are private to the current module.
+References to the imported bindings will be compiled as field
+references, using the module instance (except for static fields).
+
+
+<P>
+If the <VAR>modulespec</VAR> is <CODE>'<VAR>featurename</VAR></CODE> then the
+<VAR>featurename</VAR> is looked up (at compile time) in the "feature table"
+which yields the implementing <CODE>&#60;<VAR>classname</VAR>&#62;</CODE>.
+</DL>
+
+
+<P>
+For some examples, you may want to look in the <CODE>gnu/kawa/slib</CODE>
+directory.
+
+
+<P><HR><P>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_9.html">previous</A>, <A HREF="kawa_11.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+</BODY>
+</HTML>

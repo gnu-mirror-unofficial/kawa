@@ -1,0 +1,309 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+
+<TITLE>Kawa, the Java-based Scheme system - Types</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_8.html">previous</A>, <A HREF="kawa_10.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC47" HREF="kawa_toc.html#TOC47">Types</A></H1>
+
+<P>
+A <EM>type</EM> is a set of values, plus an associated set of operations
+valid on those values.
+Types are useful for catching errors ("type-checking"), documenting
+the programmer's intent, and to help the compiler generate better code.
+Types in some languages (such as C) appear in programs,
+but do not exist at run-time.  In such languages, all type-checking
+is done at compile-time.  Other languages (such as standard Scheme)
+do not have types as such, but they have <EM>predicates</EM>, which
+allow you to check if a value is a member of certain sets;  also,
+the primitive functions will check at run-time if the arguments
+are members of the allowed sets.  Other languages, including Java
+and Common Lisp, provide a combination:  Types may be used as specifiers
+to guide the compiler, but also exist as actual run-time values.
+In Java, for each class, there is a corresponding <CODE>java.lang.Class</CODE>
+run-time object, as well as an associated type (the set of values
+of that class, plus its sub-classes, plus <CODE>null</CODE>).
+
+
+<P>
+Kawa, like Java, has first-class types, that is types exist as
+objects you can pass around at run-time.  For each Java type,
+there is a corresponding Kawa type (but not necessarily vice
+versa).  It would be nice if we could represent run-time
+type values using <CODE>java.lang.Class</CODE> objects, but unfortunately
+that does not work very well.  One reason is that we need
+to be able to refer to types and classes that do not exist yet,
+because we are in the processing of compiling them.  Another
+reason is that we want to be able to distinuish between different
+types that are implemented using the same Java class.
+
+
+<P>
+Various Kawa constructs require or allow a type to be specified.
+Those specifications consist of <EM>type expressions</EM>, which
+is evaluated to yield a type value.  The current Kawa compiler
+is rather simple-minded, and in many places only allows simple
+types that the compiler can evaluate at compile-time.
+More specifically, it only allows simple <EM>type names</EM>
+that map to primitive Java types or java classes.
+
+
+
+<UL>
+<LI><A HREF="kawa_9.html#SEC48">Standard Types</A>
+<LI><A HREF="kawa_9.html#SEC49">Declaring Types of Variables</A>
+</UL>
+
+
+
+<H2><A NAME="SEC48" HREF="kawa_toc.html#TOC48">Standard Types</A></H2>
+
+<P>
+These types are bound to identifiers having the form <CODE>&#60;TYPENAME&#62;</CODE>.
+(This syntax and most of the names are as in RScheme.)
+
+
+<P>
+To find which Java classes these types map into, look in
+<CODE>kawa/standard/Scheme.java</CODE>.
+
+
+<P>
+Note that the value of these variables are instances
+of <CODE>gnu.bytecode.Type</CODE>,
+not (as you might at first expect) <CODE>java.lang.Class</CODE>.
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;object&#62;</B>
+<DD><A NAME="IDX200"></A>
+An arbitrary Scheme value - and hence an arbitrary Java object.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;number&#62;</B>
+<DD><A NAME="IDX201"></A>
+The type of Scheme numbers.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;quantity&#62;</B>
+<DD><A NAME="IDX202"></A>
+The type of quantities optionally with units.
+This is a sub-type of <CODE>&#60;number&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;complex&#62;</B>
+<DD><A NAME="IDX203"></A>
+The type of complex numbers.
+This is a sub-type of <CODE>&#60;quantity&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;real&#62;</B>
+<DD><A NAME="IDX204"></A>
+The type of real numbers.
+This is a sub-type of <CODE>&#60;complex&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;rational&#62;</B>
+<DD><A NAME="IDX205"></A>
+The type of complex numbers.
+This is a sub-type of <CODE>&#60;real&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;integer&#62;</B>
+<DD><A NAME="IDX206"></A>
+The type of Scheme integers.
+This is a sub-type of <CODE>&#60;rational&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;symbol&#62;</B>
+<DD><A NAME="IDX207"></A>
+The type of Scheme symbols.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;keyword&#62;</B>
+<DD><A NAME="IDX208"></A>
+The type of keyword values.  See section <A HREF="kawa_8.html#SEC22">Keywords</A>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;list&#62;</B>
+<DD><A NAME="IDX209"></A>
+The type of Scheme lists (pure and impure, including the empty list).
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;pair&#62;</B>
+<DD><A NAME="IDX210"></A>
+The type of Scheme pairs.  This is a sub-type of <CODE>&#60;list&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;string&#62;</B>
+<DD><A NAME="IDX211"></A>
+The type of (mutable) Scheme strings.
+This is <EM>not</EM> the same as (non-mutable) Java strings
+(which happen to be the same as <CODE>&#60;symbol&#62;</CODE>).
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;character&#62;</B>
+<DD><A NAME="IDX212"></A>
+The type of Scheme character values.  This is a sub-type of
+<CODE>&#60;object&#62;</CODE>, in contrast to type <CODE>&#60;char&#62;</CODE>, which is the
+primitive Java <CODE>char</CODE> type.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;vector&#62;</B>
+<DD><A NAME="IDX213"></A>
+The type of Scheme vectors.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;procedure&#62;</B>
+<DD><A NAME="IDX214"></A>
+The type of Scheme procedures.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;input-port&#62;</B>
+<DD><A NAME="IDX215"></A>
+The type of Scheme input ports.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;output-port&#62;</B>
+<DD><A NAME="IDX216"></A>
+The type of Scheme output ports.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;String&#62;</B>
+<DD><A NAME="IDX217"></A>
+This type name is a special case.  It specifies the class
+<CODE>&#60;java.lang.String&#62;</CODE> (just as <CODE>&#60;symbol&#62;</CODE> does).
+However, coercing a value to <CODE>&#60;String&#62;</CODE> is done by
+invoking the <CODE>toString</CODE> method on the value to be coerced.
+Thus it "works" for all objects.
+However, it does not work for <CODE>#!null</CODE>.  (Using
+the fully-qualified <CODE>&#60;java.lang.String&#62;</CODE> does work for <CODE>#!null</CODE>,
+but does not work for non-<CODE>String</CODE> objects.)
+</DL>
+
+
+<P>
+More will be added later.
+
+
+<P>
+A type specifier can also be one of the primitive Java types.
+The numeric types <CODE>&#60;long&#62;</CODE>, <CODE>&#60;int&#62;</CODE>, <CODE>&#60;short&#62;</CODE>,
+<CODE>&#60;byte&#62;</CODE>, <CODE>&#60;float&#62;</CODE>, and <CODE>&#60;double&#62;</CODE> are converted from the
+corresponding Scheme number classes.  Similarly, <CODE>&#60;char&#62;</CODE>
+can be converted to and from Scheme characters.  The type
+<CODE>boolean</CODE> matches any object, and the result is <CODE>false</CODE>
+if and only if the actual argument is <CODE>#f</CODE>.
+The return type <CODE>&#60;void&#62;</CODE> indicates that no value is returned.
+
+
+<P>
+A type specifier can also be a fully-qualified Java class name
+(for example <CODE>&#60;java.lang.StringBuffer&#62;</CODE>).  In that case,
+the actual argument is cast at run time to the named class.
+Also, <CODE>&#60;java.lang.StringBuffer[]&#62;</CODE> represents
+an array of references to <CODE>java.lang.StringBuffer</CODE> objects.
+
+
+
+
+<H2><A NAME="SEC49" HREF="kawa_toc.html#TOC49">Declaring Types of Variables</A></H2>
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>let</B> <I>((name [:: type] init) ...) body</I>
+<DD><A NAME="IDX218"></A>
+Declare new locals variables with the given <VAR>name</VAR>, initial value
+<VAR>init</VAR>, and optional type specification <VAR>type</VAR>.
+If <VAR>type</VAR> is specified, then the expression <VAR>init</VAR> is evaluated,
+the result coerced to <VAR>type</VAR>, and then assigned to the variable.
+If <VAR>type</VAR> is not specified, it defaults to <CODE>&#60;object&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>let*</B> <I>((name [:: type] init) ...) body</I>
+<DD><A NAME="IDX219"></A>
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>letrec</B> <I>((name [:: type] init) ...) body</I>
+<DD><A NAME="IDX220"></A>
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>define</B> <I>[:: type] value</I>
+<DD><A NAME="IDX221"></A>
+</DL>
+
+
+<P>
+See also <CODE>define-private</CODE>, and <CODE>define-constant</CODE>.
+
+
+<P><HR><P>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_8.html">previous</A>, <A HREF="kawa_10.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+</BODY>
+</HTML>

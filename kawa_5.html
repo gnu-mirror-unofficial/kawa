@@ -1,0 +1,252 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+
+<TITLE>Kawa, the Java-based Scheme system - How to start up and run Kawa</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_4.html">previous</A>, <A HREF="kawa_6.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC9" HREF="kawa_toc.html#TOC9">How to start up and run Kawa</A></H1>
+
+<P>
+The easiest way to start up Kawa is to run the <SAMP>`kawa'</SAMP>
+program.  This finds your java interpreter, and sets up <SAMP>`CLASSPATH'</SAMP>
+correctly.
+If you have installed Kawa such <CODE>$PREFIX/bin</CODE> is in your <CODE>$PATH</CODE>,
+just do:
+
+<PRE>
+kawa
+</PRE>
+
+<P>
+However, <SAMP>`kawa'</SAMP> only works if you have a Unix-like environment.
+On some platforms, <SAMP>`kawa'</SAMP> is a program that uses the GNU
+<SAMP>`readline'</SAMP> library to provide input line editing.
+
+
+<P>
+To run Kawa manually, you must start a Java interpreter.
+How you do this depends on the Java interpreter.
+For JavaSoft's JDK, you must have the Java interpreter
+in your <CODE>PATH</CODE>.
+You must also make sure that the <CODE>kawa/repl.class</CODE> file,
+the rest of the Kawa packages, and the standard Java
+packages can be found by searching CLASSPATH.
+See section <A HREF="kawa_4.html#SEC5">Getting and running Java</A>.
+
+
+<P>
+Then you do:
+
+<PRE>
+java kawa.repl
+</PRE>
+
+<P>
+In either case, you will then get the <SAMP>`#|kawa:1|#'</SAMP> prompt,
+which means you are
+in the Kawa read-eval-print-loop.  If you type a Scheme
+expression, Kawa will evaluate it.  Kawa will then print the
+result (if there is a non-"void" result).
+
+
+
+<UL>
+<LI><A HREF="kawa_5.html#SEC10">Options</A>: Command-line arguments
+<LI><A HREF="kawa_5.html#SEC11">New-Window</A>: Running a Command Interpreter in a new Window
+<LI><A HREF="kawa_5.html#SEC12">Exiting</A>: Exiting Kawa
+</UL>
+
+
+
+<H2><A NAME="SEC10" HREF="kawa_toc.html#TOC10">Command-line arguments</A></H2>
+
+<P>
+<A NAME="IDX1"></A>
+You can pass various flags to Kawa, for example:
+
+<PRE>
+kawa -e '(display (+ 12 4))(newline)'
+</PRE>
+
+<P>
+or:
+
+<PRE>
+java kawa.repl -e '(display (+ 12 4))(newline)'
+</PRE>
+
+<P>
+Either causes Kawa to print <SAMP>`16'</SAMP>, and then exit.
+
+
+<P>
+At startup, Kawa executes an init file from the user's home
+directory.
+The init file is named <CODE>.kawarc.scm</CODE> on Unix-like systems
+(those for which the file separator is <CODE>'/'</CODE>),
+and <CODE>kawarc.scm</CODE> on other systems.
+This is done before the read-eval-print loop
+or before the first <CODE>-f</CODE> or <CODE>-c</CODE> argument.  (It is not run
+for a <CODE>-e</CODE> command, to allow you to set options to override
+the defaults.)
+
+
+<DL COMPACT>
+
+<DT><SAMP>`-e <VAR>expr</VAR>'</SAMP>
+<DD>
+Kawa evaluates <VAR>expr</VAR>, which contains one or more Scheme expressions.
+Does not cause the <CODE>~/.kawarc.scm</CODE> init file to be run.
+<DT><SAMP>`-c <VAR>expr</VAR>'</SAMP>
+<DD>
+Same as <SAMP>`-e <VAR>expr</VAR>'</SAMP>, except that it
+does cause the <CODE>~/.kawarc.scm</CODE> init file to be run.
+<DT><SAMP>`-f <VAR>filename</VAR>'</SAMP>
+<DD>
+Kawa reads and evaluates expressions from the file named by <VAR>filename</VAR>.
+If <VAR>filename</VAR> is <SAMP>`-'</SAMP>, standard input is read (with no prompting).
+Otherwise, is equivalent to evaluating <SAMP>`(load "<VAR>filename</VAR>")'</SAMP>.
+<DT><SAMP>`-s'</SAMP>
+<DD>
+<DT><SAMP>`--'</SAMP>
+<DD>
+The global variable <SAMP>`command-line-arguments'</SAMP> is set to the remaining
+arguments (if any), and an interactive read-eval-print loop is started.
+This uses the same "console" as where you started up Kawa;
+use <SAMP>`-w'</SAMP> to get a new window.
+<DT><SAMP>`-w'</SAMP>
+<DD>
+Creates a new top-level window, and runs an interactive read-eval-print
+in the new window.  See section <A HREF="kawa_5.html#SEC11">Running a Command Interpreter in a new Window</A>.
+Same as <CODE>-e (scheme-window #t)</CODE>.
+You can specify multiple <SAMP>`-w'</SAMP> options, and also use <SAMP>`-s'</SAMP>.
+<DT><SAMP>`--version'</SAMP>
+<DD>
+Prints out the Kawa version number, and then exits.
+<DT><SAMP>`--server <VAR>portnum</VAR>'</SAMP>
+<DD>
+Start a server listening from connections on the specified <VAR>portnum</VAR>.
+Each connection using the Telnet protocol causes a new read-eval-print-loop
+to started.  This option allows you to connect using any
+Telnet client program to a remote "Kawa server".
+<DT><SAMP>`--scheme'</SAMP>
+<DD>
+Set the default language to Scheme.
+(This is the default unless you select another language.)
+<DT><SAMP>`--elisp'</SAMP>
+<DD>
+<DT><SAMP>`--emacs'</SAMP>
+<DD>
+<DT><SAMP>`--emacs-lisp'</SAMP>
+<DD>
+Set the default language to Emacs Lisp.
+(The implementation is quite incomplete.)
+<DT><SAMP>`--lisp'</SAMP>
+<DD>
+<DT><SAMP>`--clisp'</SAMP>
+<DD>
+<DT><SAMP>`--clisp'</SAMP>
+<DD>
+<DT><SAMP>`--commonlisp'</SAMP>
+<DD>
+<DT><SAMP>`--common-lisp'</SAMP>
+<DD>
+Set the default language to CommonLisp.
+(The implementation is <EM>very</EM> incomplete.)
+</DL>
+
+<P>
+The following options control which calling conventions are used:
+<DL COMPACT>
+
+<DT><SAMP>`--full-tailcalls'</SAMP>
+<DD>
+Use a calling convention that supports proper tail recursion.
+<DT><SAMP>`--no-full-tailcalls'</SAMP>
+<DD>
+Use a calling convention that does not support proper tail recursion.
+Self-tail-recursion (i.e. a recursive call to the current function)
+is still implemented correctly, assuming that the called function
+is known at compile time.
+</DL>
+
+<P>
+The default is currently <CODE>--no-full-tailcalls</CODE> because I believe it is
+faster (though I have not done any measurements yet).
+It is also closer to the Java call model, so may be better for people
+primarily interested in using Kawa for scripting Java systems.
+
+
+<P>
+Both calling conventions can co-exist:  Code compiled
+with <CODE>--full-tailcalls</CODE> can call code compiled
+with <CODE>--no-full-tailcalls</CODE> and vice versa.
+
+
+<P>
+The options <SAMP>`-C'</SAMP>, <SAMP>`-d'</SAMP>, <SAMP>`-T'</SAMP>, <SAMP>`-P'</SAMP>, <SAMP>`--main'</SAMP>
+and <SAMP>`--applet'</SAMP> are used to compile a Scheme file;
+see section <A HREF="kawa_7.html#SEC16">Compiling Scheme to a set of .class files</A>.
+The option <SAMP>`--connect <VAR>portnum</VAR>'</SAMP> is only used by
+the <SAMP>`kawa'</SAMP> front-end program.
+
+
+<P>
+If there are further command-line arguments after the options
+have been processed, then the first remaining argument names a
+file that is read and evaluated.  If there is no such argument,
+then Kawa enters an interactive read-eval-print loop,
+but only if none of the <SAMP>`-c'</SAMP>, <SAMP>`-e'</SAMP>, <SAMP>`-f'</SAMP>, <SAMP>`-s'</SAMP>,
+<SAMP>`-C'</SAMP>, or <SAMP>`--'</SAMP> options were specified.
+
+
+
+
+<H2><A NAME="SEC11" HREF="kawa_toc.html#TOC11">Running a Command Interpreter in a new Window</A></H2>
+
+<P>
+An alternative interface runs the Java read-eval-print-loop
+inside a new window. This is in some ways nicer.  One reason
+is that it provides better editing.  You can also create
+new windows.  They can either have different top-level
+environments or they can share environments.  To try it, do:
+
+<PRE>
+java kawa.repl -w
+</PRE>
+
+
+
+<H2><A NAME="SEC12" HREF="kawa_toc.html#TOC12">Exiting Kawa</A></H2>
+<P>
+Kawa normally keeps running as long as there is an active
+read-eval-print loop still awaiting input or there is an unfinished
+other computation (such as requested by a <SAMP>`-e'</SAMP> of <SAMP>`-f'</SAMP> option).
+
+
+<P>
+To close a read-eval-print-loop, you can type the special
+literal <CODE>#!eof</CODE> at top level.  This is recognized as end-of-file.
+Unfortunately, due to thread-related complications, just typing
+an end-of-file character (normally ctrl/D until Unix), will not work.
+
+
+<P>
+If the read-eval-print-loop
+is in a new window, you can select <SAMP>`Close'</SAMP> from the <SAMP>`File'</SAMP> menu.
+
+
+<P>
+To exit the entire Kawa session, call the
+<CODE>exit</CODE> procedure (with 0 or 1 integer arguments).
+
+
+<P><HR><P>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_4.html">previous</A>, <A HREF="kawa_6.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+</BODY>
+</HTML>

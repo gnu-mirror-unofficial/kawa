@@ -1,0 +1,2481 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from /home/bothner/Kawa/kawa/doc/kawa.texi on 26 June 2000 -->
+
+<TITLE>Kawa, the Java-based Scheme system - Extensions</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_7.html">previous</A>, <A HREF="kawa_9.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC19" HREF="kawa_toc.html#TOC19">Extensions</A></H1>
+
+
+<UL>
+<LI><A HREF="kawa_8.html#SEC20">Multiple values</A>
+<LI><A HREF="kawa_8.html#SEC22">Keywords</A>
+<LI><A HREF="kawa_8.html#SEC21">Special named constants</A>
+<LI><A HREF="kawa_8.html#SEC23">Procedures</A>
+<LI><A HREF="kawa_8.html#SEC27">Quantities</A>
+<LI><A HREF="kawa_8.html#SEC28">Logical Number Operations</A>
+<LI><A HREF="kawa_8.html#SEC29">Strings</A>
+<LI><A HREF="kawa_8.html#SEC30">Uniform vectors</A>
+<LI><A HREF="kawa_8.html#SEC31">Files</A>: File System Interface
+<LI><A HREF="kawa_8.html#SEC32">Ports</A>
+<LI><A HREF="kawa_8.html#SEC33">Format</A>: Formatted Output (Common-Lisp-style)
+<LI><A HREF="kawa_8.html#SEC40">Exceptions</A>: Signalling and recovering from exceptions
+<LI><A HREF="kawa_8.html#SEC41">Locations</A>
+<LI><A HREF="kawa_8.html#SEC42">Eval and Environments</A>
+<LI><A HREF="kawa_8.html#SEC43">Debugging</A>
+<LI><A HREF="kawa_8.html#SEC44">Threads</A>
+<LI><A HREF="kawa_8.html#SEC45">Processes</A>
+<LI><A HREF="kawa_8.html#SEC46">Miscellaneous</A>
+</UL>
+
+
+
+<H2><A NAME="SEC20" HREF="kawa_toc.html#TOC20">Multiple values</A></H2>
+
+<P>
+The multiple-value feature was added in R5RS.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>values</B> <I>object ...</I>
+<DD><A NAME="IDX2"></A>
+Delivers all of its arguments to its continuation.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>call-with-values</B> <I>thunk receiver</I>
+<DD><A NAME="IDX3"></A>
+Call its <VAR>thunk</VAR> argument with a continuation that,
+when passed some values, calls the <VAR>receiver</VAR> procedure
+with those values as arguments.
+</DL>
+
+
+
+
+<H2><A NAME="SEC21" HREF="kawa_toc.html#TOC21">Special named constants</A></H2>
+
+<P>
+<DL>
+<DT><U>Constant:</U> <B>#!optional</B>
+<DD><A NAME="IDX4"></A>
+Special self-evaluating literal used in lambda parameter lists
+before optional parameters.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Constant:</U> <B>#!rest</B>
+<DD><A NAME="IDX5"></A>
+Special self-evaluating literal used in lambda parameter lists
+before the rest parameter.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Constant:</U> <B>#!key</B>
+<DD><A NAME="IDX6"></A>
+Special self-evaluating literal used in lambda parameter lists
+before keyword parameters.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Constant:</U> <B>#!eof</B>
+<DD><A NAME="IDX7"></A>
+The end-of-file object.
+
+
+<P>
+Note that if the Scheme reader sees this literal at top-level,
+it is returned literally.  This is indistinguishable from
+coming to the end of the input file.  If you do not want to end reading,
+but want the actual value of <CODE>#!eof</CODE>, you should quote it.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Constant:</U> <B>#!void</B>
+<DD><A NAME="IDX8"></A>
+The void value.  Same as <CODE>(values)</CODE>.
+If this is the value of an expression in a read-eval-print loop,
+nothing is printed.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Constant:</U> <B>#!null</B>
+<DD><A NAME="IDX9"></A>
+The Java <CODE>null</CODE> value.  This is not really a Scheme value,
+but is useful when interfacing to low-level Java code.
+</DL>
+
+
+
+
+<H2><A NAME="SEC22" HREF="kawa_toc.html#TOC22">Keywords</A></H2>
+
+<P>
+Keywords are similar to symbols.  The main difference is that keywords are
+self-evaluating and therefore do not need to be quoted in expressions.
+They are used mainly for specifying keyword arguments.
+
+
+
+<PRE>
+<VAR>keyword</VAR> = <VAR>identifier</VAR>:
+</PRE>
+
+<P>
+An alternative syntax, with the colon first, is supported for
+compatibility with Common Lisp and some other Scheme implementations:
+
+
+
+<PRE>
+<VAR>keyword</VAR> = :<VAR>identifier</VAR>
+</PRE>
+
+<P>
+Putting the colon first has exactly the same effect as putting it last;
+putting is last is recommended, and is how keywords are printed.
+
+
+<P>
+A keyword is a single token; therefore no whitespace is allowed between
+the <VAR>identifier</VAR> and the colon (which is not considered part
+of the name of the keyword).
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>keyword?</B> <I>obj</I>
+<DD><A NAME="IDX10"></A>
+Return <CODE>#t</CODE> if <VAR>obj</VAR> is a keyword, and otherwise returns <CODE>#f</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>keyword-&#62;string</B> <I>keyword</I>
+<DD><A NAME="IDX11"></A>
+Returns the name of <VAR>keyword</VAR> as a string.
+The name does not include the final <CODE>#\:</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-&#62;keyword</B> <I>string</I>
+<DD><A NAME="IDX12"></A>
+Returns the keyword whose name is <VAR>string</VAR>.
+(The <VAR>string</VAR> does not include a final <CODE>#\:</CODE>.)
+</DL>
+
+
+
+
+<H2><A NAME="SEC23" HREF="kawa_toc.html#TOC23">Procedures</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>apply</B> <I>proc [arg1 ...] args</I>
+<DD><A NAME="IDX13"></A>
+<VAR>Args</VAR> must be a sequence (list, vector, or string) or a
+primitive Java array.
+(This is an extension over standard Scheme, which requires that
+<VAR>args</VAR> be a list.)
+Calls the <VAR>proc</VAR> (which must be a procedure), using as arguments
+the <VAR>arg1</VAR>... values plus all the elements of <VAR>args</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>constant-fold</B> <I>proc arg1 ...</I>
+<DD><A NAME="IDX14"></A>
+Same as <CODE>(<VAR>proc</VAR> <VAR>arg1</VAR> ...)</CODE>, unless <VAR>proc</VAR> and
+all the following arguments are compile-time constants.
+(That is:  They are either constant, or symbols that have a global
+binding and no lexical binding.)  In that case, <VAR>proc</VAR>
+is applied to the arguments at compile-time, and the result replaces
+the <CODE>constant-fold</CODE> form.  If the application raises an exception,
+a compile-time error is reported.
+For example:
+
+<PRE>
+(constant-fold vector 'a 'b 'c)
+</PRE>
+
+<P>
+is equivalent to <CODE>(quote #(a b c))</CODE>, assuming <CODE>vector</CODE>
+has not been re-bound.
+</DL>
+
+
+
+
+<H3><A NAME="SEC24" HREF="kawa_toc.html#TOC24">Procedure properties</A></H3>
+
+<P>
+You can associate arbitrary <EM>properties</EM> with any procedure.
+Each property is a (<VAR>key</VAR>, <VAR>value</VAR>)-pair.  Usually the
+<VAR>key</VAR> is a symbol, but it can be any object.
+
+
+<P>
+The system uses certain internal properties:
+<CODE>'name</CODE> refers to the name used when a procedure is printed;
+<CODE>'emacs-interactive</CODE> is used to implement Emacs <CODE>interactive</CODE>
+specification;
+<CODE>'setter</CODE> will be (not yet implemented) used to associate a <CODE>setter</CODE> prcedure.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>procedure-property</B> <I>proc key [default]</I>
+<DD><A NAME="IDX15"></A>
+Get the property value corresponding to the given <VAR>key</VAR>.
+If <VAR>proc</VAR> has no property with the given <VAR>key</VAR>,
+return <VAR>default</VAR> (which defaults to <CODE>#f</CODE>) instead.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>set-procedure-property!</B> <I>proc key value</I>
+<DD><A NAME="IDX16"></A>
+Associate the given <VAR>value</VAR> with the <VAR>key</VAR> property of <VAR>proc</VAR>.
+</DL>
+
+
+<P>
+To change the print name of the standard <CODE>+</CODE> procedure (probably
+not a good idea!), you could do:
+
+<PRE>
+(set-procedure-property! + 'name 'PLUS)
+</PRE>
+
+<P>
+Note this <EM>only</EM> changes the name property used for printing:
+
+<PRE>
++ =&#62; #&#60;procedure PLUS&#62;
+(+ 2 3) =&#62; 5
+(PLUS 3 4) =&#62; ERROR
+</PRE>
+
+
+
+<H3><A NAME="SEC25" HREF="kawa_toc.html#TOC25">Generic (dynamically overloaded) procedures</A></H3>
+
+<P>
+A <EM>generic procedure</EM> is a collection of <EM>method procedures</EM>.
+(A "method procedure" is not the same as a Java method, but
+the terms are related.)
+You can call a generic procedure, which selects the "closest
+match" among the component method procedures:  I.e. the most specific
+method procedure that is applicable give the actual arguments.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make-procededure</B> <I>[keyword: value]... method...</I>
+<DD><A NAME="IDX17"></A>
+Create a generic procedure given the specific methods.
+You can also specify property values for the result.
+
+
+<P>
+The <VAR>keyword</VAR>s specify how the arguments are used.
+A <CODE>method:</CODE> keyword is optional and specifies that the following
+argument is a method.
+A <CODE>name:</CODE> keyword specifies the name of the resulting procedure,
+when used for printing.
+Unrecognized keywords are used to set the procedure properties of the result.
+
+<PRE>
+(define plus10 (make-procedure foo: 33 name: 'Plus10
+                            method: (lambda (x y) (+ x y 10))
+                            method: (lambda () 10)))
+</PRE>
+
+</DL>
+
+
+
+<H3><A NAME="SEC26" HREF="kawa_toc.html#TOC26">Extended Formal Arguments List</A></H3>
+
+<P>
+The formal arguments list of a lambda expression has two
+extendsions over standard Scheme:
+Kawa borrows the extended formal argument list of DSSSL,
+and Kawa allows you to declare the type of the parameter.
+
+
+
+<PRE>
+<VAR>lambda-expression</VAR> = (lambda <VAR>formals</VAR> [<VAR>rtype</VAR>] <VAR>body</VAR>)
+</PRE>
+
+<P>
+where
+
+<PRE>
+<VAR>formals</VAR> = (<VAR>formal-arguments</VAR>) | <VAR>rest-arg</VAR>
+</PRE>
+
+<P>
+You can of course also use the extended format in a <CODE>define</CODE>:
+
+<PRE>
+(define (<VAR>name</VAR> <VAR>formal-arguments</VAR>) [<VAR>rtype</VAR>] <VAR>body</VAR>)
+</PRE>
+
+
+<PRE>
+<VAR>formal-arguments</VAR> =
+    <VAR>req-opt-args</VAR> (<VAR>rest-key-args</VAR> | . <VAR>rest-arg</VAR>)
+</PRE>
+
+
+<PRE>
+<VAR>req-opt-args</VAR> = <VAR>req-arg</VAR> ... [#!optional <VAR>opt-arg</VAR> ...]
+<VAR>rest-key-args</VAR> = [#!rest <VAR>rest-arg</VAR>] [#key <VAR>key-arg</VAR> ...]
+<VAR>req-arg</VAR> = <VAR>variable</VAR> [:: <VAR>type</VAR>] | (<VAR>variable</VAR> [[::] <VAR>type</VAR>] )
+<VAR>opt-arg</VAR> = <VAR>arg-with-default</VAR>
+<VAR>key-arg</VAR> =  <VAR>arg-with-default</VAR>
+<VAR>arg-with-default</VAR> = <VAR>variable</VAR> [:: <VAR>type</VAR>]
+    | ( <VAR>variable</VAR> [:: <VAR>type</VAR> [<VAR>initializer</VAR>] | <VAR>initializer</VAR> [[::] <VAR>type</VAR>]] )
+<VAR>rest-arg</VAR> = <VAR>variable</VAR>
+</PRE>
+
+<P>
+When the procedure is applied to a list of actual arguments, the formal and
+actual arguments are processed from left to right as follows:
+
+
+
+<UL>
+<LI>
+
+The <VAR>req-arg</VAR>s are bound to actual arguments starting with the
+first actual argument.  It shall be an error if there are fewer actual
+arguments then there are <VAR>req-arg</VAR>s.
+<LI>
+
+Next the <VAR>opt-arg</VAR>s are bound to remaining actual arguemnts.
+If there are fewer remaining actual arguments than there are
+<VAR>opt-arg</VAR>s, then the remaining <VAR>variable</VAR>s are bound
+to the corresponding <VAR>initializer</VAR>, if one was specified, and
+otherwise to <CODE>#f</CODE>.  The <VAR>initializer</VAR> is evaluated in an
+environment in which all the previous formal parameters have been bound.
+<LI>
+
+If there is a <VAR>rest-arg</VAR>, it is bound to a list of all the
+remaining actual arguments.  These remaining actual arguments are also
+eligible to be bound to keyword arguments.   If there is no
+<VAR>rest-arg</VAR> and there are no <VAR>key-arg</VAR>s, then it shall
+be an error if there are any remaining actual arguments.
+<LI>
+
+If <CODE>#!key</CODE> was specified, then there shall be an even number of
+remaining actual arguments.  These are interpreted as a series of pairs,
+where the first member of each pair is a keyword specifying the argument name,
+and the second is the corresponding value.  It shall be an error if the first
+member of a pair is not a keyword.  It shall be an error if the argument name
+is not the same as a variable in a <VAR>key-arg</VAR>s, unless there
+is a <VAR>rest-arg</VAR>.  If the same argument name occurs more than once
+in the list of actual arguments, then the first value is used.
+If there is no actual argument for a particular <VAR>key-arg</VAR>,
+then the variable is bound
+to the corresponding <VAR>initializer</VAR>, if one was specified, and
+otherwise to <CODE>#f</CODE>.  The <VAR>initializer</VAR> is evaluated in an
+environment in which all the previous formal parameters have been bound.
+</UL>
+
+<P>
+If a <VAR>type</VAR> is specified, the corresponding actual argument (or
+the <VAR>initializer</VAR> default value) is coerced to the specified <VAR>type</VAR>.
+In the function body, the parameter has the specified type.
+
+
+<P>
+If <VAR>rtype</VAR> (the first form of the function body) is an unbound
+identifier of the form <CODE>&#60;TYPE&#62;</CODE> (that is the first character
+is <SAMP>`&#60;'</SAMP> and the last is <SAMP>`&#62;'</SAMP>), then tha specifies the
+functions return type.  It is syntactic sugar for
+<CODE>(as &#60;TYPE&#62; (begin BODY))</CODE>.
+
+
+
+
+<H2><A NAME="SEC27" HREF="kawa_toc.html#TOC27">Quantities</A></H2>
+
+<P>
+As a super-class of numbers, Kawa also provides quantities.
+A <EM>quantity</EM> is a product of a <EM>unit</EM> and a pure number.
+The number part can be an arbitrary complex number.
+The unit is a product of integer powers of base units,
+such as meter or second.
+
+
+<P>
+Kawa quantities are a generalization of the quantities in DSSSL,
+which only has length-derived quantities.
+
+
+<P>
+The precise syntax of quantity literals may change,
+but some examples are <CODE>10pt</CODE> (10 points), <CODE>5s</CODE> (5 seconds),
+and <CODE>4cm^2</CODE> (4 square centimeters).
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>quantity?</B> <I>object</I>
+<DD><A NAME="IDX18"></A>
+True iff <VAR>object</VAR> is a quantity.  Note that all numbers are
+quantities, but not the other way round.
+Currently, there are no quantities that re not numbers.
+To distinguish a plain unit-less number from a quantity,
+you can use <CODE>complex?</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>quantity-&#62;number</B> <I>q</I>
+<DD><A NAME="IDX19"></A>
+Returns the pure number part of the quantity <VAR>q</VAR>, relative to
+primitive (base) units.
+If <VAR>q</VAR> is a number, returns <VAR>q</VAR>.
+If <VAR>q</VAR> is a unit, yields the magitude of <VAR>q</VAR> relative to base units.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>quantity-&#62;unit</B> <I>q</I>
+<DD><A NAME="IDX20"></A>
+Returns the unit of the quantity <VAR>q</VAR>.
+If <VAR>q</VAR> is a number, returns the empty unit.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make-quantity</B> <I>x unit</I>
+<DD><A NAME="IDX21"></A>
+Returns the product of <VAR>x</VAR> (a pure number) and <VAR>unit</VAR>.
+You can specify a string instead of <VAR>unit</VAR>, such as <CODE>"cm"</CODE>
+or <CODE>"s"</CODE> (seconds).
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>define-base-unit</B> <I>unit-name dimension</I>
+<DD><A NAME="IDX22"></A>
+Define <VAR>unit-name</VAR> as a base (primitive) unit,
+which is used to measure along the specified <VAR>dimension</VAR>.
+
+<PRE>
+(define-base-unit dollar "Money")
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>define-unit</B> <I>unit-name expression</I>
+<DD><A NAME="IDX23"></A>
+Define <VAR>unit-name</VAR> as a unit (that can be used in literals)
+equal to the quantity <VAR>expression</VAR>.
+
+<PRE>
+(define-unit cent 0.01dollar)
+</PRE>
+
+</DL>
+
+
+
+<H2><A NAME="SEC28" HREF="kawa_toc.html#TOC28">Logical Number Operations</A></H2>
+
+<P>
+These functions operate on the 2's complement binary representation
+of an exact integer.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>logand</B> <I>i ...</I>
+<DD><A NAME="IDX24"></A>
+Returns the bit-wise logical "and" of the arguments.
+If no argument is given, the result is -1.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>logior</B> <I>i ...</I>
+<DD><A NAME="IDX25"></A>
+Returns the bit-wise logical "(inclusive) or" of the arguments.
+If no argument is given, the result is 0.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>logxor</B> <I>i ...</I>
+<DD><A NAME="IDX26"></A>
+Returns the bit-wise logical "exclusive or" of the arguments.
+If no argument is given, the result is 0.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>lognot</B> <I>i</I>
+<DD><A NAME="IDX27"></A>
+Returns the bit-wise logical inverse of the argument.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>logop</B> <I>op x y</I>
+<DD><A NAME="IDX28"></A>
+Perform one of the 16 bitwise operations of <VAR>x</VAR> and <VAR>y</VAR>,
+depending on <VAR>op</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>bittest</B> <I>i j</I>
+<DD><A NAME="IDX29"></A>
+Returns true if the arguments have any bits in common.
+Same as <CODE>(not (zero? (logand <VAR>i</VAR> <VAR>j</VAR>)))</CODE>,
+but is more efficient.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>logbit?</B> <I>i pos</I>
+<DD><A NAME="IDX30"></A>
+Returns <CODE>#t</CODE> iff the bit numbered <VAR>pos</VAR> in <VAR>i</VAR> is one.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>arithmetic-shift</B> <I>i j</I>
+<DD><A NAME="IDX31"></A>
+Shifts <VAR>i</VAR> by <VAR>j</VAR>.
+It is a "left" shift if <CODE><VAR>j</VAR>&#62;0</CODE>, and
+a "right" shift if <CODE><VAR>j</VAR>&#60;0</CODE>.
+
+
+<P>
+The result is equal to <CODE>(floor (* <VAR>i</VAR> (expt 2 <VAR>j</VAR>)))</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>ash</B> <I>i j</I>
+<DD><A NAME="IDX32"></A>
+Alias for <CODE>arithmetic-shift</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>logcount</B> <I>i</I>
+<DD><A NAME="IDX33"></A>
+Count the number of 1-bits in <VAR>i</VAR>, if it is non-negative.
+If <VAR>i</VAR> is negative, count number of 0-bits.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>integer-length</B> <I>i</I>
+<DD><A NAME="IDX34"></A>
+Return number of bits needed to represent <VAR>i</VAR> in an unsigned field.
+Regardless of the sign of <VAR>i</VAR>, return one less than the number of bits
+needed for a field that can represent <VAR>i</VAR> as a two's complement integer.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>bit-extract</B> <I>n start end</I>
+<DD><A NAME="IDX35"></A>
+Return the integer formed from the (unsigned) bit-field
+starting at <VAR>start</VAR> and ending just before <VAR>end</VAR>.
+Same as <CODE>(arithmetic-shift (bitand n (bitnot (arithmetic-shift -1 end))) (- start))</CODE>.
+</DL>
+
+
+
+
+<H2><A NAME="SEC29" HREF="kawa_toc.html#TOC29">Strings</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-upcase</B> <I>str</I>
+<DD><A NAME="IDX36"></A>
+Return a new string where the letters in <VAR>str</VAR> are replaced
+by their upper-case equivalents.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-downcase</B> <I>str</I>
+<DD><A NAME="IDX37"></A>
+Return a new string where the letters in <VAR>str</VAR> are replaced
+by their lower-case equivalents.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-capitalize</B> <I>str</I>
+<DD><A NAME="IDX38"></A>
+Return a new string where the letters in <VAR>str</VAR> that start a new word
+are replaced by their title-case equivalents, while non-initial letters
+are replaced by their lower-case equivalents.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-upcase!</B> <I>str</I>
+<DD><A NAME="IDX39"></A>
+Destructively modify <VAR>str</VAR>, replacing the letters
+by their upper-case equivalents.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-downcase!</B> <I>str</I>
+<DD><A NAME="IDX40"></A>
+Destructively modify <VAR>str</VAR>, replacing the letters
+by their upper-lower equivalents.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>string-capitalize!</B> <I>str</I>
+<DD><A NAME="IDX41"></A>
+Destructively modify <VAR>str</VAR>, such that the letters that start a new word
+are replaced by their title-case equivalents, while non-initial letters
+are replaced by their lower-case equivalents.
+</DL>
+
+
+
+
+<H2><A NAME="SEC30" HREF="kawa_toc.html#TOC30">Uniform vectors</A></H2>
+
+<P>
+Uniform vectors are vectors whose elements are of the same numeric type.
+The are defined by <A HREF="http://srfi.schemers.org/srfi-4/srfi-4.html">SRFI-4</A>.
+However, the type names (such as <CODE>&#60;s8vector&#62;</CODE>) are a Kawa extension.
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;s8vector&#62;</B>
+<DD><A NAME="IDX42"></A>
+The type of uniform vectors where each element can contain
+a signed 8-bit integer.  Represented using an array of <CODE>&#60;byte&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;u8vector&#62;</B>
+<DD><A NAME="IDX43"></A>
+The type of uniform vectors where each element can contain
+an unsigned 8-bit integer.  Represented using an array of <CODE>&#60;byte&#62;</CODE>,
+but each element is treated as if unsigned.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;s16vector&#62;</B>
+<DD><A NAME="IDX44"></A>
+The type of uniform vectors where each element can contain
+a signed 16-bit integer.  Represented using an array of <CODE>&#60;short&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;u16vector&#62;</B>
+<DD><A NAME="IDX45"></A>
+The type of uniform vectors where each element can contain
+an unsigned 16-bit integer.  Represented using an array of <CODE>&#60;short&#62;</CODE>,
+but each element is treated as if unsigned.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;s32vector&#62;</B>
+<DD><A NAME="IDX46"></A>
+The type of uniform vectors where each element can contain
+a signed 32-bit integer.  Represented using an array of <CODE>&#60;int&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;u32vector&#62;</B>
+<DD><A NAME="IDX47"></A>
+The type of uniform vectors where each element can contain
+an unsigned 32-bit integer.  Represented using an array of <CODE>&#60;int&#62;</CODE>,
+but each element is treated as if unsigned.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;s64vector&#62;</B>
+<DD><A NAME="IDX48"></A>
+The type of uniform vectors where each element can contain
+a signed 64-bit integer.  Represented using an array of <CODE>&#60;long&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;u64vector&#62;</B>
+<DD><A NAME="IDX49"></A>
+The type of uniform vectors where each element can contain
+an unsigned 64-bit integer.  Represented using an array of <CODE>&#60;long&#62;</CODE>,
+but each element is treated as if unsigned.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;f32vector&#62;</B>
+<DD><A NAME="IDX50"></A>
+The type of uniform vectors where each element can contain
+a 32-bit floating-point real.  Represented using an array of <CODE>&#60;float&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>&#60;f64vector&#62;</B>
+<DD><A NAME="IDX51"></A>
+The type of uniform vectors where each element can contain
+a 64-bit floating-point real.  Represented using an array of <CODE>&#60;double&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>s8vector?</B> <I>value</I>
+<DD><A NAME="IDX52"></A>
+<DT><U>Function:</U> <B>u8vector?</B> <I>value</I>
+<DD><A NAME="IDX53"></A>
+<DT><U>Function:</U> <B>s16vector?</B> <I>value</I>
+<DD><A NAME="IDX54"></A>
+<DT><U>Function:</U> <B>u16vector?</B> <I>value</I>
+<DD><A NAME="IDX55"></A>
+<DT><U>Function:</U> <B>s32vector?</B> <I>value</I>
+<DD><A NAME="IDX56"></A>
+<DT><U>Function:</U> <B>u32vector?</B> <I>value</I>
+<DD><A NAME="IDX57"></A>
+<DT><U>Function:</U> <B>s64vector?</B> <I>value</I>
+<DD><A NAME="IDX58"></A>
+<DT><U>Function:</U> <B>u64vector?</B> <I>value</I>
+<DD><A NAME="IDX59"></A>
+<DT><U>Function:</U> <B>f32vector?</B> <I>value</I>
+<DD><A NAME="IDX60"></A>
+<DT><U>Function:</U> <B>f64vector?</B> <I>value</I>
+<DD><A NAME="IDX61"></A>
+Return true iff <VAR>value</VAR> is a uniform vector of the specified type.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make-s8vector</B> <I>n [value]</I>
+<DD><A NAME="IDX62"></A>
+<DT><U>Function:</U> <B>make-u8vector</B> <I>n [value]</I>
+<DD><A NAME="IDX63"></A>
+<DT><U>Function:</U> <B>make-s16vector</B> <I>n [value]</I>
+<DD><A NAME="IDX64"></A>
+<DT><U>Function:</U> <B>make-u16vector</B> <I>n [value]</I>
+<DD><A NAME="IDX65"></A>
+<DT><U>Function:</U> <B>make-s32vector</B> <I>n [value]</I>
+<DD><A NAME="IDX66"></A>
+<DT><U>Function:</U> <B>make-u32vector</B> <I>n [value]</I>
+<DD><A NAME="IDX67"></A>
+<DT><U>Function:</U> <B>make-s64vector</B> <I>n [value]</I>
+<DD><A NAME="IDX68"></A>
+<DT><U>Function:</U> <B>make-u64vector</B> <I>n [value]</I>
+<DD><A NAME="IDX69"></A>
+<DT><U>Function:</U> <B>make-f32vector</B> <I>n [value]</I>
+<DD><A NAME="IDX70"></A>
+<DT><U>Function:</U> <B>make-f64vector</B> <I>n [value]</I>
+<DD><A NAME="IDX71"></A>
+Create a new uniform vector of the specified type,
+having room for <VAR>n</VAR> elements.
+Initialize each element to <VAR>value</VAR> if it is specified; zero otherwise.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>s8vector</B> <I>value ...</I>
+<DD><A NAME="IDX72"></A>
+<DT><U>Function:</U> <B>u8vector</B> <I>value ...</I>
+<DD><A NAME="IDX73"></A>
+<DT><U>Function:</U> <B>s16vector</B> <I>value ..</I>
+<DD><A NAME="IDX74"></A>
+<DT><U>Function:</U> <B>u16vector</B> <I>value ...</I>
+<DD><A NAME="IDX75"></A>
+<DT><U>Function:</U> <B>s32vector</B> <I>value ...</I>
+<DD><A NAME="IDX76"></A>
+<DT><U>Function:</U> <B>u32vector</B> <I>value ...</I>
+<DD><A NAME="IDX77"></A>
+<DT><U>Function:</U> <B>s64vector</B> <I>value ...</I>
+<DD><A NAME="IDX78"></A>
+<DT><U>Function:</U> <B>u64vector</B> <I>value ...</I>
+<DD><A NAME="IDX79"></A>
+<DT><U>Function:</U> <B>f32vector</B> <I>value ...</I>
+<DD><A NAME="IDX80"></A>
+<DT><U>Function:</U> <B>f64vector</B> <I>value ...</I>
+<DD><A NAME="IDX81"></A>
+Create a new uniform vector of the specified type,
+whose length is the number of <VAR>value</VAR>s specified,
+and initialize it using those <VAR>value</VAR>s.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>s8vector-length</B> <I>v</I>
+<DD><A NAME="IDX82"></A>
+<DT><U>Function:</U> <B>u8vector-length</B> <I>v</I>
+<DD><A NAME="IDX83"></A>
+<DT><U>Function:</U> <B>s16vector-length</B> <I>v</I>
+<DD><A NAME="IDX84"></A>
+<DT><U>Function:</U> <B>u16vector-length</B> <I>v</I>
+<DD><A NAME="IDX85"></A>
+<DT><U>Function:</U> <B>s32vector-length</B> <I>v</I>
+<DD><A NAME="IDX86"></A>
+<DT><U>Function:</U> <B>u32vector-length</B> <I>v</I>
+<DD><A NAME="IDX87"></A>
+<DT><U>Function:</U> <B>s64vector-length</B> <I>v</I>
+<DD><A NAME="IDX88"></A>
+<DT><U>Function:</U> <B>u64vector-length</B> <I>v</I>
+<DD><A NAME="IDX89"></A>
+<DT><U>Function:</U> <B>f32vector-length</B> <I>v</I>
+<DD><A NAME="IDX90"></A>
+<DT><U>Function:</U> <B>f64vector-length</B> <I>v</I>
+<DD><A NAME="IDX91"></A>
+Return the length (in number of elements) of the uniform vector <VAR>v</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>s8vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX92"></A>
+<DT><U>Function:</U> <B>u8vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX93"></A>
+<DT><U>Function:</U> <B>s16vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX94"></A>
+<DT><U>Function:</U> <B>u16vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX95"></A>
+<DT><U>Function:</U> <B>s32vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX96"></A>
+<DT><U>Function:</U> <B>u32vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX97"></A>
+<DT><U>Function:</U> <B>s64vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX98"></A>
+<DT><U>Function:</U> <B>u64vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX99"></A>
+<DT><U>Function:</U> <B>f32vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX100"></A>
+<DT><U>Function:</U> <B>f64vector-ref</B> <I>v i</I>
+<DD><A NAME="IDX101"></A>
+Return the element at index <VAR>i</VAR> of the uniform vector <VAR>v</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>s8vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX102"></A>
+<DT><U>Function:</U> <B>u8vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX103"></A>
+<DT><U>Function:</U> <B>s16vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX104"></A>
+<DT><U>Function:</U> <B>u16vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX105"></A>
+<DT><U>Function:</U> <B>s32vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX106"></A>
+<DT><U>Function:</U> <B>u32vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX107"></A>
+<DT><U>Function:</U> <B>s64vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX108"></A>
+<DT><U>Function:</U> <B>u64vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX109"></A>
+<DT><U>Function:</U> <B>f32vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX110"></A>
+<DT><U>Function:</U> <B>f64vector-set!</B> <I>v i x</I>
+<DD><A NAME="IDX111"></A>
+Set the element at index <VAR>i</VAR> of uniform vector <VAR>v</VAR>
+to the value <VAR>x</VAR>, which must be a number coercible
+to the appropriate type.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>s8vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX112"></A>
+<DT><U>Function:</U> <B>u8vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX113"></A>
+<DT><U>Function:</U> <B>s16vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX114"></A>
+<DT><U>Function:</U> <B>u16vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX115"></A>
+<DT><U>Function:</U> <B>s32vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX116"></A>
+<DT><U>Function:</U> <B>u32vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX117"></A>
+<DT><U>Function:</U> <B>s64vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX118"></A>
+<DT><U>Function:</U> <B>u64vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX119"></A>
+<DT><U>Function:</U> <B>f32vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX120"></A>
+<DT><U>Function:</U> <B>f64vector-&#62;list</B> <I>v</I>
+<DD><A NAME="IDX121"></A>
+Convert the uniform vetor <VAR>v</VAR> to a list containing the elments of <VAR>v</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>list-&#62;s8vector</B> <I>l</I>
+<DD><A NAME="IDX122"></A>
+<DT><U>Function:</U> <B>list-&#62;u8vector</B> <I>l</I>
+<DD><A NAME="IDX123"></A>
+<DT><U>Function:</U> <B>list-&#62;s16vector</B> <I>l</I>
+<DD><A NAME="IDX124"></A>
+<DT><U>Function:</U> <B>list-&#62;u16vector</B> <I>l</I>
+<DD><A NAME="IDX125"></A>
+<DT><U>Function:</U> <B>list-&#62;s32vector</B> <I>l</I>
+<DD><A NAME="IDX126"></A>
+<DT><U>Function:</U> <B>list-&#62;u32vector</B> <I>l</I>
+<DD><A NAME="IDX127"></A>
+<DT><U>Function:</U> <B>list-&#62;s64vector</B> <I>l</I>
+<DD><A NAME="IDX128"></A>
+<DT><U>Function:</U> <B>list-&#62;u64vector</B> <I>l</I>
+<DD><A NAME="IDX129"></A>
+<DT><U>Function:</U> <B>list-&#62;f32vector</B> <I>l</I>
+<DD><A NAME="IDX130"></A>
+<DT><U>Function:</U> <B>list-&#62;f64vector</B> <I>l</I>
+<DD><A NAME="IDX131"></A>
+Create a uniform vector of the appropriate type, initializing it
+with the elements of the list <VAR>l</VAR>.  The elements of <VAR>l</VAR>
+must be numbers coercible the new vector's element type.
+</DL>
+
+
+
+
+<H2><A NAME="SEC31" HREF="kawa_toc.html#TOC31">File System Interface</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>file-exists?</B> <I>filename</I>
+<DD><A NAME="IDX132"></A>
+Returns true iff the file named <VAR>filename</VAR> actually exists.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>file-directory?</B> <I>filename</I>
+<DD><A NAME="IDX133"></A>
+Returns true iff the file named <VAR>filename</VAR> actually exists
+and is a directory.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>file-readable?</B> <I>filename</I>
+<DD><A NAME="IDX134"></A>
+Returns true iff the file named <VAR>filename</VAR> actually exists
+and can be read from.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>file-writable?</B> <I>filename</I>
+<DD><A NAME="IDX135"></A>
+Returns true iff the file named <VAR>filename</VAR> actually exists
+and can be writen to.
+(Undefined if the <VAR>filename</VAR> does not exist,
+but the file can be created in the directory.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>delete-file</B> <I>filename</I>
+<DD><A NAME="IDX136"></A>
+Delete the file named <VAR>filename</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>rename-file</B> <I>oldname newname</I>
+<DD><A NAME="IDX137"></A>
+Renames the file named <VAR>oldname</VAR> to <VAR>newname</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>copy-file</B> <I>oldname newname-from path-to</I>
+<DD><A NAME="IDX138"></A>
+Copy the file named <VAR>oldname</VAR> to <VAR>newname</VAR>.
+The return value is unspecified.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>create-directory</B> <I>dirname</I>
+<DD><A NAME="IDX139"></A>
+Create a new directory named <VAR>dirname</VAR>.
+Unspecified what happens on error (such as exiting file with the same name).
+(Currently returns <CODE>#f</CODE> on error, but may change to be more compatible
+with scsh.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>system-tmpdir</B>
+<DD><A NAME="IDX140"></A>
+Return the name of the default directory for temporary files.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make-temporary-file</B> <I>[format]</I>
+<DD><A NAME="IDX141"></A>
+Return a file with a name that does not match any existing file.
+Use <VAR>format</VAR> (which defaults to <CODE>"kawa~d.tmp"</CODE>) to generate
+a unique filename in <CODE>(system-tmpdir)</CODE>.
+The current implementation is <EM>not</EM> safe from race conditions;
+this will be fixed in a future release (using Java2 features).
+</DL>
+
+
+
+
+<H2><A NAME="SEC32" HREF="kawa_toc.html#TOC32">Ports</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>read-line</B> <I>[port [handle-newline]]</I>
+<DD><A NAME="IDX142"></A>
+Reads a line of input from <VAR>port</VAR>.
+The <VAR>handle-newline</VAR> parameter determines what is done with
+terminating end-of-line delimiter.
+The default, <CODE>'trim</CODE>, ignores the delimiter;
+<CODE>'peek</CODE> leaves the delimiter in the input stream;
+<CODE>'concat</CODE> appends the delimiter to the returned value;
+and <CODE>'split</CODE> returns the delimiter as a second value.
+You can use the last three options to tell if the string was
+terminated by end-or-line or by end-of-file.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>open-input-string</B> <I>string</I>
+<DD><A NAME="IDX143"></A>
+Takes a string and returns an input port that delivers characters
+from the string. The port can be closed by <CODE>close-input-port</CODE>,
+though its storage will be reclaimed by the
+garbage collector if it becomes inaccessible. 
+
+
+
+<PRE>
+(define p
+  (open-input-string "(a . (b c . ())) 34"))
+
+(input-port? p)                 --&#62;  #t
+(read p)                        --&#62;  (a b c)
+(read p)                        --&#62;  34
+(eof-object? (peek-char p))     --&#62;  #t
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>open-output-string</B>
+<DD><A NAME="IDX144"></A>
+Returns an output port that will accumulate characters
+for retrieval by <CODE>get-output-string</CODE>.
+The port can be closed by the procedure <CODE>close-output-port</CODE>,
+though its storage will be reclaimed by the garbage collector
+if it becomes inaccessible. 
+
+<PRE>
+(let ((q (open-output-string))
+  (x '(a b c)))
+    (write (car x) q)
+    (write (cdr x) q)
+    (get-output-string q))        --&#62;  "a(b c)"
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>get-output-string</B> <I>output-port</I>
+<DD><A NAME="IDX145"></A>
+Given an output port created by <CODE>open-output-string</CODE>,
+returns a string consisting of the characters that have been
+output to the port so far. 
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>call-with-input-string</B> <I>string proc</I>
+<DD><A NAME="IDX146"></A>
+Create an input port that gets its data from <VAR>string</VAR>,
+call <VAR>proc</VAR> with that port as its one argument, and return
+the result from the call of <VAR>proc</VAR>
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>call-with-output-string</B> <I>proc</I>
+<DD><A NAME="IDX147"></A>
+Create an output port that writes its data to a <VAR>string</VAR>,
+and call <VAR>proc</VAR> with that port as its one argument.
+Return a string consisting of the data written to the port.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>force-output</B> <I>[port]</I>
+<DD><A NAME="IDX148"></A>
+Forces any pending output on <VAR>port</VAR> to be delivered to the output
+device and returns an unspecified value.  If the <VAR>port</VAR> argument is
+omitted it defaults to the value returned by <CODE>(current-output-port)</CODE>.
+</DL>
+
+
+<P>
+An interactive input port has a prompt procedure associated with it.
+The prompt procedure is called before a new line is read.  It is passed
+the port as an argument, and returns a string, which gets printed as a prompt.
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>input-port-prompter</B> <I>port</I>
+<DD><A NAME="IDX149"></A>
+Get the prompt procedure associated with <VAR>port</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>set-input-port-prompter!</B> <I>port prompter</I>
+<DD><A NAME="IDX150"></A>
+Set the prompt procedure associated with <VAR>port</VAR> to <VAR>prompter</VAR>,
+which must be a one-argument procedure taking an input port,
+and returning a string.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>default-prompter</B> <I>port</I>
+<DD><A NAME="IDX151"></A>
+The default prompt procedure.  It returns <CODE>"#|kawa:<VAR>L</VAR>|# "</CODE>, where
+<VAR>L</VAR> is the current line number of <VAR>port</VAR>.
+When reading a continuation line, the result
+is <CODE>"#|<VAR>C</VAR>---:<VAR>L</VAR>|# "</CODE>, where <CODE>C</CODE> is the character returned
+by <CODE>(input-port-read-state <VAR>port</VAR>)</CODE>.
+The prompt has the form of a comment to make it easier to cut-and-paste.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>port-column</B> <I>input-port</I>
+<DD><A NAME="IDX152"></A>
+<DT><U>Function:</U> <B>port-line</B> <I>input-port</I>
+<DD><A NAME="IDX153"></A>
+Return the current column number or line number of <VAR>input-port</VAR>,
+using the current input port if none is specified.
+If the number is unknown, the result is <CODE>#f</CODE>.  Otherwise,
+the result is a 0-origin integer - i.e. the first character
+of the first line is line 0, column 0.  (However, when you
+display a file position, for example in an error message,
+we recommend you add 1 to get 1-origin integers.  This is
+because lines and column numbers traditionally start with
+1, and that is what non-programmers will find most natural.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>set-port-line!</B> <I>port line</I>
+<DD><A NAME="IDX154"></A>
+Set (0-origin) line number of the current line of <VAR>port</VAR> to <VAR>num</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>input-port-line-number</B> <I>port</I>
+<DD><A NAME="IDX155"></A>
+Get the line number of the current line of <VAR>port</VAR>,
+which must be a (non-binary) input port.
+The initial line is line 1.
+Deprecated; replaced by <CODE>(+ 1 (port-line <VAR>port</VAR>))</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>set-input-port-line-number!</B> <I>port num</I>
+<DD><A NAME="IDX156"></A>
+Set line number of the current line of <VAR>port</VAR> to <VAR>num</VAR>.
+Deprecated;  replaced by <CODE>(set-port-line <VAR>port</VAR> (- <VAR>num</VAR> 1))</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>input-port-column-number</B> <I>port</I>
+<DD><A NAME="IDX157"></A>
+Get the column number of the current line of <VAR>port</VAR>, 
+which must be a (non-binary) input port.
+The initial column is column 1.
+Deprecated; replaced by <CODE>(+ 1 (port-column <VAR>port</VAR>))</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>input-port-read-state</B> <I>port</I>
+<DD><A NAME="IDX158"></A>
+Returns a character indicating the current <CODE>read</CODE> state of the <VAR>port</VAR>.
+Returns <CODE>#\Return</CODE> if not current doing a <VAR>read</VAR>,
+<CODE>#\"</CODE> if reading a string;  <CODE>#\|</CODE> if reading a comment;  <CODE>#\(</CODE>
+if inside a list; and <CODE>#\Space</CODE> when otherwise in a <CODE>read</CODE>.
+The result is intended for use by prompt prcedures, and is not necessarily
+correct except when reading a new-line.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>symbol-read-case</B>
+<DD><A NAME="IDX159"></A>
+A symbol that controls how <CODE>read</CODE> handles letters when reading a symbol.
+If the first letter is <SAMP>`U'</SAMP>, then letters in symbols are upper-cased.
+If the first letter is <SAMP>`D'</SAMP> or <SAMP>`L'</SAMP>, then letters
+in symbols are down-cased.
+If the first letter is <SAMP>`I'</SAMP>, then the case of letters in symbols
+is inverted.
+Otherwise (the default), the letter is not changed.
+(Letters following a <SAMP>`\'</SAMP> are always unchanged.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>port-char-encoding</B>
+<DD><A NAME="IDX160"></A>
+Controls how bytes in external files are converted to/from internal
+Unicode characters.  Can be either a symbol or a boolean.
+If <CODE>port-char-encoding</CODE> is <CODE>#f</CODE>, the file is assumed
+to be a binary file and no conversion is done.
+Otherwise, the file is a text file.  The default is <CODE>#t</CODE>, which
+uses a locale-dependent conversion.  If <CODE>port-char-encoding</CODE>
+is a symbol, it must be the name of a character encoding known to Java.
+For all text files (that is if <CODE>port-char-encoding</CODE> is not <CODE>#f</CODE>),
+on input a <CODE>#\Return</CODE> character or
+a <CODE>#\Return</CODE> followed by <CODE>#\Newline</CODE>
+are converted into plain <CODE>#\Newline</CODE>.
+
+
+<P>
+This variable is checked when the file is opened;  not when actually
+reading or writing.  Here is an example of how you can safely
+change the encoding temporarily:
+
+<PRE>
+(define (open-binary-input-file name)
+  (fluid-let ((port-char-encoding #f)) (open-input-file name)))
+</PRE>
+
+</DL>
+
+
+
+<H2><A NAME="SEC33" HREF="kawa_toc.html#TOC33">Formatted Output (Common-Lisp-style)</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>format</B> <I>destination fmt . arguments</I>
+<DD><A NAME="IDX161"></A>
+An almost complete implementation of Common LISP format description
+according to the CL reference book <CITE>Common LISP</CITE> from Guy L.
+Steele, Digital Press.  Backward compatible to most of the available
+Scheme format implementations.
+
+
+<P>
+Returns <CODE>#t</CODE>, <CODE>#f</CODE> or a string; has side effect of printing
+according to <VAR>fmt</VAR>.  If <VAR>destination</VAR> is <CODE>#t</CODE>,
+the output is to the current output port and <CODE>#t</CODE> is returned.  If
+<VAR>destination</VAR> is <CODE>#f</CODE>, a formatted string is returned as the
+result of the call.  If <VAR>destination</VAR> is a string,
+<VAR>destination</VAR> is regarded as the format string; <VAR>fmt</VAR> is
+then the first argument and the output is returned as a string. If
+<VAR>destination</VAR> is a number, the output is to the current error port
+if available by the implementation. Otherwise <VAR>destination</VAR> must be
+an output port and <CODE>#t</CODE> is returned.
+
+<P>
+<VAR>fmt</VAR> must be a string or an instance of <CODE>gnu.text.MessageFormat</CODE>
+or <CODE>java.text.MessageFormat</CODE>.  If <VAR>fmt</VAR> is a string,
+it is parsed as if by <CODE>parse-format</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>parse-format</B> <I>format-string</I>
+<DD><A NAME="IDX162"></A>
+Parses <CODE>format-string</CODE>, which is a string of the form of a Common LISP
+format description.  Returns an instance of <CODE>gnu.text.ReportFormat</CODE>,
+which can be passed to the <CODE>format</CODE> function.
+</DL>
+
+
+<P>
+A format string passed to <CODE>format</CODE> or <CODE>parse-format</CODE>
+consists of format directives (that start with <SAMP>`~'</SAMP>),
+and regular characters (that are written directly to the destination).
+Most of the Common Lisp (and Slib) format directives are implemented.
+Neither justification, nor pretty-printing are supported yet.
+
+
+<P>
+Plus of course, we need documentation for <CODE>format</CODE>!
+
+
+
+
+<H3><A NAME="SEC34" HREF="kawa_toc.html#TOC34">Implemented CL Format Control Directives</A></H3>
+
+<P>
+Documentation syntax: Uppercase characters represent the corresponding
+control directive characters. Lowercase characters represent control
+directive parameter descriptions.
+
+
+<DL COMPACT>
+
+<DT><CODE>~A</CODE>
+<DD>
+Any (print as <CODE>display</CODE> does).
+<DL COMPACT>
+
+<DT><CODE>~@A</CODE>
+<DD>
+left pad.
+<DT><CODE>~<VAR>mincol</VAR>,<VAR>colinc</VAR>,<VAR>minpad</VAR>,<VAR>padchar</VAR>A</CODE>
+<DD>
+full padding.
+</DL>
+<DT><CODE>~S</CODE>
+<DD>
+S-expression (print as <CODE>write</CODE> does).
+<DL COMPACT>
+
+<DT><CODE>~@S</CODE>
+<DD>
+left pad.
+<DT><CODE>~<VAR>mincol</VAR>,<VAR>colinc</VAR>,<VAR>minpad</VAR>,<VAR>padchar</VAR>S</CODE>
+<DD>
+full padding.
+</DL>
+
+<DT><CODE>~C</CODE>
+<DD>
+Character.
+<DL COMPACT>
+
+<DT><CODE>~@C</CODE>
+<DD>
+prints a character as the reader can understand it (i.e. <CODE>#\</CODE> prefixing).
+<DT><CODE>~:C</CODE>
+<DD>
+prints a character as emacs does (eg. <CODE>^C</CODE> for ASCII 03).
+</DL>
+</DL>
+
+
+
+<H3><A NAME="SEC35" HREF="kawa_toc.html#TOC35">Formatting Integers</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>~D</CODE>
+<DD>
+Decimal.
+<DL COMPACT>
+
+<DT><CODE>~@D</CODE>
+<DD>
+print number sign always.
+<DT><CODE>~:D</CODE>
+<DD>
+print comma separated.
+<DT><CODE>~<VAR>mincol</VAR>,<VAR>padchar</VAR>,<VAR>commachar</VAR>,<VAR>commawidth</VAR>D</CODE>
+<DD>
+padding.
+</DL>
+<DT><CODE>~X</CODE>
+<DD>
+Hexadecimal.
+<DL COMPACT>
+
+<DT><CODE>~@X</CODE>
+<DD>
+print number sign always.
+<DT><CODE>~:X</CODE>
+<DD>
+print comma separated.
+<DT><CODE>~<VAR>mincol</VAR>,<VAR>padchar</VAR>,<VAR>commachar</VAR>,<VAR>commawidth</VAR>X</CODE>
+<DD>
+padding.
+</DL>
+<DT><CODE>~O</CODE>
+<DD>
+Octal.
+<DL COMPACT>
+
+<DT><CODE>~@O</CODE>
+<DD>
+print number sign always.
+<DT><CODE>~:O</CODE>
+<DD>
+print comma separated.
+<DT><CODE>~<VAR>mincol</VAR>,<VAR>padchar</VAR>,<VAR>commachar</VAR>,<VAR>commawidth</VAR>O</CODE>
+<DD>
+padding.
+</DL>
+<DT><CODE>~B</CODE>
+<DD>
+Binary.
+<DL COMPACT>
+
+<DT><CODE>~@B</CODE>
+<DD>
+print number sign always.
+<DT><CODE>~:B</CODE>
+<DD>
+print comma separated.
+<DT><CODE>~<VAR>mincol</VAR>,<VAR>padchar</VAR>,<VAR>commachar</VAR>,<VAR>commawidth</VAR>B</CODE>
+<DD>
+padding.
+</DL>
+<DT><CODE>~<VAR>n</VAR>R</CODE>
+<DD>
+Radix <VAR>n</VAR>.
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>,<VAR>mincol</VAR>,<VAR>padchar</VAR>,<VAR>commachar</VAR>,<VAR>commawidth</VAR>R</CODE>
+<DD>
+padding.
+</DL>
+<DT><CODE>~@R</CODE>
+<DD>
+print a number as a Roman numeral.
+<DT><CODE>~:@R</CODE>
+<DD>
+print a number as an "old fashioned" Roman numeral.
+<DT><CODE>~:R</CODE>
+<DD>
+print a number as an ordinal English number.
+<DT><CODE>~:@R</CODE>
+<DD>
+print a number as a cardinal English number.
+<DT><CODE>~P</CODE>
+<DD>
+Plural.
+<DL COMPACT>
+
+<DT><CODE>~@P</CODE>
+<DD>
+prints <CODE>y</CODE> and <CODE>ies</CODE>.
+<DT><CODE>~:P</CODE>
+<DD>
+as <CODE>~P but jumps 1 argument backward.</CODE>
+<DT><CODE>~:@P</CODE>
+<DD>
+as <CODE>~@P but jumps 1 argument backward.</CODE>
+</DL>
+</DL>
+
+<P>
+<VAR>commawidth</VAR> is the number of characters between two comma characters.
+
+
+
+
+<H3><A NAME="SEC36" HREF="kawa_toc.html#TOC36">Formatting floating-point (real) numbers</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>~F</CODE>
+<DD>
+Fixed-format floating-point (prints a flonum like <VAR>mmm.nnn</VAR>).
+<DL COMPACT>
+
+<DT><CODE>~<VAR>width</VAR>,<VAR>digits</VAR>,<VAR>scale</VAR>,<VAR>overflowchar</VAR>,<VAR>padchar</VAR>F</CODE>
+<DD>
+<DT><CODE>~@F</CODE>
+<DD>
+If the number is positive a plus sign is printed.
+</DL>
+</DL>
+
+<DL COMPACT>
+
+<DT><CODE>~E</CODE>
+<DD>
+Exponential floating-point (prints a flonum like <VAR>mmm.nnn</VAR><CODE>E</CODE><VAR>ee</VAR>)
+<DL COMPACT>
+
+<DT><CODE>~<VAR>width</VAR>,<VAR>digits</VAR>,<VAR>exponentdigits</VAR>,<VAR>scale</VAR>,<VAR>overflowchar</VAR>,<VAR>padchar</VAR>,<VAR>exponentchar</VAR>E</CODE>
+<DD>
+<DT><CODE>~@E</CODE>
+<DD>
+If the number is positive a plus sign is printed.
+</DL>
+</DL>
+
+<DL COMPACT>
+
+<DT><CODE>~G</CODE>
+<DD>
+General floating-point (prints a flonum either fixed or exponential).
+<DL COMPACT>
+
+<DT><CODE>~<VAR>width</VAR>,<VAR>digits</VAR>,<VAR>exponentdigits</VAR>,<VAR>scale</VAR>,<VAR>overflowchar</VAR>,<VAR>padchar</VAR>,<VAR>exponentchar</VAR>G</CODE>
+<DD>
+<DT><CODE>~@G</CODE>
+<DD>
+If the number is positive a plus sign is printed.
+</DL>
+A slight difference from Common Lisp:  If the number is printed
+in fixed form and the fraction is zero,
+then a zero digit is printed for the fraction, if allowed by the <VAR>width</VAR>
+and <VAR>digits</VAR> is unspecified.
+</DL>
+
+<DL COMPACT>
+
+<DT><CODE>~$</CODE>
+<DD>
+Dollars floating-point (prints a flonum in fixed with signs separated).
+<DL COMPACT>
+
+<DT><CODE>~<VAR>digits</VAR>,<VAR>scale</VAR>,<VAR>width</VAR>,<VAR>padchar</VAR>$</CODE>
+<DD>
+<DT><CODE>~@$</CODE>
+<DD>
+If the number is positive a plus sign is printed.
+<DT><CODE>~:@$</CODE>
+<DD>
+A sign is always printed and appears before the padding.
+<DT><CODE>~:$</CODE>
+<DD>
+The sign appears before the padding.
+</DL>
+</DL>
+
+
+
+<H3><A NAME="SEC37" HREF="kawa_toc.html#TOC37">Miscellaneous formatting operators</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>~%</CODE>
+<DD>
+Newline.
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>%</CODE>
+<DD>
+print <VAR>n</VAR> newlines.
+</DL>
+<DT><CODE>~&#38;</CODE>
+<DD>
+print newline if not at the beginning of the output line.
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>&#38;</CODE>
+<DD>
+prints <CODE>~&#38;</CODE> and then <VAR>n-1</VAR> newlines.
+</DL>
+<DT><CODE>~|</CODE>
+<DD>
+Page Separator.
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>|</CODE>
+<DD>
+print <VAR>n</VAR> page separators.
+</DL>
+<DT><CODE>~~</CODE>
+<DD>
+Tilde.
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>~</CODE>
+<DD>
+print <VAR>n</VAR> tildes.
+</DL>
+<DT><CODE>~</CODE>&#60;newline&#62;
+<DD>
+Continuation Line.
+<DL COMPACT>
+
+<DT><CODE>~:</CODE>&#60;newline&#62;
+<DD>
+newline is ignored, white space left.
+<DT><CODE>~@</CODE>&#60;newline&#62;
+<DD>
+newline is left, white space ignored.
+</DL>
+<DT><CODE>~T</CODE>
+<DD>
+Tabulation.
+<DL COMPACT>
+
+<DT><CODE>~@T</CODE>
+<DD>
+relative tabulation.
+<DT><CODE>~<VAR>colnum</VAR>,<VAR>colinc</VAR>T</CODE>
+<DD>
+full tabulation.
+</DL>
+<DT><CODE>~?</CODE>
+<DD>
+Indirection (expects indirect arguments as a list).
+<DL COMPACT>
+
+<DT><CODE>~@?</CODE>
+<DD>
+extracts indirect arguments from format arguments.
+</DL>
+<DT><CODE>~(<VAR>str</VAR>~)</CODE>
+<DD>
+Case conversion (converts by <CODE>string-downcase</CODE>).
+<DL COMPACT>
+
+<DT><CODE>~:(<VAR>str</VAR>~)</CODE>
+<DD>
+converts by <CODE>string-capitalize</CODE>.
+<DT><CODE>~@(<VAR>str</VAR>~)</CODE>
+<DD>
+converts by <CODE>string-capitalize-first</CODE>.
+<DT><CODE>~:@(<VAR>str</VAR>~)</CODE>
+<DD>
+converts by <CODE>string-upcase</CODE>.
+</DL>
+<DT><CODE>~*</CODE>
+<DD>
+Argument Jumping (jumps 1 argument forward).
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>*</CODE>
+<DD>
+jumps <VAR>n</VAR> arguments forward.
+<DT><CODE>~:*</CODE>
+<DD>
+jumps 1 argument backward.
+<DT><CODE>~<VAR>n</VAR>:*</CODE>
+<DD>
+jumps <VAR>n</VAR> arguments backward.
+<DT><CODE>~@*</CODE>
+<DD>
+jumps to the 0th argument.
+<DT><CODE>~<VAR>n</VAR>@*</CODE>
+<DD>
+jumps to the <VAR>n</VAR>th argument (beginning from 0)
+</DL>
+<DT><CODE>~[<VAR>str0</VAR>~;<VAR>str1</VAR>~;...~;<VAR>strn</VAR>~]</CODE>
+<DD>
+Conditional Expression (numerical clause conditional).
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>[</CODE>
+<DD>
+take argument from <VAR>n</VAR>.
+<DT><CODE>~@[</CODE>
+<DD>
+true test conditional.
+<DT><CODE>~:[</CODE>
+<DD>
+if-else-then conditional.
+<DT><CODE>~;</CODE>
+<DD>
+clause separator.
+<DT><CODE>~:;</CODE>
+<DD>
+default clause follows.
+</DL>
+<DT><CODE>~{<VAR>str</VAR>~}</CODE>
+<DD>
+Iteration (args come from the next argument (a list)).
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>{</CODE>
+<DD>
+at most <VAR>n</VAR> iterations.
+<DT><CODE>~:{</CODE>
+<DD>
+args from next arg (a list of lists).
+<DT><CODE>~@{</CODE>
+<DD>
+args from the rest of arguments.
+<DT><CODE>~:@{</CODE>
+<DD>
+args from the rest args (lists).
+</DL>
+<DT><CODE>~^</CODE>
+<DD>
+Up and out.
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>^</CODE>
+<DD>
+aborts if <VAR>n</VAR> = 0
+<DT><CODE>~<VAR>n</VAR>,<VAR>m</VAR>^</CODE>
+<DD>
+aborts if <VAR>n</VAR> = <VAR>m</VAR>
+<DT><CODE>~<VAR>n</VAR>,<VAR>m</VAR>,<VAR>k</VAR>^</CODE>
+<DD>
+aborts if <VAR>n</VAR> &#60;= <VAR>m</VAR> &#60;= <VAR>k</VAR>
+</DL>
+</DL>
+
+
+
+<H3><A NAME="SEC38" HREF="kawa_toc.html#TOC38">Not Implemented CL Format Control Directives</A></H3>
+
+<DL COMPACT>
+
+<DT><CODE>~:A</CODE>
+<DD>
+print <CODE>#f</CODE> as an empty list (see below).
+<DT><CODE>~:S</CODE>
+<DD>
+print <CODE>#f</CODE> as an empty list (see below).
+<DT><CODE>~&#60;~&#62;</CODE>
+<DD>
+Justification.
+<DT><CODE>~:^</CODE>
+<DD>
+</DL>
+
+
+
+<H4><A NAME="SEC39" HREF="kawa_toc.html#TOC39">Extended, Replaced and Additional Control Directives</A></H4>
+
+<P>
+These are not necesasrily implemented in Kawa!
+
+
+<DL COMPACT>
+
+<DT><CODE>~I</CODE>
+<DD>
+print a R4RS complex number as <CODE>~F~@Fi</CODE> with passed parameters for
+<CODE>~F</CODE>.
+<DT><CODE>~Y</CODE>
+<DD>
+Pretty print formatting of an argument for scheme code lists.
+<DT><CODE>~K</CODE>
+<DD>
+Same as <CODE>~?.</CODE>
+<DT><CODE>~!</CODE>
+<DD>
+Flushes the output if format <VAR>destination</VAR> is a port.
+<DT><CODE>~_</CODE>
+<DD>
+Print a <CODE>#\space</CODE> character
+<DL COMPACT>
+
+<DT><CODE>~<VAR>n</VAR>_</CODE>
+<DD>
+print <VAR>n</VAR> <CODE>#\space</CODE> characters.
+</DL>
+
+<DT><CODE>~<VAR>n</VAR>C</CODE>
+<DD>
+Takes <VAR>n</VAR> as an integer representation for a character. No arguments
+are consumed. <VAR>n</VAR> is converted to a character by
+<CODE>integer-&#62;char</CODE>.  <VAR>n</VAR> must be a positive decimal number.<DT><CODE>~:S</CODE>
+<DD>
+Print out readproof.  Prints out internal objects represented as
+<CODE>#&#60;...&#62;</CODE> as strings <CODE>"#&#60;...&#62;"</CODE> so that the format output can always
+be processed by <CODE>read</CODE>.
+<DT><CODE>~:A</CODE>
+<DD>
+Print out readproof.  Prints out internal objects represented as
+<CODE>#&#60;...&#62;</CODE> as strings <CODE>"#&#60;...&#62;"</CODE> so that the format output can always
+be processed by <CODE>read</CODE>.
+<DT><CODE>~F, ~E, ~G, ~$</CODE>
+<DD>
+may also print number strings, i.e. passing a number as a string and
+format it accordingly.
+</DL>
+
+
+
+<H2><A NAME="SEC40" HREF="kawa_toc.html#TOC40">Signalling and recovering from exceptions</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>catch</B> <I>key thunk handler</I>
+<DD><A NAME="IDX163"></A>
+Invoke <VAR>thunk</VAR> in the dynamic context of <VAR>handler</VAR> for
+exceptions matching <VAR>key</VAR>.  If thunk throws to the symbol <VAR>key</VAR>,
+then <VAR>handler</VAR> is invoked this way:
+
+
+
+<PRE>
+(handler key args ...)
+</PRE>
+
+<P>
+<VAR>key</VAR> may be a symbol.  The <VAR>thunk</VAR> takes no
+arguments.  If <VAR>thunk</VAR> returns normally, that is the return value of
+<CODE>catch</CODE>.
+
+
+<P>
+Handler is invoked outside the scope of its own <CODE>catch</CODE>.  If
+<VAR>handler</VAR> again throws to the same key, a new handler from further
+up the call chain is invoked.
+
+
+<P>
+If the key is <CODE>#t</CODE>, then a throw to <EM>any</EM> symbol will match
+this call to <CODE>catch</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>throw</B> <I>key &#38;rest args ...</I>
+<DD><A NAME="IDX164"></A>
+Invoke the catch form matching <VAR>key</VAR>, passing <VAR>args</VAR> to the
+<VAR>handler</VAR>.  
+
+
+<P>
+If the key is a symbol it will match catches of the same
+symbol or of #t.
+
+
+<P>
+If there is no handler at all, an error is signaled.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>procedure:</U> <B>error</B> <I>message args ...</I>
+<DD><A NAME="IDX165"></A>
+Raise an error with key <CODE>misc-error</CODE> and a message constructed by
+displaying <VAR>msg</VAR> and writing <VAR>args</VAR>.
+This normally prints a stack trace, and brings you back to
+the top level, or exits kawa if you are not running interactively.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>primitive-throw</B> <I>exception</I>
+<DD><A NAME="IDX166"></A>
+Throws the <VAR>exception</VAR>, which must be an instance of a sub-class
+of <CODE>&#60;java.lang.Throwable&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>try-finally</B> <I>body handler</I>
+<DD><A NAME="IDX167"></A>
+Evaluate <VAR>body</VAR>, and return its result.
+However, before it returns, evaluate <VAR>handler</VAR>.
+Even if <VAR>body</VAR> returns abnormally (by throwing an exception),
+<VAR>handler</VAR> is evaluated.
+
+
+<P>
+(This is implemented just like Java's <CODE>try</CODE>-<CODE>finally</CODE>.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>try-catch</B> <I>body handler ...</I>
+<DD><A NAME="IDX168"></A>
+Evaluate <VAR>body</VAR>, in the conect of the given <VAR>handler-spec</VAR>s.
+Each <VAR>handler</VAR> has the form:
+
+<PRE>
+<VAR>var</VAR> <VAR>type</VAR> <VAR>exp</VAR> ...
+</PRE>
+
+<P>
+If an exception is thrown in <VAR>body</VAR>, the first <VAR>handle-spec</VAR>
+is selected such that the thrown exception is an instance of
+the <VAR>handler</VAR>'s <VAR>type</VAR>. If no <VAR>handler</VAR> is selected,
+the exception is propagated through the dynamic execution context
+until a matching <VAR>handler</VAR> is found.  (If no matching <VAR>handler</VAR>
+is found, then an error message is printed, and the computation terminated.)
+
+
+<P>
+Once a <VAR>handler</VAR> is selected,
+the <VAR>var</VAR> is bound to the thrown exception, and the <VAR>exp</VAR> in
+the <VAR>handler</VAR> are executed.  The result of the <CODE>try-catch</CODE>
+is the result of <VAR>body</VAR> if no exception is thrown, or the
+value of the last <VAR>exp</VAR> in the selected <VAR>handler</VAR> if an
+exception is thrown.
+
+
+<P>
+(This is implemented just like Java's <CODE>try</CODE>-<CODE>catch</CODE>.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>dynamic-wind</B> <I>in-guard thunk out-guard</I>
+<DD><A NAME="IDX169"></A>
+All three arguments must be 0-argument procedures.
+First calls <VAR>in-guard</VAR>, then <VAR>thunk</VAR>, then <VAR>out-guard</VAR>.
+The result of the expression is that of <VAR>thunk</VAR>.
+If <VAR>thunk</VAR> is exited abnormally (by throwing an exception or
+invoking a continuation), <VAR>out-guard</VAR> is called.
+
+
+<P>
+If the continuation of the dynamic-wind is re-entered (which
+is not yet possible in Kawa), the <VAR>in-guard</VAR> is called again.
+
+
+<P>
+This function was added in R5RS.
+</DL>
+
+
+
+
+<H2><A NAME="SEC41" HREF="kawa_toc.html#TOC41">Locations</A></H2>
+
+<P>
+A <EM>location</EM> is a place where a value can be stored.
+An <EM>lvalue</EM> is an expression that refers to a location.
+(The name "lvalue" refers to the fact that the left operand
+of <CODE>set!</CODE> is an lvalue.)
+The only kind of lvalue in standard Scheme is a <EM>variable</EM>.
+Kawa also allows <EM>computed lvalues</EM>.  These are procedure
+calls used in "lvalue context", such as the left operand of <CODE>set!</CODE>.
+
+
+<P>
+You can only use procedures that have an associated <EM>setter</EM>.
+In that case, <CODE>(set! (f arg ...) value)</CODE>
+is equivalent to <CODE>((setter f) value arg ...)</CODE>
+(It is possible the definition will change
+to <CODE>((setter f) arg ... value)</CODE> if Guile goes for that.)
+Currently, only a few procedures have associated <CODE>setter</CODE>s,
+and only builtin procedures written in Java can have <CODE>setter</CODE>s.
+
+
+<P>
+For example:
+
+<PRE>
+(set! (car x) 10)
+</PRE>
+
+<P>
+is equivalent to:
+
+<PRE>
+(set-car! x 10)
+</PRE>
+
+<P>
+Kawa also gives you access to locations as first-class values:
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>location</B> <I>lvalue</I>
+<DD><A NAME="IDX170"></A>
+Returns a location object for the given <VAR>lvalue</VAR>.
+You can get its value (by applying it, as if it were a procedure),
+and you can set its value (by using <CODE>set!</CODE> on the application).
+The <VAR>lvalue</VAR> can be a local or global variable, or a procedure
+call using a procedure that has a <CODE>setter</CODE>.
+
+<PRE>
+(define x 100)
+(define lx (location x))
+(set! (lx) (cons 1 2)) ;; set x to (1 . 2)
+(lx)  ;; returns (1 . 2)
+(define lc (location (car x)))
+(set! (lc) (+ 10 (lc)))
+;; x is now (11 . 2)
+</PRE>
+
+</DL>
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>define-alias</B> <I>variable lvalue</I>
+<DD><A NAME="IDX171"></A>
+Define <VAR>variable</VAR> as an alias for <VAR>lvalue</VAR>.
+In other words, makes it so that <CODE>(location <VAR>variable</VAR>)</CODE>
+is equivalent to <CODE>(location <VAR>lvalue</VAR>)</CODE>.
+This works both top-level and inside a function.
+</DL>
+
+
+<P>
+Some people mind find it helpful to think of a location
+as a settable <EM>thunk</EM>.  Others may find it useful to
+think of the <CODE>location</CODE> syntax as similar to the C <SAMP>`&#38;'</SAMP> operator;
+for the <SAMP>`*'</SAMP> indirection operator, Kawa uses procedure application.
+
+
+
+
+<H2><A NAME="SEC42" HREF="kawa_toc.html#TOC42">Eval and Environments</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>eval</B> <I>expression [environment]</I>
+<DD><A NAME="IDX172"></A>
+<CODE>eval</CODE> evaluates <VAR>expression</VAR> in the environment indicated
+by <VAR>environment</VAR>.
+
+
+<P>
+The default for <VAR>environment</VAR> is the result
+of <CODE>(interaction-environment)</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>null-environment</B>
+<DD><A NAME="IDX173"></A>
+This procedure returns an environment that contains no variable bindings,
+but contains (syntactic) bindings for all the syntactic keywords.
+
+
+<P>
+The effect of assigning to a variable in this environment (such
+as <CODE>let</CODE>) is undefined.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>scheme-report-environment</B> <I>version</I>
+<DD><A NAME="IDX174"></A>
+The <VAR>version</VAR> must be an exact non-negative inetger corresponding to
+a version of one of the Revised<VAR>version</VAR> Reports on Scheme.
+The procedure returns an environment that contains exactly the set of
+bindings specified in the corresponding report.
+
+
+<P>
+This implementation supports <VAR>version</VAR> that is 4 or 5.
+
+
+<P>
+The effect of assigning to a variable in this environment (such
+as <CODE>car</CODE>) is undefined.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>interaction-environment</B>
+<DD><A NAME="IDX175"></A>
+This procedure return an environment that contains implementation-defined
+bindings, as well as top-level user bindings.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>environment-bound?</B> <I>environment symbol</I>
+<DD><A NAME="IDX176"></A>
+Return true <CODE>#t</CODE> if there is a binding for <VAR>symbol</VAR>
+in <VAR>environment</VAR>;  otherwise returns <CODE>#f</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>fluid-let</B> <I>((variable init) ...) body ...</I>
+<DD><A NAME="IDX177"></A>
+Evaluate the <VAR>init</VAR> expressions.
+Then modify the dynamic bindings for the <VAR>variables</VAR> to the
+values of the <VAR>init</VAR> expressions, and evaluate the <VAR>body</VAR> expressions.
+Return the result of the last expression in <VAR>body</VAR>.
+Before returning, restore the original bindings.
+The temporary bindings are only visible in the current thread, and its
+descendent threads.
+</DL>
+
+
+
+
+<H2><A NAME="SEC43" HREF="kawa_toc.html#TOC43">Debugging</A></H2>
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>trace</B> <I>procedure</I>
+<DD><A NAME="IDX178"></A>
+Cause <VAR>procedure</VAR> to be "traced", that is debugging output will
+be written to the standard error port every time <VAR>procedure</VAR>
+is called, with the parameters and return value.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>untrace</B> <I>procedure</I>
+<DD><A NAME="IDX179"></A>
+Turn off tracing (debugging output) of <VAR>procedure</VAR>.
+</DL>
+
+
+
+
+<H2><A NAME="SEC44" HREF="kawa_toc.html#TOC44">Threads</A></H2>
+
+<P>
+There is a very preliminary interface to create parallel threads.
+The interface is similar to the standard <CODE>delay</CODE>/<CODE>force</CODE>,
+where a thread is basically the same as a promise, except that
+evaluation may be in parallel.
+
+
+<P>
+So far, little or no effort has been made into making Kawa
+thread-safe.  There are no per-thread bindings, and
+the current input and output parts are global.
+That needs to change.
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>future</B> <I>expression</I>
+<DD><A NAME="IDX180"></A>
+Creates a new thread that evaluates <VAR>expression</VAR>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>force</B> <I>thread</I>
+<DD><A NAME="IDX181"></A>
+The standard <CODE>force</CODE> function has generalized to also work
+on threads.  If waits for the thread's <VAR>expression</VAR> to finish
+executing, and returns the result.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>sleep</B> <I>time</I>
+<DD><A NAME="IDX182"></A>
+Suspends the current thread for the specified time.
+The <VAR>time</VAR> can be either a pure number (in secords),
+or a quantity whose unit is a time unit (such as <CODE>10s</CODE>).
+</DL>
+
+
+
+
+<H2><A NAME="SEC45" HREF="kawa_toc.html#TOC45">Processes</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>make-process</B> <I>command envp</I>
+<DD><A NAME="IDX183"></A>
+Creates a <CODE>&#60;java.lang.Process&#62;</CODE> object, using the specified
+<VAR>command</VAR> and <VAR>envp</VAR>.
+The <VAR>command</VAR> is converted to an array of Java strings
+(that is an object that has type <CODE>&#60;java.lang.String[]&#62;</CODE>.
+It can be a Scheme vector or list (whose elements should be
+Java strings or Scheme strings);  a Java array of Java strings;
+or a Scheme string.  In the latter case, the command is converted
+using <CODE>command-parse</CODE>.
+The <VAR>envp</VAR> is process environment;  it should be either
+a Java array of Java strings, or the special <CODE>#!null</CODE> value.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>system</B> <I>command</I>
+<DD><A NAME="IDX184"></A>
+Runs the specified <VAR>command</VAR>, and waits for it to finish.
+Returns the return code from the command.  The return code is an integer,
+where 0 conventionally means successful completion.
+The <VAR>command</VAR> can be any of the types handled by <CODE>make-process</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>command-parse</B>
+<DD><A NAME="IDX185"></A>
+The value of this variable should be a one-argument procedure.
+It is used to convert a command from a Scheme string to a Java
+array of the constituent "words".
+The default binding, on Unix-like systems, returns a new command to
+invoke <CODE>"/bin/sh" "-c"</CODE> concatenated with the command string;
+on non-Unix-systems, it is bound to <CODE>tokenize-string-to-string-array</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>tokenize-string-to-string-array</B> <I>command</I>
+<DD><A NAME="IDX186"></A>
+Uses a <CODE>java.util.StringTokenizer</CODE> to parse the <VAR>command</VAR> string
+into an array of words.  This splits the <VAR>command</VAR> using spaces
+to delimit words; there is no special processing for quotes or other
+special characters.
+(This is the same as what <CODE>java.lang.Runtime.exec(String)</CODE> does.)
+</DL>
+
+
+
+
+<H2><A NAME="SEC46" HREF="kawa_toc.html#TOC46">Miscellaneous</A></H2>
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>scheme-implementation-version</B>
+<DD><A NAME="IDX187"></A>
+Returns the Kawa version number as a string.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>gentemp</B>
+<DD><A NAME="IDX188"></A>
+Returns a new (interned) symbol each time it is called.
+The symbol names are implementation-dependent.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>defmacro</B> <I>name lambda-list form ...</I>
+<DD><A NAME="IDX189"></A>
+Defines an old-style macro a la Common Lisp,
+and installs <CODE>(lambda <VAR>lambda-list</VAR> <VAR>form</VAR> ...)</CODE>
+as the expansion function for <VAR>name</VAR>.
+When the translator sees an application of <VAR>name</VAR>,
+the expansion function is called with the rest of the application
+as the actual arguments.  The resulting object must be a Scheme
+source form that is futher processed (it may be repeatedly macro-expanded).
+
+
+<P>
+If you define a macro with <CODE>defmacro</CODE>, you (currently) cannot use
+the macro in the same compilation as the definition.
+This restriction does not apply to macros defined by <CODE>define-syntax</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>command-line-arguments</B>
+<DD><A NAME="IDX190"></A>
+Any command-line arguments (following flags processed by Kawa itself)
+are assigned to the global variable <SAMP>`command-line-arguments'</SAMP>,
+which is a vector of strings.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Variable:</U> <B>home-directory</B>
+<DD><A NAME="IDX191"></A>
+A string containing the home directory of the user.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>exit</B> <I>[code]</I>
+<DD><A NAME="IDX192"></A>
+Exits the Kawa interpreter, and ends the Java session.
+The integer value <VAR>code</VAR> is returned to the operating
+system.  If <VAR>code</VAR> is not specified, zero is returned,
+indicating normal (non-error) termination.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>scheme-window</B> <I>[shared]</I>
+<DD><A NAME="IDX193"></A>
+Create a read-eval-print-loop in a new top-level window.
+If <VAR>shared</VAR> is true, it uses the same environment as the
+current <CODE>(interaction-environment)</CODE>;  if not (the default),
+a new top-level environment is created.
+
+
+<P>
+You can create multiple top-level window that can co-exist.
+They run in separate threads.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>when</B> <I>condition form...</I>
+<DD><A NAME="IDX194"></A>
+If <VAR>condition</VAR> is true, evaluate each <VAR>form</VAR> in order,
+returning the value of the last one.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>unless</B> <I>condition form...</I>
+<DD><A NAME="IDX195"></A>
+If <VAR>condition</VAR> is false, evaluate each <VAR>form</VAR> in order,
+returning the value of the last one.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>vector-append</B> <I><VAR>arg</VAR>...</I>
+<DD><A NAME="IDX196"></A>
+Creates a new vector, containing the elements from all the <VAR>arg</VAR>s
+appended together.   Each <VAR>arg</VAR> may be a vector or a list.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>instance?</B> <I>value type</I>
+<DD><A NAME="IDX197"></A>
+Returns <CODE>#t</CODE> iff <VAR>value</VAR> is an instance of type <VAR>type</VAR>.
+(Undefined if <VAR>type</VAR> is a primitive type, such as <CODE>&#60;int&#62;</CODE>.)
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Function:</U> <B>as</B> <I>type value</I>
+<DD><A NAME="IDX198"></A>
+Converts or coerces <VAR>value</VAR> to a value of type <VAR>type</VAR>.
+Throws an exception if that cannot be done.
+Not supported for <VAR>type</VAR> to be a primitive type such as <CODE>&#60;int&#62;</CODE>.
+</DL>
+
+
+<P>
+<DL>
+<DT><U>Syntax:</U> <B>synchronized</B> <I>object form ...</I>
+<DD><A NAME="IDX199"></A>
+Synchronize on the given <VAR>object</VAR>.  (This means getting an
+exclusive lock on the object, by acquiring its <EM>monitor</EM>.)
+Then execute the <VAR>form</VAR>s while holding the lock.
+When the <VAR>form</VAR>s finish (normally or abnormally by throwing
+an exception), the lock is released.
+Returns the result of the last <VAR>form</VAR>.
+Equivalent to the Java <CODE>synchronized</CODE> statement,
+except that it may return a result.
+</DL>
+
+
+<P><HR><P>
+Go to the <A HREF="kawa_1.html">first</A>, <A HREF="kawa_7.html">previous</A>, <A HREF="kawa_9.html">next</A>, <A HREF="kawa_15.html">last</A> section, <A HREF="kawa_toc.html">table of contents</A>.
+</BODY>
+</HTML>
