@@ -1,0 +1,97 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Kawa-XQuery</title>
+  </head>
+
+  <body>
+    <h1>Kawa-XQuery</h1>
+
+<p>
+Kawa-XQuery is a (quite incomplete) implementation of the
+<a href="http://www.w3c.org/XML/Query">XML Query language</a>.
+It achieves high performance because a query is compiled
+down to Java bytecodes using the
+<a href="http://www.gnu.org/software/kawa/">Kawa</a> framework.
+
+<h2>Example</h2>
+<p>Here is a program for converting a table:
+<pre>
+let $newline := "
+",
+$result := (document("tab.xml")/result)
+  return
+    (&lt;table&gt;
+{for $x in ($result/row)
+      return (&lt;tr&gt;{
+        for $y in ($x/fld1) return (&lt;td&gt;&lt;b&gt;{children($y)}&lt;/b&gt;&lt;/td&gt;),
+        for $y in ($x/fld2) return (&lt;td&gt;{list(100,children($y))}&lt;/td&gt;)}&lt;/tr&gt;,
+        $newline)
+}&lt;/table&gt;,$newline)
+</pre>
+<p>
+This will convert an input table like this:
+<pre>
+&lt;result&gt;
+&lt;row&gt;
+&lt;fld1&gt;a1&lt;/fld1&gt;
+&lt;fld2&gt;12&lt;/fld2&gt;
+&lt;/row&gt;
+&lt;row&gt;
+&lt;fld1&gt;b1&lt;/fld1&gt;
+&lt;fld2&gt;22&lt;/fld2&gt;
+&lt;/row&gt;
+&lt;/result&gt;
+</pre>
+yielding an output table like this:
+<pre>
+&lt;table&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;a1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;list&gt;100 12&lt;/list&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;&lt;b&gt;b1&lt;/b&gt;&lt;/td&gt;&lt;td&gt;&lt;list&gt;100 22&lt;/list&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;
+</pre>
+
+<h2>How to get and install Kawa-XQuery</h2>
+<p>Kawa-XQuery is part of Kawa.  Follow the innstalation instructions
+for Kawa.</p>
+
+<h2>Usage</h2>
+<p>You run Kawa-XQuery just the way you run Kawa, except you need
+to specify the <code>--xquery</code> flag to specify the language.
+(By default Kawa expecte Scheme source code.)
+<p>For example you can type in xquery expression directly at the command
+line:
+<pre>
+$ java kawa.repl --xquery
+xquery[1]: for $x in (3,4,5) return &lt;a&gt;$x&lt;/a&gt;
+&lt;a&gt;$x&lt;/a&gt;&lt;a&gt;$x&lt;/a&gt;&lt;a&gt;$x&lt;/a&gt;
+xquery[2]: string-value(&lt;a&gt;3+5 is {3+5}&lt;/a&gt;)
+ 3+5 is 8
+xquery[3]:
+</pre>
+<p>
+You can also compile an XQuery program to a Java application:
+<pre>
+$ java kawa.repl --xquery --main -C prog.xql
+$ java prog
+</pre>
+
+<h2>Status</h2>
+
+<p>Some things work; most things don't.
+Unimplemented features so far include function defintions and
+type specification, as well as many kinds of path expresisons.
+Implemented features include some simple expressions;
+element content (element "literals" like <code>&lt;a&gt;...&lt;/a&gt;</code>);
+FLWR expressions (<code>let</code> and <code>for</code> forms).
+Some things that are implemented do not generate as good code as
+I want.  For example <code>for</code> expressiosn are implemented
+using map function calls.
+    <hr>
+    <address><a href="mailto:per@bothner.com">Per Bothner</a></address>
+<!-- Created: Sat Aug 18 14:08:13 PDT 2001 -->
+<!-- hhmts start -->
+Last modified: Sat Aug 18 14:38:36 PDT 2001
+<!-- hhmts end -->
+  </body>
+</html>
