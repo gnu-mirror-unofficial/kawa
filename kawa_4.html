@@ -1,6 +1,6 @@
 <HTML>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<!-- Created on June, 9  2001 by texi2html 1.64 -->
+<!-- Created on June, 19  2001 by texi2html 1.64 -->
 <!-- 
 Written by: Lionel Cons <Lionel.Cons@cern.ch> (original author)
             Karl Berry  <karl@freefriends.org>
@@ -123,7 +123,7 @@ compiling the sources.
 </P><P>
 
 The binary release comes as a <CODE>.jar</CODE> archive
-<SAMP>`kawa-1.6.92-compiled.jar'</SAMP>.
+<SAMP>`kawa-1.6.94-compiled.jar'</SAMP>.
 </P><P>
 
 You can unzip the archive, or you can use it as is.
@@ -139,7 +139,7 @@ export CLASSPATH
 
 On Windows95/WindowsNT, you need to set <CODE>classpath</CODE> in a DOS console.
 For example:
-<TABLE><tr><td>&nbsp;</td><td class=example><pre>set classpath=\kawa\kawa-1.6.92-compiled.jar
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>set classpath=\kawa\kawa-1.6.94-compiled.jar
 </pre></td></tr></table></P><P>
 
 Then to run Kawa do:
@@ -171,12 +171,12 @@ to fix this problem, please let me know.)
 <H2> 3.3 Installing and using the source distribution </H2>
 <!--docid::SEC7::-->
 The Kawa release normally comes as a gzip-compressed tar file named
-<SAMP>`kawa-1.6.92.tar.gz'</SAMP> .
+<SAMP>`kawa-1.6.94.tar.gz'</SAMP> .
 <P>
 
 In your build directory do:
-<TABLE><tr><td>&nbsp;</td><td class=example><pre>tar xzf kawa-1.6.92.tar.gz
-cd kawa-1.6.92
+<TABLE><tr><td>&nbsp;</td><td class=example><pre>tar xzf kawa-1.6.94.tar.gz
+cd kawa-1.6.94
 </pre></td></tr></table></P><P>
 
 Then you must configure the sources.  This you can do
@@ -305,7 +305,7 @@ you need to get a recent pre-release gcc-3.0 snapshot, and only
 Intel x86-based Linux/GNU system have been tested with Kawa.
 </P><P>
 
-First, get and install (a beta of) GCC 3.0.  Set <CODE>PREFIX</CODE> to where
+First, get and install GCC 3.0.  Set <CODE>PREFIX</CODE> to where
 you want to install GCJ, and configure it with these options:
 <TABLE><tr><td>&nbsp;</td><td class=example><pre>./configure --enable-threads --enable-languages=c++,java --prefix $PREFIX
 make bootstrap
@@ -359,15 +359,15 @@ Kawa under Windows.  You can do the following:
 
 <OL>
 <LI>
-Download the Kawa source distribution <CODE>kawa-1.6.92.tar.gz</CODE>.
+Download the Kawa source distribution <CODE>kawa-1.6.94.tar.gz</CODE>.
 <LI>
 Extract the files using an appropriate tool.
-(I did <CODE>tar xzf kawa-1.6.92.tar.gz</CODE>, using the <CODE>tar</CODE>
+(I did <CODE>tar xzf kawa-1.6.94.tar.gz</CODE>, using the <CODE>tar</CODE>
 that is part of <A HREF="http://sources.redhat.com/cygwin/">Cygwin</A>.
 If there are alternative commonly-available tools, please let me
 know about them.)
 <LI>
-In an MS-DOS window, <CODE>cd kawa-1.6.92</CODE>.
+In an MS-DOS window, <CODE>cd kawa-1.6.94</CODE>.
 <LI>
 Edit <CODE>makekawa.bat</CODE> if need be to specify the location of your Java tools.
 <LI>
@@ -399,7 +399,7 @@ You then need to compile the builtin Scheme procedures:
 <BR>  
 <FONT SIZE="-1">
 This document was generated
-by <I>Per Bothner</I> on <I>June, 9  2001</I>
+by <I>Per Bothner</I> on <I>June, 19  2001</I>
 using <A HREF="http://www.mathematik.uni-kl.de/~obachman/Texi2html
 "><I>texi2html</I></A>
 
